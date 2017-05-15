@@ -9,14 +9,6 @@ import com.lonebytesoft.thetaleclient.api.CommonResponseCallback;
 import com.lonebytesoft.thetaleclient.api.HttpMethod;
 import com.lonebytesoft.thetaleclient.api.model.ChatMessage;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,63 +46,63 @@ public class ChatManager {
     public static void init(final String nickname, final ChatCallback callback) {
         csrfToken = null;
         session = null;
-
-        new AsyncTask<Void, Void, Void>() {
-            protected Void doInBackground(Void... params) {
-                final DefaultHttpClient httpClient = new DefaultHttpClient();
-
-                // get main page
-                final HttpUriRequest httpRequestMain = new HttpGet(URL_MAIN);
-                final OutputStream outputStreamMain = new ByteArrayOutputStream();
-                try {
-                    httpClient.execute(httpRequestMain).getEntity().writeTo(outputStreamMain);
-                } catch (IOException e) {
-                    callCallbackError(callback);
-                    return null;
-                }
-
-                final Pattern pattern = Pattern.compile("<meta\\s+content=\"([^\"]*)\"\\s+name=\"csrf-token\"");
-                final Matcher matcher = pattern.matcher(outputStreamMain.toString());
-                try {
-                    outputStreamMain.close();
-                } catch (IOException ignored) {
-                }
-                if(matcher.find()) {
-                    csrfToken = matcher.group(1);
-                } else {
-                    callCallbackError(callback);
-                    return null;
-                }
-
-                session = getSession(httpClient);
-
-                // post nickname
-                final HttpPost httpRequestLogin = new HttpPost(URL_PARTICIPANT);
-                setParams(httpRequestLogin, session, csrfToken);
-
-                final List<NameValuePair> httpRequestLoginParams = new ArrayList<>(1);
-                httpRequestLoginParams.add(new BasicNameValuePair("nickname", nickname));
-                try {
-                    httpRequestLogin.setEntity(new UrlEncodedFormEntity(httpRequestLoginParams, "UTF-8"));
-                } catch(UnsupportedEncodingException e) {
-                    callCallbackError(callback);
-                    return null;
-                }
-
-                try {
-                    httpClient.execute(httpRequestLogin);
-                } catch (IOException e) {
-                    callCallbackError(callback);
-                    return null;
-                }
-
-                session = getSession(httpClient);
-
-                callCallbackSuccess(callback);
-
-                return null;
-            }
-        }.execute();
+// TODO: rewrite
+//        new AsyncTask<Void, Void, Void>() {
+//            protected Void doInBackground(Void... params) {
+//                final DefaultHttpClient httpClient = new DefaultHttpClient();
+//
+//                // get main page
+//                final HttpUriRequest httpRequestMain = new HttpGet(URL_MAIN);
+//                final OutputStream outputStreamMain = new ByteArrayOutputStream();
+//                try {
+//                    httpClient.execute(httpRequestMain).getEntity().writeTo(outputStreamMain);
+//                } catch (IOException e) {
+//                    callCallbackError(callback);
+//                    return null;
+//                }
+//
+//                final Pattern pattern = Pattern.compile("<meta\\s+content=\"([^\"]*)\"\\s+name=\"csrf-token\"");
+//                final Matcher matcher = pattern.matcher(outputStreamMain.toString());
+//                try {
+//                    outputStreamMain.close();
+//                } catch (IOException ignored) {
+//                }
+//                if(matcher.find()) {
+//                    csrfToken = matcher.group(1);
+//                } else {
+//                    callCallbackError(callback);
+//                    return null;
+//                }
+//
+//                session = getSession(httpClient);
+//
+//                // post nickname
+//                final HttpPost httpRequestLogin = new HttpPost(URL_PARTICIPANT);
+//                setParams(httpRequestLogin, session, csrfToken);
+//
+//                final List<NameValuePair> httpRequestLoginParams = new ArrayList<>(1);
+//                httpRequestLoginParams.add(new BasicNameValuePair("nickname", nickname));
+//                try {
+//                    httpRequestLogin.setEntity(new UrlEncodedFormEntity(httpRequestLoginParams, "UTF-8"));
+//                } catch(UnsupportedEncodingException e) {
+//                    callCallbackError(callback);
+//                    return null;
+//                }
+//
+//                try {
+//                    httpClient.execute(httpRequestLogin);
+//                } catch (IOException e) {
+//                    callCallbackError(callback);
+//                    return null;
+//                }
+//
+//                session = getSession(httpClient);
+//
+//                callCallbackSuccess(callback);
+//
+//                return null;
+//            }
+//        }.execute();
     }
 
     public static void post(final String message, final ChatCallback callback) {
@@ -118,46 +110,46 @@ public class ChatManager {
             callCallbackError(callback);
             return;
         }
-
-        new AsyncTask<Void, Void, Void>() {
-            protected Void doInBackground(Void... params) {
-                final DefaultHttpClient httpClient = new DefaultHttpClient();
-                final HttpPost httpRequest = new HttpPost(URL_MESSAGE);
-                setParams(httpRequest, session, csrfToken);
-
-                final List<NameValuePair> httpRequestParams = new ArrayList<>(1);
-                httpRequestParams.add(new BasicNameValuePair("body", message));
-                try {
-                    httpRequest.setEntity(new UrlEncodedFormEntity(httpRequestParams, "UTF-8"));
-                } catch(UnsupportedEncodingException e) {
-                    callCallbackError(callback);
-                }
-
-                final OutputStream outputStream = new ByteArrayOutputStream();
-                try {
-                    httpClient.execute(httpRequest).getEntity().writeTo(outputStream);
-                    final JSONObject json = new JSONObject(outputStream.toString());
-                    if(json.has("error")) {
-                        callCallbackError(callback);
-                        return null;
-                    }
-                } catch (IOException|JSONException e) {
-                    callCallbackError(callback);
-                    return null;
-                } finally {
-                    try {
-                        outputStream.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-
-                session = getSession(httpClient);
-
-                callCallbackSuccess(callback);
-
-                return null;
-            }
-        }.execute();
+// TODO: rewrite
+//        new AsyncTask<Void, Void, Void>() {
+//            protected Void doInBackground(Void... params) {
+//                final DefaultHttpClient httpClient = new DefaultHttpClient();
+//                final HttpPost httpRequest = new HttpPost(URL_MESSAGE);
+//                setParams(httpRequest, session, csrfToken);
+//
+//                final List<NameValuePair> httpRequestParams = new ArrayList<>(1);
+//                httpRequestParams.add(new BasicNameValuePair("body", message));
+//                try {
+//                    httpRequest.setEntity(new UrlEncodedFormEntity(httpRequestParams, "UTF-8"));
+//                } catch(UnsupportedEncodingException e) {
+//                    callCallbackError(callback);
+//                }
+//
+//                final OutputStream outputStream = new ByteArrayOutputStream();
+//                try {
+//                    httpClient.execute(httpRequest).getEntity().writeTo(outputStream);
+//                    final JSONObject json = new JSONObject(outputStream.toString());
+//                    if(json.has("error")) {
+//                        callCallbackError(callback);
+//                        return null;
+//                    }
+//                } catch (IOException|JSONException e) {
+//                    callCallbackError(callback);
+//                    return null;
+//                } finally {
+//                    try {
+//                        outputStream.close();
+//                    } catch (IOException ignored) {
+//                    }
+//                }
+//
+//                session = getSession(httpClient);
+//
+//                callCallbackSuccess(callback);
+//
+//                return null;
+//            }
+//        }.execute();
     }
 
     public static void getMessages(final ChatMessagesCallback callback) {
@@ -221,21 +213,21 @@ public class ChatManager {
             }
         });
     }
-
-    private static void setParams(final HttpPost httpRequest,
-                                  final String cookieSession, final String csrfToken) {
-        httpRequest.addHeader("Cookie", COOKIE_SESSION + "=" + cookieSession);
-        httpRequest.addHeader(HEADER_CSRF_TOKEN, csrfToken);
-    }
-
-    private static String getSession(final DefaultHttpClient httpClient) {
-        for(final Cookie cookie : httpClient.getCookieStore().getCookies()) {
-            if(cookie.getName().equals(COOKIE_SESSION)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
+// TODO: rewrite
+//    private static void setParams(final HttpPost httpRequest,
+//                                  final String cookieSession, final String csrfToken) {
+//        httpRequest.addHeader("Cookie", COOKIE_SESSION + "=" + cookieSession);
+//        httpRequest.addHeader(HEADER_CSRF_TOKEN, csrfToken);
+//    }
+// TODO: rewrite
+//    private static String getSession(final DefaultHttpClient httpClient) {
+//        for(final Cookie cookie : httpClient.getCookieStore().getCookies()) {
+//            if(cookie.getName().equals(COOKIE_SESSION)) {
+//                return cookie.getValue();
+//            }
+//        }
+//        return null;
+//    }
 
     public interface ChatCallback {
         void onSuccess();

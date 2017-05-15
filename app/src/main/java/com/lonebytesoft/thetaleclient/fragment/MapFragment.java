@@ -54,11 +54,6 @@ import com.lonebytesoft.thetaleclient.util.UiUtils;
 import com.lonebytesoft.thetaleclient.util.map.MapModification;
 import com.lonebytesoft.thetaleclient.util.map.MapUtils;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -74,6 +69,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -165,21 +165,24 @@ public class MapFragment extends WrapperFragment {
     }
 
     private void updateMenuMapModificationVisibility() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final HttpClient httpClient = new DefaultHttpClient();
-                final HttpRequest httpRequest = HttpMethod.GET.getHttpRequest(
-                        MapTerrainRequest.URL_BASE, null, null);
-                try {
-                    httpClient.execute((HttpUriRequest) httpRequest);
-                    if(menuMapModification != null) {
-                        menuMapModification.setVisible(true);
-                    }
-                } catch(IOException ignored) {
-                }
-            }
-        }).start();
+      OkHttpClient client = new OkHttpClient();
+      client.newCall(HttpMethod.GET.getHttpRequest(
+          MapTerrainRequest.URL_BASE, null, null).getRequest()).enqueue(new Callback()
+      {
+        @Override
+        public void onFailure(Call call, IOException e)
+        {
+
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException
+        {
+          if(menuMapModification != null) {
+            menuMapModification.setVisible(true);
+          }
+        }
+      });
     }
 
     @Override
