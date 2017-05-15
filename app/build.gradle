@@ -1,48 +1,37 @@
-buildscript {
-    repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-
-    dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-    }
-}
-
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
-
-repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
-}
-
+apply plugin: 'com.google.firebase.firebase-crash'
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "26-rc1"
 
     defaultConfig {
         applicationId "com.lonebytesoft.thetaleclient"
-        minSdkVersion 9
-        targetSdkVersion 22
-        versionCode 27
-        versionName "1.6.7"
-    }
-
-    signingConfigs {
-        release {
-            storeFile file('../key/release.keystore')
-            storePassword keystorePassword
-            keyAlias 'release'
-            keyPassword releaseKeyPassword
-        }
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 28
+        versionName "1.6.8"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            zipAlignEnabled true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
         }
+        debug {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            jniDebuggable true
+            renderscriptDebuggable true
+        }
+    }
+
+    dexOptions {
+        preDexLibraries true
     }
 
     compileOptions {
@@ -57,13 +46,19 @@ android {
 }
 
 dependencies {
-    // latest versions of libraries as of 10.04.2015
-    compile 'com.crashlytics.android:crashlytics:1.+'
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    // latest versions of libraries as of 15.05.2017
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.firebase:firebase-core:10.2.4'
+    compile 'com.google.firebase:firebase-messaging:10.2.4'
+    compile 'com.google.firebase:firebase-crash:10.2.4'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.6.0'
+    compile 'com.squareup.okio:okio:1.11.0'
+    compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1' // https://github.com/astuetz/PagerSlidingTabStrip
     compile project(':android-support-v4-preferencefragment') // https://github.com/kolavar/android-support-v4-preferencefragment
-    compile 'com.github.chrisbanes.photoview:library:1.2.3' // https://github.com/chrisbanes/PhotoView
-    compile 'org.jsoup:jsoup:1.8.1' // https://github.com/jhy/jsoup
+    compile 'com.github.chrisbanes.photoview:library:1.2.4' // https://github.com/chrisbanes/PhotoView
+    compile 'org.jsoup:jsoup:1.10.2' // https://github.com/jhy/jsoup
 }
 
 android.applicationVariants.all { variant ->

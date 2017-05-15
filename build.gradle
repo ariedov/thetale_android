@@ -3,7 +3,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.1' // with 1.1.0+ Android Studio does not see aar
+        classpath 'com.android.tools.build:gradle:2.4.0-alpha7'
+        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.firebase:firebase-plugins:1.0.5'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
@@ -13,6 +16,6 @@ allprojects {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
