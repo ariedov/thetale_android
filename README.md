@@ -9,3 +9,12 @@ Android-клиент для многопользовательской zero-play
 [Issue-tracker](https://lonebytesoft.myjetbrains.com/youtrack/issues/thetaleclient).
 
 Высказывать пожелания по работе приложения и сообщать о багах можно на гитхабе, в трекере задач или на форуме.
+
+Оригинальный код написан
+ * @author Hamster
+ * @lastchange 2016.05.10
+
+ Новые правкии адаптация под современные реалии
+
+ * @author WreWolf
+ * @since 2017.05.05

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lonebytesoft.thetaleclient">
+    package="com.wrewolf.thetaleclient">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -13,11 +13,11 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:name=".TheTaleClientApplication"
+        android:name="com.wrewolf.thetaleclient.TheTaleClientApplication"
         android:largeHeap="true">
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name="com.wrewolf.thetaleclient.activity.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true">
@@ -30,18 +30,18 @@
         </activity>
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.wrewolf.thetaleclient.activity.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"/>
         
-        <receiver android:name=".service.BootBroadcastReceiver">
+        <receiver android:name="com.wrewolf.thetaleclient.service.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
         <receiver
-            android:name=".service.widget.AppWidgetProviderSmall"
+            android:name="com.wrewolf.thetaleclient.service.widget.AppWidgetProviderSmall"
             android:label="@string/app_widget_small">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -52,7 +52,7 @@
         </receiver>
 
         <receiver
-            android:name=".service.widget.AppWidgetProviderMedium"
+            android:name="com.wrewolf.thetaleclient.service.widget.AppWidgetProviderMedium"
             android:label="@string/app_widget_medium">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -63,7 +63,7 @@
         </receiver>
 
         <receiver
-            android:name=".service.widget.AppWidgetProviderLarge"
+            android:name="com.wrewolf.thetaleclient.service.widget.AppWidgetProviderLarge"
             android:label="@string/app_widget_large">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -74,7 +74,7 @@
         </receiver>
 
         <receiver
-            android:name=".service.widget.AppWidgetProviderHuge"
+            android:name="com.wrewolf.thetaleclient.service.widget.AppWidgetProviderHuge"
             android:label="@string/app_widget_huge">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -85,7 +85,7 @@
         </receiver>
 
         <service
-            android:name=".service.WatcherService"
+            android:name="com.wrewolf.thetaleclient.service.WatcherService"
             android:exported="false"/>
 
     </application>

@@ -63,7 +63,7 @@
 
                 </LinearLayout>
 
-                <com.lonebytesoft.thetaleclient.widget.RequestActionView
+                <com.wrewolf.thetaleclient.widget.RequestActionView
                     android:id="@+id/cards_take_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
