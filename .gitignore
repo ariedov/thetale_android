@@ -12,3 +12,4 @@ com_crashlytics_export_strings.xml
 crashlytics-build.properties
 *.apk
 app/google-services.json
+app/version.properties

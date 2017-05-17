@@ -12,7 +12,6 @@ import com.wrewolf.thetaleclient.TheTaleClientApplication;
 
 public class Analytics
 {
-
   public static void sendFragment(String name)
   {
     Bundle bundle = new Bundle();

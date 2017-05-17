@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">The Tale Client</string>
-    <string name="app_description">The Tale Client by Hamster</string>
+    <string name="app_description">The Tale Client by WreWolf</string>
     <string name="app_about">Android-клиент для многопользовательской zero-player RPG &lt;a href=\"http://the-tale.org\"&gt;Сказка&lt;/a&gt;.
-        &lt;br&gt;&lt;br&gt;Версия: %1$s&lt;br&gt;&lt;br&gt;Авторы: &lt;a href=\"http://the-tale.org/accounts/9297\"&gt;Hamster&lt;/a&gt;&lt;br&gt;&lt;a href=\"http://the-tale.org/accounts/27908\"&gt;WreWolf&lt;/a&gt;</string>
+        &lt;br&gt;&lt;br&gt;Версия: %1$s&lt;br&gt;&lt;br&gt;Авторы: &lt;a href=\"http://the-tale.org/accounts/9297\"&gt;Hamster&lt;/a&gt; &lt;a href=\"http://the-tale.org/accounts/27908\"&gt;WreWolf&lt;/a&gt;</string>
 
     <string name="app_widget_small">The Tale Client: Состояние героя (1x1)</string>
     <string name="app_widget_medium">The Tale Client: Основная информация (2x1)</string>
@@ -127,7 +127,7 @@
     <string name="game_might_politics_power">Бонус к политическому влиянию: %.2f%%</string>
     <string name="game_might_pvp_effectiveness_bonus">Бонус к эффективности в PvP: %.2f%%</string>
 
-    <string name="game_title_bag">Рюкзак (%1$s/%2$s)</string>
+    <string name="game_title_bag">Рюкзак (%1$d/%2$d)</string>
     <string name="game_title_cards">Карты</string>
     <string name="game_title_diary">Дневник</string>
     <string name="game_title_equipment">Экипировка</string>
