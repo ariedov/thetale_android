@@ -3,6 +3,7 @@ package com.wrewolf.thetaleclient;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.wrewolf.thetaleclient.api.cache.RequestCacheManager;
 import com.wrewolf.thetaleclient.util.NotificationManager;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
@@ -22,6 +23,17 @@ public class TheTaleClientApplication extends Application
   private static OnscreenStateWatcher onscreenStateWatcher;
   private static NotificationManager notificationManager;
   private static PreferencesManager preferencesManager;
+  private static FirebaseAnalytics analytics;
+
+  public static FirebaseAnalytics getAnalytics()
+  {
+    return analytics;
+  }
+
+  public static PreferencesManager getPreferencesManager()
+  {
+    return preferencesManager;
+  }
 
   @Override
   public void onCreate()
@@ -29,6 +41,7 @@ public class TheTaleClientApplication extends Application
     super.onCreate();
 
     context = getApplicationContext();
+    analytics = FirebaseAnalytics.getInstance(context);
     preferencesManager = new PreferencesManager(context);
     onscreenStateWatcher = new OnscreenStateWatcher();
     notificationManager = new NotificationManager(context);
