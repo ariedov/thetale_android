@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-crash'
 android {
-    compileSdkVersion 25
-    buildToolsVersion "26-rc1"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.2"
     def versionPropsFile = file('version.properties')
 
     if (versionPropsFile.canRead()) {
@@ -17,7 +17,7 @@ android {
         defaultConfig {
             applicationId "com.wrewolf.thetaleclient"
             minSdkVersion 19
-            targetSdkVersion 25
+            targetSdkVersion 27
             versionCode code
             versionName "1.6.9." + code + "_beta"
             resValue "string", "tray__authority", "${applicationId}.tray"
@@ -60,26 +60,26 @@ android {
 }
 
 dependencies {
-    // latest versions of libraries as of 15.05.2017
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.google.firebase:firebase-core:10.2.4'
-    compile 'com.google.firebase:firebase-messaging:10.2.4'
-    compile 'com.google.firebase:firebase-crash:10.2.4'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.6.0'
-    compile 'com.squareup.okio:okio:1.11.0'
-    compile 'de.greenrobot:eventbus:2.4.0'
+    // latest versions of libraries as of 11.02.2018
+    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
+    compile 'com.google.firebase:firebase-crash:11.8.0'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.9.1'
+    compile 'com.squareup.okio:okio:1.13.0'
+    compile 'org.greenrobot:eventbus:3.1.1'
     compile 'net.grandcentrix.tray:tray:0.11.1'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1' // https://github.com/astuetz/PagerSlidingTabStrip
     compile project(':android-support-v4-preferencefragment') // https://github.com/kolavar/android-support-v4-preferencefragment
-    compile 'com.github.chrisbanes.photoview:library:1.2.4' // https://github.com/chrisbanes/PhotoView
-    compile 'org.jsoup:jsoup:1.10.2' // https://github.com/jhy/jsoup
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0' // https://github.com/chrisbanes/PhotoView
+    compile 'org.jsoup:jsoup:1.11.2' // https://github.com/jhy/jsoup
 }
 
 android.applicationVariants.all { variant ->
-    variant.getOutputs().each { output ->
-        if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
-            output.outputFile = new File(output.outputFile.parent,
+    variant.getOutputs().all { output ->
+        if (outputFileName != null && output.outputFileName.endsWith('.apk')) {
+            outputFileName = new File(output.outputFile.parent,
                     variant.buildType.name + "-" + variant.mergedFlavor.versionName + "-b" + variant.mergedFlavor.versionCode + ".apk")
         }
     }

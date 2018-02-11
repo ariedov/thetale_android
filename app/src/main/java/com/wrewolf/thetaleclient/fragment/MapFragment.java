@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +24,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.wrewolf.thetaleclient.DataViewMode;
 import com.wrewolf.thetaleclient.R;
 import com.wrewolf.thetaleclient.TheTaleClientApplication;
@@ -73,7 +77,6 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * @author Hamster
@@ -92,8 +95,7 @@ public class MapFragment extends WrapperFragment {
 
     private View rootView;
 
-    private ImageView mapView;
-    private PhotoViewAttacher mapViewHelper;
+    private PhotoView mapView;
     private MenuItem menuOptions;
     private MenuItem menuMapModification;
     private View findPlayerContainer;
@@ -118,13 +120,11 @@ public class MapFragment extends WrapperFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mapView = (ImageView) rootView.findViewById(R.id.map_content);
-        mapViewHelper = new PhotoViewAttacher(mapView);
-        mapViewHelper.setScaleType(ImageView.ScaleType.CENTER);
+        mapView = rootView.findViewById(R.id.map_content);
 
         if(savedInstanceState != null) {
             mapZoom = savedInstanceState.getFloat(KEY_MAP_ZOOM, 1.0f);
@@ -225,14 +225,14 @@ public class MapFragment extends WrapperFragment {
                     @Override
                     public void onItemSelected(int position) {
                         final MapPlaceInfo placeInfo = places.get(position);
-                        moveToTile(placeInfo.x, placeInfo.y, mapViewHelper.getMaximumScale());
+                        moveToTile(placeInfo.x, placeInfo.y, mapView.getMaximumScale());
                     }
                 });
                 return true;
 
             case R.id.action_map_find_hero:
                 moveToTile((int) Math.round(heroPosition.x), (int) Math.round(heroPosition.y),
-                        mapViewHelper.getMaximumScale());
+                        mapView.getMaximumScale());
                 return true;
 
             case R.id.action_map_modification:
@@ -468,17 +468,17 @@ public class MapFragment extends WrapperFragment {
     }
 
     private void moveToTile(final int tileX, final int tileY, final float scale) {
-        mapViewHelper.setScale(scale);
+        mapView.setScale(scale);
         final float newCenterX = (tileX + 0.5f) * MapUtils.MAP_TILE_SIZE / MapUtils.getCurrentSizeDenominator() * scale;
         final float newCenterY = (tileY + 0.5f) * MapUtils.MAP_TILE_SIZE / MapUtils.getCurrentSizeDenominator() * scale;
         final float newRectLeft = mapView.getWidth() / 2.0f - newCenterX;
         final float newRectTop = mapView.getHeight() / 2.0f - newCenterY;
-        final RectF currentRect = mapViewHelper.getDisplayRect();
-        mapViewHelper.onDrag(newRectLeft - currentRect.left, newRectTop - currentRect.top);
+        final RectF currentRect = mapView.getDisplayRect();
+        mapView.getAttacher().onDrag(newRectLeft - currentRect.left, newRectTop - currentRect.top);
     }
 
     private float getMapZoom() {
-        float mapZoom = mapViewHelper.getScale();
+        float mapZoom = mapView.getScale();
         if (mapZoom > ZOOM_MAX) {
             mapZoom = ZOOM_MAX;
         }
@@ -487,7 +487,7 @@ public class MapFragment extends WrapperFragment {
     }
 
     private PointF getMapShift() {
-        final RectF currentRect = mapViewHelper.getDisplayRect();
+        final RectF currentRect = mapView.getDisplayRect();
         final float currentDrawableWidth = currentRect.right - currentRect.left;
         final float currentDrawableHeight = currentRect.bottom - currentRect.top;
         final float viewWidth = mapView.getWidth();
@@ -504,10 +504,10 @@ public class MapFragment extends WrapperFragment {
             @Override
             public void run() {
                 mapView.setImageBitmap(map);
-                mapViewHelper.update();
+                mapView.getAttacher().update();
                 if (!isMapInitialPosition) {
-                    mapViewHelper.setScale(mapZoom);
-                    mapViewHelper.onDrag(mapShiftX, mapShiftY);
+                    mapView.setScale(mapZoom);
+                    mapView.getAttacher().onDrag(mapShiftX, mapShiftY);
                 }
 
                 final int width = mapView.getDrawable().getIntrinsicWidth();
@@ -529,22 +529,22 @@ public class MapFragment extends WrapperFragment {
 
                             if (isMapInitialPosition) {
                                 isMapInitialPosition = false;
-                                mapViewHelper.setMaximumScale(ZOOM_MAX * currentSizeDenominator);
-                                mapViewHelper.setMediumScale((ZOOM_MAX * currentSizeDenominator + minimumScale) / 2.0f);
-                                mapViewHelper.setMinimumScale(minimumScale);
+                                mapView.setMaximumScale(ZOOM_MAX * currentSizeDenominator);
+                                mapView.setMediumScale((ZOOM_MAX * currentSizeDenominator + minimumScale) / 2.0f);
+                                mapView.setMinimumScale(minimumScale);
                                 final MapPlaceInfo placeInfo = mapResponse.places.get(PreferencesManager.getMapCenterPlaceId());
                                 if(placeInfo == null) {
                                     if(shouldMoveToHero) {
                                         shouldMoveToHero = false;
                                         moveToTile((int) Math.round(heroPosition.x), (int) Math.round(heroPosition.y),
-                                                mapViewHelper.getMediumScale());
+                                                mapView.getMediumScale());
                                     } else {
-                                        mapViewHelper.setScale(mapViewHelper.getMediumScale());
-                                        mapViewHelper.onDrag(mapShiftX, mapShiftY);
+                                        mapView.setScale(mapView.getMediumScale());
+                                        mapView.getAttacher().onDrag(mapShiftX, mapShiftY);
                                     }
                                 } else {
                                     PreferencesManager.setMapCenterPlaceId(-1);
-                                    moveToTile(placeInfo.x, placeInfo.y, mapViewHelper.getMaximumScale());
+                                    moveToTile(placeInfo.x, placeInfo.y, mapView.getMaximumScale());
                                 }
                             }
 
@@ -553,9 +553,9 @@ public class MapFragment extends WrapperFragment {
                     }
                 });
 
-                mapViewHelper.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+                mapView.setOnPhotoTapListener(new OnPhotoTapListener() {
                     @Override
-                    public void onPhotoTap(View view, float x, float y) {
+                    public void onPhotoTap(ImageView view, float x, float y) {
                         final int tileX = (int) Math.floor(x * width * MapUtils.getCurrentSizeDenominator() / MapUtils.MAP_TILE_SIZE);
                         final int tileY = (int) Math.floor(y * height * MapUtils.getCurrentSizeDenominator() / MapUtils.MAP_TILE_SIZE);
 
