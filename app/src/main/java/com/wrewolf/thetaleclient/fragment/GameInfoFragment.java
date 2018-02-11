@@ -119,39 +119,39 @@ public class GameInfoFragment extends WrapperFragment {
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_game_info, container, false);
 
-        textRaceGender = (TextView) rootView.findViewById(R.id.game_info_race_gender);
-        textLevel = (TextView) rootView.findViewById(R.id.game_info_level);
-        textName = (TextView) rootView.findViewById(R.id.game_info_name);
+        textRaceGender = rootView.findViewById(R.id.game_info_race_gender);
+        textLevel = rootView.findViewById(R.id.game_info_level);
+        textName = rootView.findViewById(R.id.game_info_name);
         textLevelUp = rootView.findViewById(R.id.game_info_lvlup);
 
-        progressHealth = (ProgressBar) rootView.findViewById(R.id.game_info_health_progress);
-        textHealth = (TextView) rootView.findViewById(R.id.game_info_health_text);
-        progressExperience = (ProgressBar) rootView.findViewById(R.id.game_info_experience_progress);
-        textExperience = (TextView) rootView.findViewById(R.id.game_info_experience_text);
+        progressHealth = rootView.findViewById(R.id.game_info_health_progress);
+        textHealth = rootView.findViewById(R.id.game_info_health_text);
+        progressExperience = rootView.findViewById(R.id.game_info_experience_progress);
+        textExperience = rootView.findViewById(R.id.game_info_experience_text);
         blockEnergy = rootView.findViewById(R.id.game_info_energy);
-        progressEnergy = (ProgressBar) rootView.findViewById(R.id.game_info_energy_progress);
-        textEnergy = (TextView) rootView.findViewById(R.id.game_info_energy_text);
+        progressEnergy = rootView.findViewById(R.id.game_info_energy_progress);
+        textEnergy = rootView.findViewById(R.id.game_info_energy_text);
 
-        textPowerPhysical = (TextView) rootView.findViewById(R.id.game_info_power_physical);
-        textPowerMagical = (TextView) rootView.findViewById(R.id.game_info_power_magical);
-        textMoney = (TextView) rootView.findViewById(R.id.game_info_money);
-        textMight = (TextView) rootView.findViewById(R.id.game_info_might);
+        textPowerPhysical = rootView.findViewById(R.id.game_info_power_physical);
+        textPowerMagical = rootView.findViewById(R.id.game_info_power_magical);
+        textMoney = rootView.findViewById(R.id.game_info_money);
+        textMight = rootView.findViewById(R.id.game_info_might);
 
         companionAbsentText = rootView.findViewById(R.id.game_info_companion_absent);
         companionContainer = rootView.findViewById(R.id.game_info_companion_container);
-        companionCoherence = (TextView) rootView.findViewById(R.id.game_info_companion_coherence);
-        companionName = (TextView) rootView.findViewById(R.id.game_info_companion_name);
-        progressCompanionHealth = (ProgressBar) rootView.findViewById(R.id.game_info_companion_health_progress);
-        textCompanionHealth = (TextView) rootView.findViewById(R.id.game_info_companion_health_text);
-        progressCompanionExperience = (ProgressBar) rootView.findViewById(R.id.game_info_companion_experience_progress);
-        textCompanionExperience = (TextView) rootView.findViewById(R.id.game_info_companion_experience_text);
+        companionCoherence = rootView.findViewById(R.id.game_info_companion_coherence);
+        companionName = rootView.findViewById(R.id.game_info_companion_name);
+        progressCompanionHealth = rootView.findViewById(R.id.game_info_companion_health_progress);
+        textCompanionHealth = rootView.findViewById(R.id.game_info_companion_health_text);
+        progressCompanionExperience = rootView.findViewById(R.id.game_info_companion_experience_progress);
+        textCompanionExperience = rootView.findViewById(R.id.game_info_companion_experience_text);
 
-        progressAction = (ProgressBar) rootView.findViewById(R.id.game_info_action_progress);
-        progressActionInfo = (TextView) rootView.findViewById(R.id.game_info_action_progress_info);
-        textAction = (TextView) rootView.findViewById(R.id.game_info_action_text);
-        actionHelp = (RequestActionView) rootView.findViewById(R.id.game_help);
+        progressAction = rootView.findViewById(R.id.game_info_action_progress);
+        progressActionInfo = rootView.findViewById(R.id.game_info_action_progress_info);
+        textAction = rootView.findViewById(R.id.game_info_action_text);
+        actionHelp = rootView.findViewById(R.id.game_help);
 
-        journalContainer = (ViewGroup) rootView.findViewById(R.id.journal_container);
+        journalContainer = rootView.findViewById(R.id.journal_container);
 
         return wrapView(layoutInflater, rootView);
     }

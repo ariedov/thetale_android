@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        accountNameTextView = (TextView) findViewById(R.id.drawer_account_name);
-        timeTextView = (TextView) findViewById(R.id.drawer_time);
+        accountNameTextView = findViewById(R.id.drawer_account_name);
+        timeTextView = findViewById(R.id.drawer_time);
         drawerItemInfoView = findViewById(DrawerItem.PROFILE.getViewResId());
 
         history = new HistoryStack<>(DrawerItem.values().length);

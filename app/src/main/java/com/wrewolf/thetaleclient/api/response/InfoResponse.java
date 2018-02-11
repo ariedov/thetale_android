@@ -46,7 +46,9 @@ public class InfoResponse extends AbstractApiResponse
     final JSONObject abilitiesJson = data.getJSONObject("abilities_cost");
     for (final Action action : Action.values())
     {
-      abilitiesCost.put(action, abilitiesJson.getInt(action.getCode()));
+      if (data.has(action.getCode())) {
+        abilitiesCost.put(action, abilitiesJson.getInt(action.getCode()));
+      }
     }
   }
 
