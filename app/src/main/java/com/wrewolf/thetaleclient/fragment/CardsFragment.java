@@ -126,6 +126,11 @@ public class CardsFragment extends WrapperFragment {
                     return;
                 }
 
+                if (response.account.hero.cards == null) {
+                    setError(getString(R.string.game_cards_unavailable));
+                    return;
+                }
+
                 if(response.account.hero.cards.cardHelpCurrent >= response.account.hero.cards.cardHelpBarrier) {
                     helpCounterContainer.setVisibility(View.GONE);
                     helpTakeCardWidget.setMode(RequestActionView.Mode.ACTION);
@@ -176,6 +181,7 @@ public class CardsFragment extends WrapperFragment {
                         }
                     });
                 }
+
 
                 combineActionStart.setOnClickListener(new View.OnClickListener() {
                     @Override

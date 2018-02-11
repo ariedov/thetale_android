@@ -71,6 +71,7 @@
     <string name="game_cards_combine_progress">Объединение карт&#8230;</string>
     <string name="game_cards_combine_result">Карты объединены</string>
     <string name="game_cards_unavailable_foreign">Просмотр чужих карт судьбы недоступен</string>
+    <string name="game_cards_unavailable">Список карт недоступен</string>
 
     <string name="game_companion_absent">Нет спутника</string>
     <string name="game_companion_feature_coherence">Слаженность %1$d</string>

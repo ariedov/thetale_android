@@ -282,7 +282,7 @@ public class GameInfoFragment extends WrapperFragment {
                         getString(R.string.game_additional_info_destiny_points),
                         String.valueOf(gameInfoResponse.account.hero.basicInfo.destinyPoints)))
                         .append("\n");
-                if(gameInfoResponse.account.isOwnInfo) {
+                if(gameInfoResponse.account.isOwnInfo && gameInfoResponse.account.hero.cards != null) {
                     additionalInfoStringBuilder.append(UiUtils.getInfoItem(
                             getString(R.string.game_help_to_next_card),
                             getString(
