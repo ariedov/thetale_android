@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.firebase.firebase-crash'
 android {
     compileSdkVersion 27
@@ -49,8 +50,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     lintOptions {
@@ -74,6 +75,9 @@ dependencies {
     compile project(':android-support-v4-preferencefragment') // https://github.com/kolavar/android-support-v4-preferencefragment
     implementation 'com.github.chrisbanes:PhotoView:2.0.0' // https://github.com/chrisbanes/PhotoView
     compile 'org.jsoup:jsoup:1.11.2' // https://github.com/jhy/jsoup
+
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 android.applicationVariants.all { variant ->
@@ -86,3 +90,6 @@ android.applicationVariants.all { variant ->
 }
 
 apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}

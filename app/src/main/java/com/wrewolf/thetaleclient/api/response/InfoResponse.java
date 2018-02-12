@@ -48,6 +48,8 @@ public class InfoResponse extends AbstractApiResponse
     {
       if (data.has(action.getCode())) {
         abilitiesCost.put(action, abilitiesJson.getInt(action.getCode()));
+      } else {
+        abilitiesCost.put(action, 0);
       }
     }
   }
