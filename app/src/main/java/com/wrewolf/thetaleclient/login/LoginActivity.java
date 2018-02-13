@@ -40,7 +40,7 @@ import javax.inject.Inject;
  * @author Hamster
  * @since 05.10.2014
  */
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends FragmentActivity implements LoginView{
 
     private static final String URL_HOME = "http://the-tale.org/?action=the-tale-client";
     private static final String URL_REGISTRATION = "http://the-tale.org/accounts/registration/fast?action=the-tale-client";
@@ -117,6 +117,7 @@ public class LoginActivity extends FragmentActivity {
         ((TheTaleClientApplication)getApplication())
                 .loginComponent()
                 .inject(this);
+        presenter.view = this;
 
         setContentView(R.layout.activity_login);
 
@@ -171,36 +172,7 @@ public class LoginActivity extends FragmentActivity {
 
     private void startRequestInit() {
         setMode(DataViewMode.LOADING);
-        new InfoRequest().execute(new ApiResponseCallback<InfoResponse>() {
-            @Override
-            public void processResponse(InfoResponse response) {
-                RequestUtils.setSession();
-                new GameInfoRequest(false).execute(new ApiResponseCallback<GameInfoResponse>() {
-                    @Override
-                    public void processResponse(GameInfoResponse response) {
-                        if(response.account == null) {
-                            setLoginContainersVisibility(true);
-                            setMode(DataViewMode.DATA);
-                            AppWidgetHelper.updateWithError(LoginActivity.this, getString(R.string.game_not_authorized));
-                        } else {
-                            onSuccessfulLogin();
-                        }
-                    }
-
-                    @Override
-                    public void processError(GameInfoResponse response) {
-                        actionRetry.setOnClickListener(v -> startRequestInit());
-                        setError(response.errorMessage);
-                    }
-                }, false);
-            }
-
-            @Override
-            public void processError(InfoResponse response) {
-                actionRetry.setOnClickListener(v -> startRequestInit());
-                setError(response.errorMessage);
-            }
-        });
+        presenter.checkAppInfo();
     }
 
     private void startRequestAuthSite() {
@@ -353,4 +325,24 @@ public class LoginActivity extends FragmentActivity {
         }
     }
 
+    @Override
+    public void enableLogin() {
+        setLoginContainersVisibility(true);
+        setMode(DataViewMode.DATA);
+    }
+
+    @Override
+    public void enableRetry() {
+        actionRetry.setOnClickListener(v -> startRequestInit());
+    }
+
+    @Override
+    public void showError() {
+        setError("");
+    }
+
+    @Override
+    public void setLoading() {
+        setMode(DataViewMode.LOADING);
+    }
 }
