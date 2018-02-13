@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.firebase-crash'
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    buildToolsVersion "27.0.3"
     def versionPropsFile = file('version.properties')
 
     if (versionPropsFile.canRead()) {
@@ -60,6 +61,7 @@ android {
     }
 }
 
+
 dependencies {
     // latest versions of libraries as of 11.02.2018
     compile 'com.android.support:appcompat-v7:27.0.2'
@@ -78,6 +80,17 @@ dependencies {
 
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    implementation project(':api')
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+
+    implementation 'com.google.dagger:dagger-android:2.14.1'
+    implementation 'com.google.dagger:dagger-android-support:2.14.1'
+    kapt 'com.google.dagger:dagger-android-processor:2.14.1'
+    kapt "com.google.dagger:dagger-compiler:2.14.1"
+
 }
 
 android.applicationVariants.all { variant ->

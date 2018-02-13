@@ -19,7 +19,7 @@
         android:largeHeap="true">
 
         <activity
-            android:name="com.wrewolf.thetaleclient.activity.LoginActivity"
+            android:name="com.wrewolf.thetaleclient.login.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true">

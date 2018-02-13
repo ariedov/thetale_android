@@ -1,4 +1,4 @@
-package com.wrewolf.thetaleclient.activity;
+package com.wrewolf.thetaleclient.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.wrewolf.thetaleclient.BuildConfig;
 import com.wrewolf.thetaleclient.DataViewMode;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
+import com.wrewolf.thetaleclient.activity.MainActivity;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.ApiResponseStatus;
 import com.wrewolf.thetaleclient.api.cache.RequestCacheManager;
@@ -32,6 +34,8 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 
+import javax.inject.Inject;
+
 /**
  * @author Hamster
  * @since 05.10.2014
@@ -44,6 +48,9 @@ public class LoginActivity extends FragmentActivity {
     private static final long THIRD_PARTY_AUTH_STATE_TIMEOUT = 10000;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+
+    @Inject
+    LoginPresenter presenter;
 
     private TextView textLogin;
     private TextView textPassword;
@@ -106,14 +113,19 @@ public class LoginActivity extends FragmentActivity {
             // TODO: Вставить FireBase
             // Crashlytics.start(this);
         }
+
+        ((TheTaleClientApplication)getApplication())
+                .loginComponent()
+                .inject(this);
+
         setContentView(R.layout.activity_login);
 
-        textLogin = (TextView) findViewById(R.id.login_text_login);
-        textPassword = (TextView) findViewById(R.id.login_text_password);
+        textLogin = findViewById(R.id.login_text_login);
+        textPassword = findViewById(R.id.login_text_password);
 
-        textError = (TextView) findViewById(R.id.login_error);
-        textErrorLogin = (TextView) findViewById(R.id.login_error_login);
-        textErrorPassword = (TextView) findViewById(R.id.login_error_password);
+        textError = findViewById(R.id.login_error);
+        textErrorLogin = findViewById(R.id.login_error_login);
+        textErrorPassword = findViewById(R.id.login_error_password);
 
         dataView = findViewById(R.id.login_content);
         loadingView = findViewById(R.id.login_progressbar);
@@ -123,52 +135,26 @@ public class LoginActivity extends FragmentActivity {
         contentLoginPassword = findViewById(R.id.login_content_login_password);
 
         actionRetry = findViewById(R.id.login_error_global_retry);
-        textErrorGlobal = (TextView) findViewById(R.id.login_error_global_text);
+        textErrorGlobal = findViewById(R.id.login_error_global_text);
 
-        findViewById(R.id.login_logo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(UiUtils.getOpenLinkIntent(URL_HOME));
-            }
-        });
+        findViewById(R.id.login_logo).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_HOME)));
 
-        findViewById(R.id.login_action_authorization_site).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startRequestAuthSite();
-            }
+        findViewById(R.id.login_action_authorization_site).setOnClickListener(v -> startRequestAuthSite());
+
+        findViewById(R.id.login_action_authorization_login_password).setOnClickListener(v -> {
+            clearErrors();
+            setLoginContainersVisibility(false);
+            textLogin.requestFocus();
         });
 
-        findViewById(R.id.login_action_authorization_login_password).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearErrors();
-                setLoginContainersVisibility(false);
-                textLogin.requestFocus();
-            }
+        findViewById(R.id.login_action_login).setOnClickListener(v -> {
+            setMode(DataViewMode.LOADING);
+            clearErrors();
+            authorize(textLogin.getText().toString(), textPassword.getText().toString());
         });
 
-        findViewById(R.id.login_action_login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setMode(DataViewMode.LOADING);
-                clearErrors();
-                authorize(textLogin.getText().toString(), textPassword.getText().toString());
-            }
-        });
-
-        findViewById(R.id.login_action_registration).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION));
-            }
-        });
-        findViewById(R.id.login_action_password_remind).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(UiUtils.getOpenLinkIntent(URL_PASSWORD_REMIND));
-            }
-        });
+        findViewById(R.id.login_action_registration).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION)));
+        findViewById(R.id.login_action_password_remind).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_PASSWORD_REMIND)));
     }
 
     @Override
@@ -203,12 +189,7 @@ public class LoginActivity extends FragmentActivity {
 
                     @Override
                     public void processError(GameInfoResponse response) {
-                        actionRetry.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startRequestInit();
-                            }
-                        });
+                        actionRetry.setOnClickListener(v -> startRequestInit());
                         setError(response.errorMessage);
                     }
                 }, false);
@@ -216,12 +197,7 @@ public class LoginActivity extends FragmentActivity {
 
             @Override
             public void processError(InfoResponse response) {
-                actionRetry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startRequestInit();
-                    }
-                });
+                actionRetry.setOnClickListener(v -> startRequestInit());
                 setError(response.errorMessage);
             }
         });
@@ -237,31 +213,20 @@ public class LoginActivity extends FragmentActivity {
                         getSupportFragmentManager(),
                         getString(R.string.common_dialog_attention_title),
                         getString(R.string.login_dialog_confirm_authorization),
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                isThirdPartyAuthInProgress = true;
-                                thirdPartyAuthStateRequester.run();
-                                startActivity(UiUtils.getOpenLinkIntent(RequestUtils.URL_BASE + response.nextUrl));
-                            }
+                        () -> {
+                            isThirdPartyAuthInProgress = true;
+                            thirdPartyAuthStateRequester.run();
+                            startActivity(UiUtils.getOpenLinkIntent(RequestUtils.URL_BASE + response.nextUrl));
                         },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                setLoginContainersVisibility(true);
-                                setMode(DataViewMode.DATA);
-                            }
+                        () -> {
+                            setLoginContainersVisibility(true);
+                            setMode(DataViewMode.DATA);
                         });
             }
 
             @Override
             public void processError(ThirdPartyAuthResponse response) {
-                actionRetry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startRequestAuthSite();
-                    }
-                });
+                actionRetry.setOnClickListener(v -> startRequestAuthSite());
                 setError(response.errorMessage);
             }
         });

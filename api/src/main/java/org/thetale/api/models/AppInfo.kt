@@ -2,11 +2,6 @@ package org.thetale.api.models
 
 import com.google.gson.annotations.SerializedName
 
-data class AppInfoResponse(
-        @SerializedName("data") val data: AppInfo,
-        @SerializedName("status") val status: String
-)
-
 data class AppInfo(
         @SerializedName("game_version") val gameVersion: String,
         @SerializedName("account_name") val accountName: String?,

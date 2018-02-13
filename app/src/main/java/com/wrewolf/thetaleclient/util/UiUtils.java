@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.wrewolf.thetaleclient.DrawerItem;
 import com.wrewolf.thetaleclient.R;
-import com.wrewolf.thetaleclient.activity.LoginActivity;
+import com.wrewolf.thetaleclient.login.LoginActivity;
 import com.wrewolf.thetaleclient.activity.MainActivity;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.cache.prerequisite.InfoPrerequisiteRequest;
