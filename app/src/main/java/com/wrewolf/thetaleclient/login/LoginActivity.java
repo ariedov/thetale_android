@@ -42,7 +42,7 @@ import okhttp3.OkHttpClient;
  * @author Hamster
  * @since 05.10.2014
  */
-public class LoginActivity extends FragmentActivity implements LoginView{
+public class LoginActivity extends FragmentActivity implements LoginView, LoginNavigation {
 
     private static final String URL_HOME = "http://the-tale.org/?action=the-tale-client";
     private static final String URL_REGISTRATION = "http://the-tale.org/accounts/registration/fast?action=the-tale-client";
@@ -157,7 +157,6 @@ public class LoginActivity extends FragmentActivity implements LoginView{
             authorize(textLogin.getText().toString(), textPassword.getText().toString());
         });
 
-        findViewById(R.id.login_action_registration).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION)));
         findViewById(R.id.login_action_password_remind).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_PASSWORD_REMIND)));
     }
 
@@ -347,5 +346,10 @@ public class LoginActivity extends FragmentActivity implements LoginView{
     @Override
     public void setLoading() {
         setMode(DataViewMode.LOADING);
+    }
+
+    @Override
+    public void startRegistration() {
+        startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION));
     }
 }

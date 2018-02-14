@@ -8,7 +8,7 @@ import org.thetale.api.TheTaleService
 @Module
 class LoginModule {
 
-    @Provides
+    @Provides @LoginScope
     fun loginPresenter(service: TheTaleService): LoginPresenter {
         return LoginPresenter(service)
     }

@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 interface LoginNavigation {
 
-    fun openApp()
+    fun startRegistration()
 }
 
 interface LoginView {
@@ -45,8 +45,23 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
         request.execute()
     }
 
+    fun chooseLoginWithCredentials() {
+
+    }
+
     fun loginWithEmailAndPassword(email: String, password: String) {
 
+    }
+
+    fun loginFromSite() {
+
+    }
+
+    fun registerAccount() {
+
+    }
+
+    fun remindPassword() {
     }
 
     companion object {
