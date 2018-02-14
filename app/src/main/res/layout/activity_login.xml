@@ -50,6 +50,7 @@
                 android:visibility="gone" />
 
             <com.wrewolf.thetaleclient.login.views.LoginPasswordView
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />

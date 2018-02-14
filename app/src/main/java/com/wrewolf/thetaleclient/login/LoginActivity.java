@@ -25,6 +25,8 @@ import com.wrewolf.thetaleclient.api.response.AuthResponse;
 import com.wrewolf.thetaleclient.api.response.InfoResponse;
 import com.wrewolf.thetaleclient.api.response.ThirdPartyAuthResponse;
 import com.wrewolf.thetaleclient.api.response.ThirdPartyAuthStateResponse;
+import com.wrewolf.thetaleclient.login.views.LoginContentStartView;
+import com.wrewolf.thetaleclient.login.views.LoginPasswordView;
 import com.wrewolf.thetaleclient.service.WatcherService;
 import com.wrewolf.thetaleclient.service.widget.AppWidgetHelper;
 import com.wrewolf.thetaleclient.util.DialogUtils;
@@ -55,18 +57,13 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     @Inject OkHttpClient client;
     @Inject CookieManager cookieManager;
 
-    private TextView textLogin;
-    private TextView textPassword;
-    private TextView textError;
-    private TextView textErrorLogin;
-    private TextView textErrorPassword;
+    private LoginContentStartView loginStart;
+    private LoginPasswordView loginPassword;
 
     private View dataView;
     private View loadingView;
     private View errorView;
 
-    private View contentStart;
-    private View contentLoginPassword;
     private View actionRetry;
     private TextView textErrorGlobal;
 
@@ -84,7 +81,7 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
                         case NOT_REQUESTED:
                         case REJECT:
                             isThirdPartyAuthInProgress = false;
-                            UiUtils.setText(textError, response.authState.getDescription());
+//                            UiUtils.setText(textError, response.authState.getDescription());
                             setLoginContainersVisibility(true);
                             setMode(DataViewMode.DATA);
                             break;
@@ -124,40 +121,22 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
 
         setContentView(R.layout.activity_login);
 
-        textLogin = findViewById(R.id.login_text_login);
-        textPassword = findViewById(R.id.login_text_password);
-
-        textError = findViewById(R.id.login_error);
-        textErrorLogin = findViewById(R.id.login_error_login);
-        textErrorPassword = findViewById(R.id.login_error_password);
+        loginStart = findViewById(R.id.login_content_start);
+        loginPassword = findViewById(R.id.login_password);
 
         dataView = findViewById(R.id.login_content);
         loadingView = findViewById(R.id.login_progressbar);
         errorView = findViewById(R.id.login_error_global);
-
-        contentStart = findViewById(R.id.login_content_start);
-        contentLoginPassword = findViewById(R.id.login_content_login_password);
 
         actionRetry = findViewById(R.id.login_error_global_retry);
         textErrorGlobal = findViewById(R.id.login_error_global_text);
 
         findViewById(R.id.login_logo).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_HOME)));
 
-        findViewById(R.id.login_action_authorization_site).setOnClickListener(v -> startRequestAuthSite());
+//        findViewById(R.id.login_action_authorization_site).setOnClickListener(v -> startRequestAuthSite());
 
-        findViewById(R.id.login_action_authorization_login_password).setOnClickListener(v -> {
-            clearErrors();
-            setLoginContainersVisibility(false);
-            textLogin.requestFocus();
-        });
 
-        findViewById(R.id.login_action_login).setOnClickListener(v -> {
-            setMode(DataViewMode.LOADING);
-            clearErrors();
-            authorize(textLogin.getText().toString(), textPassword.getText().toString());
-        });
-
-        findViewById(R.id.login_action_password_remind).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_PASSWORD_REMIND)));
+//        findViewById(R.id.login_action_password_remind).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_PASSWORD_REMIND)));
     }
 
     @Override
@@ -222,39 +201,13 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
                     public void processError(AuthResponse response) {
                         LoginActivity.this.processError(response.errorMessage, login, password);
                         if (response.errorsLogin != null) {
-                            UiUtils.setText(textErrorLogin, TextUtils.join("\n", response.errorsLogin));
-                            textLogin.requestFocus();
+//                            UiUtils.setText(textErrorLogin, TextUtils.join("\n", response.errorsLogin));
                         }
                         if (response.errorsPassword != null) {
-                            UiUtils.setText(textErrorPassword, TextUtils.join("\n", response.errorsPassword));
-                            if(response.errorsLogin == null) {
-                                textPassword.requestFocus();
-                            } else {
-                                textLogin.requestFocus();
-                            }
+//                            UiUtils.setText(textErrorPassword, TextUtils.join("\n", response.errorsPassword));
                         }
                     }
                 });
-    }
-
-    private void authorize(final String login, final String password) {
-        RequestCacheManager.invalidate();
-        if(wasError) {
-            new InfoRequest(client, cookieManager).execute(new ApiResponseCallback<InfoResponse>() {
-                @Override
-                public void processResponse(InfoResponse response) {
-                    sendAuthRequest(login, password);
-                }
-
-                @Override
-                public void processError(InfoResponse response) {
-                    LoginActivity.this.processError(response.errorMessage, login, password);
-                    textLogin.requestFocus();
-                }
-            });
-        } else {
-            sendAuthRequest(login, password);
-        }
     }
 
     private void setMode(final DataViewMode mode) {
@@ -265,8 +218,8 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
 
     private void setLoginContainersVisibility(final boolean isStartContainer) {
         isStartLoginContainerVisible = isStartContainer;
-        contentStart.setVisibility(isStartContainer ? View.VISIBLE : View.GONE);
-        contentLoginPassword.setVisibility(isStartContainer ? View.GONE : View.VISIBLE);
+        loginStart.setVisibility(isStartContainer ? View.VISIBLE : View.GONE);
+        loginPassword.setVisibility(isStartContainer ? View.GONE : View.VISIBLE);
     }
 
     private void setError(final String error) {
@@ -278,15 +231,15 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     private void processError(final String error, final String login, final String password) {
         wasError = true;
         setMode(DataViewMode.DATA);
-        UiUtils.setText(textError, error);
-        textLogin.setText(login);
-        textPassword.setText(password);
+//        UiUtils.setText(textError, error);
+//        textLogin.setText(login);
+//        textPassword.setText(password);
     }
 
     private void clearErrors() {
-        UiUtils.setText(textError, null);
-        UiUtils.setText(textErrorLogin, null);
-        UiUtils.setText(textErrorPassword, null);
+//        UiUtils.setText(textError, null);
+//        UiUtils.setText(textErrorLogin, null);
+//        UiUtils.setText(textErrorPassword, null);
     }
 
     private void onSuccessfulLogin() {
@@ -351,5 +304,16 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     @Override
     public void startRegistration() {
         startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION));
+    }
+
+    @Override
+    public void showLoginMethodChooser() {
+        setLoginContainersVisibility(true);
+    }
+
+    @Override
+    public void showLoginEmail() {
+        clearErrors();
+        setLoginContainersVisibility(false);
     }
 }

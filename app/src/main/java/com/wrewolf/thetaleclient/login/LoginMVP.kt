@@ -20,6 +20,10 @@ interface LoginView {
 
     fun showError()
 
+    fun showLoginMethodChooser()
+
+    fun showLoginEmail()
+
 }
 
 class LoginPresenter @Inject constructor(private val service: TheTaleService) {
@@ -27,7 +31,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     lateinit var view: LoginView
 
     fun checkAppInfo() {
-        val request = ApiRequest(service.info(API_VERSION))
+        val request = ApiRequest(service.info())
         request.state.subscribe {
             when (it) {
                 RequestState.Loading -> {
@@ -50,7 +54,21 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
-
+        val request = ApiRequest(service.login(email, password))
+        request.state.subscribe {
+            when (it) {
+                RequestState.Loading -> {
+                    view.setLoading()
+                }
+                is RequestState.Done<*> -> {
+                    // move to app
+                }
+                is RequestState.Error -> {
+                    view.showError()
+                }
+            }
+        }
+        request.execute()
     }
 
     fun loginFromSite() {
@@ -62,9 +80,5 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun remindPassword() {
-    }
-
-    companion object {
-        const val API_VERSION = "1.0"
     }
 }
