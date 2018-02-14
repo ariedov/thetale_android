@@ -8,14 +8,19 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.Cookie;
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 30.09.2014
  */
 public class InfoRequest extends AbstractApiRequest<InfoResponse> {
 
-    public InfoRequest() {
-        super(HttpMethod.GET, "api/info", "1.0", true);
+    public InfoRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.GET, "api/info", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<InfoResponse> callback) {

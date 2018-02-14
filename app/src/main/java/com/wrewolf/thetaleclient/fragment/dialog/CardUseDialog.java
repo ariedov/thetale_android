@@ -2,6 +2,7 @@ package com.wrewolf.thetaleclient.fragment.dialog;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.dictionary.CardTargetType;
 import com.wrewolf.thetaleclient.api.model.CardInfo;
@@ -27,12 +29,17 @@ import com.wrewolf.thetaleclient.util.DialogUtils;
 import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 
+import java.net.CookieManager;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -42,6 +49,9 @@ public class CardUseDialog extends BaseDialog {
 
     private static final String PARAM_TITLE = "PARAM_TITLE";
     private static final String PARAM_CARD = "PARAM_CARD";
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager cookieManager;
 
     private Runnable onSuccess;
     
@@ -71,7 +81,11 @@ public class CardUseDialog extends BaseDialog {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         final View view = inflater.inflate(R.layout.dialog_content_card_use, container, false);
 
         card = getArguments().getParcelable(PARAM_CARD);
@@ -88,8 +102,8 @@ public class CardUseDialog extends BaseDialog {
         viewAction = view.findViewById(R.id.dialog_card_use_action);
         blockPlace = view.findViewById(R.id.dialog_card_use_place_block);
         blockPerson = view.findViewById(R.id.dialog_card_use_person_block);
-        textPlace = (TextView) view.findViewById(R.id.dialog_card_use_place);
-        textPerson = (TextView) view.findViewById(R.id.dialog_card_use_person);
+        textPlace = view.findViewById(R.id.dialog_card_use_place);
+        textPerson = view.findViewById(R.id.dialog_card_use_person);
 
         if(isPlacePresent) {
             viewAction.setEnabled(false);
@@ -110,16 +124,11 @@ public class CardUseDialog extends BaseDialog {
                 blockPerson.setVisibility(View.GONE);
             }
 
-            new PlacesRequest().execute(RequestUtils.wrapCallback(new ApiResponseCallback<PlacesResponse>() {
+            new PlacesRequest(client, cookieManager).execute(RequestUtils.wrapCallback(new ApiResponseCallback<PlacesResponse>() {
                 @Override
                 public void processResponse(final PlacesResponse response) {
                     places = response.places;
-                    Collections.sort(places, new Comparator<PlaceInfo>() {
-                        @Override
-                        public int compare(PlaceInfo lhs, PlaceInfo rhs) {
-                            return lhs.name.compareTo(rhs.name);
-                        }
-                    });
+                    Collections.sort(places, (lhs, rhs) -> lhs.name.compareTo(rhs.name));
                     final int count = places.size();
                     final String[] placeNames = new String[count];
                     for(int i = 0; i < count; i++) {
@@ -128,21 +137,16 @@ public class CardUseDialog extends BaseDialog {
 
                     textPlace.setEnabled(true);
                     onPlaceSelected(0);
-                    textPlace.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DialogUtils.showChoiceDialog(
-                                    getChildFragmentManager(),
-                                    getString(R.string.game_card_use_place),
-                                    placeNames,
-                                    new ChoiceDialog.ItemChooseListener() {
-                                        @Override
-                                        public void onItemSelected(int position) {
-                                            onPlaceSelected(position);
-                                        }
-                                    });
-                        }
-                    });
+                    textPlace.setOnClickListener(v -> DialogUtils.showChoiceDialog(
+                            getChildFragmentManager(),
+                            getString(R.string.game_card_use_place),
+                            placeNames,
+                            new ChoiceDialog.ItemChooseListener() {
+                                @Override
+                                public void onItemSelected(int position) {
+                                    onPlaceSelected(position);
+                                }
+                            }));
                 }
 
                 @Override
@@ -164,7 +168,7 @@ public class CardUseDialog extends BaseDialog {
                             getString(R.string.game_card_use),
                             getString(R.string.game_card_use_progress),
                             true, false);
-                    new UseCardRequest().execute(card.id, getCardUseCallback(progressDialog));
+                    new UseCardRequest(client, cookieManager).execute(card.id, getCardUseCallback(progressDialog));
                 }
             });
         }
@@ -193,7 +197,7 @@ public class CardUseDialog extends BaseDialog {
             final List<CouncilMemberInfo> council = persons.get(placeIndex);
             if(council == null) {
                 textPerson.setText(getString(R.string.common_loading));
-                new PlaceRequest(place.id).execute(RequestUtils.wrapCallback(new ApiResponseCallback<PlaceResponse>() {
+                new PlaceRequest(client, cookieManager, place.id).execute(RequestUtils.wrapCallback(new ApiResponseCallback<PlaceResponse>() {
                     @Override
                     public void processResponse(PlaceResponse response) {
                         if(card.type.getTargetType() == CardTargetType.BUILDING) {
@@ -224,17 +228,14 @@ public class CardUseDialog extends BaseDialog {
             }
         } else {
             viewAction.setEnabled(true);
-            viewAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final ProgressDialog progressDialog = ProgressDialog.show(getActivity(),
-                            getString(R.string.game_card_use),
-                            getString(R.string.game_card_use_progress),
-                            true, false);
-                    new UseCardRequest().execute(
-                            card.id, card.type.getTargetType(), place.id,
-                            getCardUseCallback(progressDialog));
-                }
+            viewAction.setOnClickListener(v -> {
+                final ProgressDialog progressDialog = ProgressDialog.show(getActivity(),
+                        getString(R.string.game_card_use),
+                        getString(R.string.game_card_use_progress),
+                        true, false);
+                new UseCardRequest(client, cookieManager).execute(
+                        card.id, card.type.getTargetType(), place.id,
+                        getCardUseCallback(progressDialog));
             });
         }
     }
@@ -277,19 +278,16 @@ public class CardUseDialog extends BaseDialog {
         final CouncilMemberInfo councilMemberInfo = persons.get(placeIndex).get(personIndex);
         textPerson.setText(councilMemberInfo.name);
         viewAction.setEnabled(true);
-        viewAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final ProgressDialog progressDialog = ProgressDialog.show(getActivity(),
-                        getString(R.string.game_card_use),
-                        getString(R.string.game_card_use_progress),
-                        true, false);
-                new UseCardRequest().execute(
-                        card.id, card.type.getTargetType(),
-                        card.type.getTargetType() == CardTargetType.BUILDING
-                                ? councilMemberInfo.buildingId : councilMemberInfo.id,
-                        getCardUseCallback(progressDialog));
-            }
+        viewAction.setOnClickListener(v -> {
+            final ProgressDialog progressDialog = ProgressDialog.show(getActivity(),
+                    getString(R.string.game_card_use),
+                    getString(R.string.game_card_use_progress),
+                    true, false);
+            new UseCardRequest(client, cookieManager).execute(
+                    card.id, card.type.getTargetType(),
+                    card.type.getTargetType() == CardTargetType.BUILDING
+                            ? councilMemberInfo.buildingId : councilMemberInfo.id,
+                    getCardUseCallback(progressDialog));
         });
     }
 

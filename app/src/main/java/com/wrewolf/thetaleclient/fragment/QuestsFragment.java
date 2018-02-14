@@ -2,6 +2,7 @@ package com.wrewolf.thetaleclient.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -36,15 +37,23 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 import com.wrewolf.thetaleclient.util.onscreen.OnscreenPart;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
  * @since 07.10.2014
  */
 public class QuestsFragment extends WrapperFragment {
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private LayoutInflater layoutInflater;
 
@@ -58,11 +67,15 @@ public class QuestsFragment extends WrapperFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = layoutInflater.inflate(R.layout.fragment_quests, container, false);
 
-        this.container = (ViewGroup) rootView.findViewById(R.id.quests_container);
+        this.container = rootView.findViewById(R.id.quests_container);
 
         return wrapView(layoutInflater, rootView);
     }
@@ -234,9 +247,9 @@ public class QuestsFragment extends WrapperFragment {
 
         final int watchingAccountId = PreferencesManager.getWatchingAccountId();
         if(watchingAccountId == 0) {
-            new GameInfoRequest(true).execute(callback, true);
+            new GameInfoRequest(client, manager, true).execute(callback, true);
         } else {
-            new GameInfoRequest(true).execute(watchingAccountId, callback, true);
+            new GameInfoRequest(client, manager, true).execute(watchingAccountId, callback, true);
         }
     }
 
@@ -247,7 +260,7 @@ public class QuestsFragment extends WrapperFragment {
         choicesContainer.setVisibility(View.GONE);
         choiceProgress.setVisibility(View.VISIBLE);
 
-        new QuestChoiceRequest().execute(choiceId, RequestUtils.wrapCallback(new ApiResponseCallback<CommonResponse>() {
+        new QuestChoiceRequest(client, manager).execute(choiceId, RequestUtils.wrapCallback(new ApiResponseCallback<CommonResponse>() {
             @Override
             public void processResponse(CommonResponse response) {
                 refresh(false);

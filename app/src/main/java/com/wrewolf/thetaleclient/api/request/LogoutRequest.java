@@ -8,14 +8,18 @@ import com.wrewolf.thetaleclient.api.response.CommonResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 01.10.2014
  */
 public class LogoutRequest extends AbstractApiRequest<CommonResponse> {
 
-    public LogoutRequest() {
-        super(HttpMethod.POST, "accounts/auth/api/logout", "1.0", true);
+    public LogoutRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.POST, "accounts/auth/api/logout", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<CommonResponse> callback) {

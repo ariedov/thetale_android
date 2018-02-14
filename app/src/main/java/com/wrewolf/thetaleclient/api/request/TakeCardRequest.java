@@ -9,7 +9,10 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -17,8 +20,8 @@ import java.util.Map;
  */
 public class TakeCardRequest extends AbstractApiRequest<TakeCardResponse> {
 
-    public TakeCardRequest() {
-        super(HttpMethod.POST, "game/cards/api/get", "1.0", true);
+    public TakeCardRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.POST, "game/cards/api/get", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<TakeCardResponse> callback) {
@@ -32,7 +35,7 @@ public class TakeCardRequest extends AbstractApiRequest<TakeCardResponse> {
     @Override
     protected void retry(final Map<String, String> getParams, final Map<String, String> postParams,
                          final TakeCardResponse response, final ApiResponseCallback<TakeCardResponse> callback) {
-        new PostponedTaskRequest(response.statusUrl).execute(new ApiResponseCallback<CommonResponse>() {
+        new PostponedTaskRequest(getHttpClient(), getCookieManager(), response.statusUrl).execute(new ApiResponseCallback<CommonResponse>() {
             @Override
             public void processResponse(CommonResponse response) {
                 TakeCardResponse takeCardResponse;

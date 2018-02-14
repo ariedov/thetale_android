@@ -8,8 +8,11 @@ import com.wrewolf.thetaleclient.api.response.CommonResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -19,8 +22,8 @@ public class AbilityUseRequest extends AbstractApiRequest<CommonResponse> {
 
     private final Action action;
 
-    public AbilityUseRequest(final Action action) {
-        super(HttpMethod.POST, String.format("game/abilities/%s/api/use", action.getCode()), "1.0", true);
+    public AbilityUseRequest(OkHttpClient client, CookieManager manager, final Action action) {
+        super(client, manager, HttpMethod.POST, String.format("game/abilities/%s/api/use", action.getCode()), "1.0", true);
         this.action = action;
     }
 
@@ -46,7 +49,7 @@ public class AbilityUseRequest extends AbstractApiRequest<CommonResponse> {
     @Override
     protected void retry(final Map<String, String> getParams, final Map<String, String> postParams,
                          final CommonResponse response, final ApiResponseCallback<CommonResponse> callback) {
-        new PostponedTaskRequest(response.statusUrl).execute(callback);
+        new PostponedTaskRequest(getHttpClient(), getCookieManager(), response.statusUrl).execute(callback);
     }
 
     @Override

@@ -7,14 +7,19 @@ import com.wrewolf.thetaleclient.api.response.CommonResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.Cookie;
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 03.10.2014
  */
 public class PostponedTaskRequest extends AbstractApiRequest<CommonResponse> {
 
-    public PostponedTaskRequest(final String url) {
-        super(HttpMethod.GET, url, "", false);
+    public PostponedTaskRequest(OkHttpClient client, CookieManager manager, final String url) {
+        super(client, manager, HttpMethod.GET, url, "", false);
     }
 
     public void execute(final ApiResponseCallback<CommonResponse> callback) {

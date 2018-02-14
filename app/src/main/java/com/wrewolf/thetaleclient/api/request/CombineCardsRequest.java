@@ -9,9 +9,12 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -21,8 +24,8 @@ public class CombineCardsRequest extends AbstractApiRequest<CombineCardsResponse
 
     private final List<Integer> cardIds;
 
-    public CombineCardsRequest(final List<Integer> cardIds) {
-        super(HttpMethod.POST, "game/cards/api/combine", "1.0", true);
+    public CombineCardsRequest(OkHttpClient client, CookieManager manager, final List<Integer> cardIds) {
+        super(client, manager, HttpMethod.POST, "game/cards/api/combine", "1.0", true);
         this.cardIds = cardIds;
     }
 
@@ -50,7 +53,7 @@ public class CombineCardsRequest extends AbstractApiRequest<CombineCardsResponse
     @Override
     protected void retry(final Map<String, String> getParams, final Map<String, String> postParams,
                          final CombineCardsResponse response, final ApiResponseCallback<CombineCardsResponse> callback) {
-        new PostponedTaskRequest(response.statusUrl).execute(new ApiResponseCallback<CommonResponse>() {
+        new PostponedTaskRequest(getHttpClient(), getCookieManager(), response.statusUrl).execute(new ApiResponseCallback<CommonResponse>() {
             @Override
             public void processResponse(CommonResponse response) {
                 CombineCardsResponse combineCardsResponse;

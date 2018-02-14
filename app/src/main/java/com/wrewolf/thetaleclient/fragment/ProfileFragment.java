@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.wrewolf.thetaleclient.DataViewMode;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.dictionary.RatingItem;
 import com.wrewolf.thetaleclient.api.model.AccountPlaceHistoryInfo;
@@ -25,9 +26,14 @@ import com.wrewolf.thetaleclient.api.response.AccountInfoResponse;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.UiUtils;
 
+import java.net.CookieManager;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -37,6 +43,9 @@ public class ProfileFragment extends WrapperFragment {
 
     private static final int NARROWNESS_MULTIPLIER_THRESHOLD = 30;
     private static final int PLACES_HISTORY_COUNT_POLITICS = 10;
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private LayoutInflater layoutInflater;
     private View rootView;
@@ -57,19 +66,23 @@ public class ProfileFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        textName = (TextView) rootView.findViewById(R.id.profile_name);
-        textAffectGame = (TextView) rootView.findViewById(R.id.profile_affect_game);
-        textMight = (TextView) rootView.findViewById(R.id.profile_might);
-        textAchievementPoints = (TextView) rootView.findViewById(R.id.profile_achievement_points);
-        textCollectionItemsCount = (TextView) rootView.findViewById(R.id.profile_collection_items_count);
-        textReferralsCount = (TextView) rootView.findViewById(R.id.profile_referrals_count);
-        tableRatings = (ViewGroup) rootView.findViewById(R.id.profile_container_ratings);
-        textRatingsDescription = (TextView) rootView.findViewById(R.id.profile_ratings_description);
-        tablePlacesHistory = (ViewGroup) rootView.findViewById(R.id.profile_container_places_history);
-        tablePlacesHistorySwitcher = (TextView) rootView.findViewById(R.id.profile_container_places_history_switcher);
+        textName = rootView.findViewById(R.id.profile_name);
+        textAffectGame = rootView.findViewById(R.id.profile_affect_game);
+        textMight = rootView.findViewById(R.id.profile_might);
+        textAchievementPoints = rootView.findViewById(R.id.profile_achievement_points);
+        textCollectionItemsCount = rootView.findViewById(R.id.profile_collection_items_count);
+        textReferralsCount = rootView.findViewById(R.id.profile_referrals_count);
+        tableRatings = rootView.findViewById(R.id.profile_container_ratings);
+        textRatingsDescription = rootView.findViewById(R.id.profile_ratings_description);
+        tablePlacesHistory = rootView.findViewById(R.id.profile_container_places_history);
+        tablePlacesHistorySwitcher = rootView.findViewById(R.id.profile_container_places_history_switcher);
 
         return wrapView(layoutInflater, rootView);
     }
@@ -85,7 +98,7 @@ public class ProfileFragment extends WrapperFragment {
 
         final int watchingAccountId = PreferencesManager.getWatchingAccountId();
         final int accountId = watchingAccountId == 0 ? PreferencesManager.getAccountId() : watchingAccountId;
-        new AccountInfoRequest(accountId).execute(new ApiResponseCallback<AccountInfoResponse>() {
+        new AccountInfoRequest(client, manager, accountId).execute(new ApiResponseCallback<AccountInfoResponse>() {
             @Override
             public void processResponse(final AccountInfoResponse response) {
                 if(!isAdded()) {
@@ -215,12 +228,9 @@ public class ProfileFragment extends WrapperFragment {
         tablePlacesHistorySwitcher.setText(getString(isTablePlacesHistoryCollapsed ?
                 R.string.profile_places_history_expand :
                 R.string.profile_places_history_collapse));
-        tablePlacesHistorySwitcher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isTablePlacesHistoryCollapsed = !isTablePlacesHistoryCollapsed;
-                fillPlacesHistory(accountInfoResponse);
-            }
+        tablePlacesHistorySwitcher.setOnClickListener(v -> {
+            isTablePlacesHistoryCollapsed = !isTablePlacesHistoryCollapsed;
+            fillPlacesHistory(accountInfoResponse);
         });
     }
 

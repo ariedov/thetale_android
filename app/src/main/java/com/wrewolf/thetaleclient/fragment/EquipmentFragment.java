@@ -2,6 +2,7 @@ package com.wrewolf.thetaleclient.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.wrewolf.thetaleclient.DataViewMode;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.cache.prerequisite.InfoPrerequisiteRequest;
 import com.wrewolf.thetaleclient.api.cache.prerequisite.PrerequisiteRequest;
@@ -38,16 +40,24 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 import com.wrewolf.thetaleclient.widget.RequestActionView;
 
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
  * @since 06.10.2014
  */
 public class EquipmentFragment extends WrapperFragment {
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private LayoutInflater layoutInflater;
 
@@ -58,18 +68,19 @@ public class EquipmentFragment extends WrapperFragment {
     private TextView bagCaption;
     private ViewGroup bagContainer;
 
-    public EquipmentFragment() {
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = layoutInflater.inflate(R.layout.fragment_equipment, container, false);
 
         equipmentEffects = rootView.findViewById(R.id.equipment_effects);
-        equipmentContainer = (ViewGroup) rootView.findViewById(R.id.equipment_container);
-        bagCaption = (TextView) rootView.findViewById(R.id.bag_caption);
-        bagContainer = (ViewGroup) rootView.findViewById(R.id.bag_container);
+        equipmentContainer = rootView.findViewById(R.id.equipment_container);
+        bagCaption = rootView.findViewById(R.id.bag_caption);
+        bagContainer = rootView.findViewById(R.id.bag_container);
 
         return wrapView(layoutInflater, rootView);
     }
@@ -87,9 +98,9 @@ public class EquipmentFragment extends WrapperFragment {
                     final View equipmentEntryView = layoutInflater.inflate(R.layout.item_equipment, equipmentContainer, false);
                     final ArtifactInfo artifactInfo = response.account.hero.equipment.get(equipmentType);
 
-                    final ImageView imageIcon = (ImageView) equipmentEntryView.findViewById(R.id.equipment_icon);
-                    final TextView textName = (TextView) equipmentEntryView.findViewById(R.id.equipment_name);
-                    final TextView textPower = (TextView) equipmentEntryView.findViewById(R.id.equipment_power);
+                    final ImageView imageIcon = equipmentEntryView.findViewById(R.id.equipment_icon);
+                    final TextView textName = equipmentEntryView.findViewById(R.id.equipment_name);
+                    final TextView textPower = equipmentEntryView.findViewById(R.id.equipment_power);
 
                     imageIcon.setImageResource(equipmentType.getDrawableResId());
 
@@ -108,12 +119,7 @@ public class EquipmentFragment extends WrapperFragment {
                             equipmentEffectsList.add(artifactInfo.effectSpecial);
                         }
 
-                        equipmentEntryView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DialogUtils.showArtifactDialog(getFragmentManager(), artifactInfo);
-                            }
-                        });
+                        equipmentEntryView.setOnClickListener(v -> DialogUtils.showArtifactDialog(getFragmentManager(), artifactInfo));
                     }
 
                     equipmentContainer.addView(equipmentEntryView);
@@ -124,12 +130,7 @@ public class EquipmentFragment extends WrapperFragment {
                 } else {
                     final Map<ArtifactEffect, Integer> effects = ObjectUtils.getItemsCountList(
                             equipmentEffectsList,
-                            new Comparator<ArtifactEffect>() {
-                                @Override
-                                public int compare(ArtifactEffect lhs, ArtifactEffect rhs) {
-                                    return lhs.getName().compareTo(rhs.getName());
-                                }
-                            });
+                            (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
                     final SpannableStringBuilder effectsStringBuilder = new SpannableStringBuilder();
                     boolean first = true;
                     for(final Map.Entry<ArtifactEffect, Integer> entry : effects.entrySet()) {
@@ -162,31 +163,28 @@ public class EquipmentFragment extends WrapperFragment {
 
                 if(response.account.isOwnInfo) {
                     final View dropView = layoutInflater.inflate(R.layout.item_bag_drop, bagContainer, false);
-                    final RequestActionView dropActionView = (RequestActionView) dropView.findViewById(R.id.bag_drop);
+                    final RequestActionView dropActionView = dropView.findViewById(R.id.bag_drop);
                     if(response.account.hero.basicInfo.bagItemsCount > 0) {
                         final GameInfoResponse gameInfoResponse = response;
-                        new InfoPrerequisiteRequest(new Runnable() {
+                        new InfoPrerequisiteRequest(client, manager, new Runnable() {
                             @Override
                             public void run() {
                                 if(GameInfoUtils.isEnoughEnergy(gameInfoResponse.account.hero.energy, PreferencesManager.getAbilityCost(Action.DROP_ITEM))) {
                                     dropActionView.setEnabled(true);
-                                    dropActionView.setActionClickListener(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if(PreferencesManager.isConfirmationBagDropEnabled()) {
-                                                DialogUtils.showConfirmationDialog(
-                                                        getChildFragmentManager(),
-                                                        getString(R.string.game_bag_drop_item),
-                                                        getString(R.string.game_bag_drop_item_confirmation),
-                                                        new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                dropItem(dropActionView);
-                                                            }
-                                                        });
-                                            } else {
-                                                dropItem(dropActionView);
-                                            }
+                                    dropActionView.setActionClickListener(() -> {
+                                        if(PreferencesManager.isConfirmationBagDropEnabled()) {
+                                            DialogUtils.showConfirmationDialog(
+                                                    getChildFragmentManager(),
+                                                    getString(R.string.game_bag_drop_item),
+                                                    getString(R.string.game_bag_drop_item_confirmation),
+                                                    new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            dropItem(dropActionView);
+                                                        }
+                                                    });
+                                        } else {
+                                            dropItem(dropActionView);
                                         }
                                     });
                                 } else {
@@ -207,26 +205,23 @@ public class EquipmentFragment extends WrapperFragment {
 
                 final Map<ArtifactInfo, Integer> bagItemsList = ObjectUtils.getItemsCountList(
                         response.account.hero.bag.values(),
-                        new Comparator<ArtifactInfo>() {
-                            @Override
-                            public int compare(ArtifactInfo lhs, ArtifactInfo rhs) {
-                                if(lhs.name.equals(rhs.name)) {
-                                    if(lhs.powerPhysical == rhs.powerPhysical) {
-                                        if(lhs.powerMagical == rhs.powerMagical) {
-                                            if(lhs.type == ArtifactType.JUNK) {
-                                                return rhs.type == ArtifactType.JUNK ? 0 : 1;
-                                            } else {
-                                                return rhs.type == ArtifactType.JUNK ? -1 : 0;
-                                            }
+                        (lhs, rhs) -> {
+                            if(lhs.name.equals(rhs.name)) {
+                                if(lhs.powerPhysical == rhs.powerPhysical) {
+                                    if(lhs.powerMagical == rhs.powerMagical) {
+                                        if(lhs.type == ArtifactType.JUNK) {
+                                            return rhs.type == ArtifactType.JUNK ? 0 : 1;
                                         } else {
-                                            return lhs.powerMagical - rhs.powerMagical;
+                                            return rhs.type == ArtifactType.JUNK ? -1 : 0;
                                         }
                                     } else {
-                                        return lhs.powerPhysical - rhs.powerPhysical;
+                                        return lhs.powerMagical - rhs.powerMagical;
                                     }
                                 } else {
-                                    return lhs.name.compareTo(rhs.name);
+                                    return lhs.powerPhysical - rhs.powerPhysical;
                                 }
+                            } else {
+                                return lhs.name.compareTo(rhs.name);
                             }
                         });
                 for(final Map.Entry<ArtifactInfo, Integer> bagEntry : bagItemsList.entrySet()) {
@@ -255,9 +250,9 @@ public class EquipmentFragment extends WrapperFragment {
 
         final int watchingAccountId = PreferencesManager.getWatchingAccountId();
         if(watchingAccountId == 0) {
-            new GameInfoRequest(true).execute(callback, true);
+            new GameInfoRequest(client, manager, true).execute(callback, true);
         } else {
-            new GameInfoRequest(true).execute(watchingAccountId, callback, true);
+            new GameInfoRequest(client, manager, true).execute(watchingAccountId, callback, true);
         }
     }
 
@@ -296,7 +291,7 @@ public class EquipmentFragment extends WrapperFragment {
 
     private void dropItem(final RequestActionView dropActionView) {
         dropActionView.setMode(RequestActionView.Mode.LOADING);
-        new AbilityUseRequest(Action.DROP_ITEM).execute(0, RequestUtils.wrapCallback(new ApiResponseCallback<CommonResponse>() {
+        new AbilityUseRequest(client, manager, Action.DROP_ITEM).execute(0, RequestUtils.wrapCallback(new ApiResponseCallback<CommonResponse>() {
             @Override
             public void processResponse(CommonResponse response) {
                 refresh(false);

@@ -1,6 +1,7 @@
 package com.wrewolf.thetaleclient.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,14 +15,20 @@ import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.activity.MainActivity;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.TextToSpeechUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 import com.wrewolf.thetaleclient.util.onscreen.OnscreenStateListener;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -31,14 +38,14 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
 
     private static final String KEY_PAGE_INDEX = "KEY_PAGE_INDEX";
 
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
+
     private ViewPager viewPager;
     private View findPlayerContainer;
 
     private int currentPageIndex;
     private boolean shouldCallOnscreen = false;
-
-    public GameFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,13 +54,17 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         final View rootView = inflater.inflate(R.layout.fragment_game, container, false);
 
-        viewPager = (ViewPager) rootView.findViewById(R.id.fragment_game_pager);
+        viewPager = rootView.findViewById(R.id.fragment_game_pager);
         viewPager.setAdapter(new GamePagerAdapter(getActivity().getSupportFragmentManager()));
 
-        final PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) rootView.findViewById(R.id.fragment_game_tab_strip);
+        final PagerSlidingTabStrip tabStrip = rootView.findViewById(R.id.fragment_game_tab_strip);
         tabStrip.setViewPager(viewPager);
         tabStrip.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -75,13 +86,13 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
         }
 
         findPlayerContainer = rootView.findViewById(R.id.fragment_game_find_player);
-        UiUtils.setupFindPlayerContainer(findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
 
         return rootView;
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putInt(KEY_PAGE_INDEX, viewPager.getCurrentItem());
@@ -162,7 +173,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
         if(fragment instanceof WrapperFragment) {
             ((WrapperFragment) fragment).refresh(isGlobal);
         }
-        UiUtils.setupFindPlayerContainer(findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
     }
 
     private void refreshPageFragment(final int position) {
@@ -216,7 +227,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
         }
 
         if(findPlayerContainer != null) {
-            UiUtils.setupFindPlayerContainer(findPlayerContainer, this, this, (MainActivity) getActivity());
+            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
         }
     }
 
@@ -262,7 +273,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
 
         private final int titleResId;
 
-        private GamePage(final int titleResId) {
+        GamePage(final int titleResId) {
             this.titleResId = titleResId;
         }
 

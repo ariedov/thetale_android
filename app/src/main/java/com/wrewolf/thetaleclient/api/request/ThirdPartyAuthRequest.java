@@ -12,8 +12,11 @@ import com.wrewolf.thetaleclient.api.response.ThirdPartyAuthResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -21,8 +24,8 @@ import java.util.Map;
  */
 public class ThirdPartyAuthRequest extends AbstractApiRequest<ThirdPartyAuthResponse> {
 
-    public ThirdPartyAuthRequest() {
-        super(HttpMethod.POST, "accounts/third-party/tokens/api/request-authorisation", "1.0", true);
+    public ThirdPartyAuthRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.POST, "accounts/third-party/tokens/api/request-authorisation", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<ThirdPartyAuthResponse> callback) {

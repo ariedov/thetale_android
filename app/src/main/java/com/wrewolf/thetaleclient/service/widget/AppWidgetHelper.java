@@ -18,6 +18,10 @@ import com.wrewolf.thetaleclient.util.UiUtils;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 14.01.2015
@@ -34,9 +38,9 @@ public class AppWidgetHelper {
         }
     }
 
-    public static void updateWithRequest(final Context context) {
+    public static void updateWithRequest(final Context context, OkHttpClient client, CookieManager cookieManager) {
         update(context, DataViewMode.LOADING, null);
-        new GameInfoRequest(true).execute(new ApiResponseCallback<GameInfoResponse>() {
+        new GameInfoRequest(client, cookieManager, true).execute(new ApiResponseCallback<GameInfoResponse>() {
             @Override
             public void processResponse(GameInfoResponse response) {
                 update(context, DataViewMode.DATA, response);

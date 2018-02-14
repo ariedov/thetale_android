@@ -32,7 +32,11 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 
+import java.net.CookieManager;
+
 import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -47,8 +51,9 @@ public class LoginActivity extends FragmentActivity implements LoginView{
 
     private final Handler handler = new Handler(Looper.getMainLooper());
 
-    @Inject
-    LoginPresenter presenter;
+    @Inject LoginPresenter presenter;
+    @Inject OkHttpClient client;
+    @Inject CookieManager cookieManager;
 
     private TextView textLogin;
     private TextView textPassword;
@@ -72,7 +77,7 @@ public class LoginActivity extends FragmentActivity implements LoginView{
     private Runnable thirdPartyAuthStateRequester = new Runnable() {
         @Override
         public void run() {
-            new ThirdPartyAuthStateRequest().execute(new ApiResponseCallback<ThirdPartyAuthStateResponse>() {
+            new ThirdPartyAuthStateRequest(client, cookieManager).execute(new ApiResponseCallback<ThirdPartyAuthStateResponse>() {
                 @Override
                 public void processResponse(ThirdPartyAuthStateResponse response) {
                     switch(response.authState) {
@@ -175,7 +180,7 @@ public class LoginActivity extends FragmentActivity implements LoginView{
 
     private void startRequestAuthSite() {
         setMode(DataViewMode.LOADING);
-        new ThirdPartyAuthRequest().execute(new ApiResponseCallback<ThirdPartyAuthResponse>() {
+        new ThirdPartyAuthRequest(client, cookieManager).execute(new ApiResponseCallback<ThirdPartyAuthResponse>() {
             @Override
             public void processResponse(final ThirdPartyAuthResponse response) {
                 // TODO check for isPaused if there will be crashes
@@ -203,7 +208,7 @@ public class LoginActivity extends FragmentActivity implements LoginView{
     }
 
     private void sendAuthRequest(final String login, final String password) {
-        new AuthRequest().execute(login, password, true,
+        new AuthRequest(client, cookieManager).execute(login, password, true,
                 new ApiResponseCallback<AuthResponse>() {
                     @Override
                     public void processResponse(AuthResponse response) {
@@ -236,7 +241,7 @@ public class LoginActivity extends FragmentActivity implements LoginView{
     private void authorize(final String login, final String password) {
         RequestCacheManager.invalidate();
         if(wasError) {
-            new InfoRequest().execute(new ApiResponseCallback<InfoResponse>() {
+            new InfoRequest(client, cookieManager).execute(new ApiResponseCallback<InfoResponse>() {
                 @Override
                 public void processResponse(InfoResponse response) {
                     sendAuthRequest(login, password);
@@ -291,7 +296,7 @@ public class LoginActivity extends FragmentActivity implements LoginView{
     }
 
     private void startMainActivity() {
-        AppWidgetHelper.updateWithRequest(this);
+        AppWidgetHelper.updateWithRequest(this, client, cookieManager);
 
         final Intent intent = new Intent(this, MainActivity.class);
         intent.putExtras(getIntent());

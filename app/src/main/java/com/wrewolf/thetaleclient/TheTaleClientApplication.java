@@ -62,6 +62,10 @@ public class TheTaleClientApplication extends Application {
         System.gc();
     }
 
+    public AppComponent appComponent() {
+        return appComponent;
+    }
+
     public LoginComponent loginComponent() {
         return appComponent.loginComponent();
     }

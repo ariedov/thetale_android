@@ -2,6 +2,7 @@ package com.wrewolf.thetaleclient.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.wrewolf.thetaleclient.DataViewMode;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.dictionary.CardRarity;
 import com.wrewolf.thetaleclient.api.model.CardInfo;
@@ -33,6 +35,7 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 import com.wrewolf.thetaleclient.widget.RequestActionView;
 
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,11 +44,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 09.10.2014
  */
 public class CardsFragment extends WrapperFragment {
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private LayoutInflater layoutInflater;
 
@@ -72,23 +82,27 @@ public class CardsFragment extends WrapperFragment {
     private List<Pair<CardInfo, View>> combiningCardsList;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_cards, container, false);
 
         helpCounterContainer = rootView.findViewById(R.id.cards_container_help_to_next_card);
-        helpCounter = (TextView) rootView.findViewById(R.id.cards_help_counter);
-        helpCounterProgress = (ProgressBar) rootView.findViewById(R.id.cards_help_counter_progress);
-        helpTakeCardWidget = (RequestActionView) rootView.findViewById(R.id.cards_take_card);
+        helpCounter = rootView.findViewById(R.id.cards_help_counter);
+        helpCounterProgress = rootView.findViewById(R.id.cards_help_counter_progress);
+        helpTakeCardWidget = rootView.findViewById(R.id.cards_take_card);
 
-        cardsContainer = (ViewGroup) rootView.findViewById(R.id.cards_container);
+        cardsContainer = rootView.findViewById(R.id.cards_container);
 
         combineActionStart = rootView.findViewById(R.id.cards_combine_action_start);
         combineActions = rootView.findViewById(R.id.cards_combine_actions);
         combineActionConfirm = rootView.findViewById(R.id.cards_combine_action_confirm);
         combineActionCancel = rootView.findViewById(R.id.cards_combine_action_cancel);
         combineContainer = rootView.findViewById(R.id.cards_combine_container);
-        combineList = (ViewGroup) rootView.findViewById(R.id.cards_combine_list);
+        combineList = rootView.findViewById(R.id.cards_combine_list);
 
         return wrapView(layoutInflater, rootView);
     }
@@ -136,31 +150,26 @@ public class CardsFragment extends WrapperFragment {
                     helpTakeCardWidget.setMode(RequestActionView.Mode.ACTION);
                     helpTakeCardWidget.setVisibility(View.VISIBLE);
 
-                    helpTakeCardWidget.setActionClickListener(new Runnable() {
+                    helpTakeCardWidget.setActionClickListener(() -> new TakeCardRequest(client, manager).execute(RequestUtils.wrapCallback(new ApiResponseCallback<TakeCardResponse>() {
                         @Override
-                        public void run() {
-                            new TakeCardRequest().execute(RequestUtils.wrapCallback(new ApiResponseCallback<TakeCardResponse>() {
-                                @Override
-                                public void processResponse(TakeCardResponse response) {
-                                    helpTakeCardWidget.setMode(RequestActionView.Mode.ACTION);
-                                    DialogUtils.showCardInfoDialog(getChildFragmentManager(),
-                                            getString(R.string.game_card_take_result),
-                                            response.card,
-                                            new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    refresh(true);
-                                                }
-                                            });
-                                }
-
-                                @Override
-                                public void processError(TakeCardResponse response) {
-                                    helpTakeCardWidget.setErrorText(response.errorMessage);
-                                }
-                            }, CardsFragment.this));
+                        public void processResponse(TakeCardResponse response1) {
+                            helpTakeCardWidget.setMode(RequestActionView.Mode.ACTION);
+                            DialogUtils.showCardInfoDialog(getChildFragmentManager(),
+                                    getString(R.string.game_card_take_result),
+                                    response1.card,
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            refresh(true);
+                                        }
+                                    });
                         }
-                    });
+
+                        @Override
+                        public void processError(TakeCardResponse response1) {
+                            helpTakeCardWidget.setErrorText(response1.errorMessage);
+                        }
+                    }, CardsFragment.this)));
                 } else {
                     helpCounterContainer.setVisibility(View.VISIBLE);
                     helpTakeCardWidget.setVisibility(View.GONE);
@@ -245,9 +254,9 @@ public class CardsFragment extends WrapperFragment {
 
         final int watchingAccountId = PreferencesManager.getWatchingAccountId();
         if(watchingAccountId == 0) {
-            new GameInfoRequest(true).execute(callback, true);
+            new GameInfoRequest(client, manager, true).execute(callback, true);
         } else {
-            new GameInfoRequest(true).execute(watchingAccountId, callback, true);
+            new GameInfoRequest(client, manager, true).execute(watchingAccountId, callback, true);
         }
     }
 
@@ -289,7 +298,7 @@ public class CardsFragment extends WrapperFragment {
                         }
                     }
 
-                    new CombineCardsRequest(cardIds).execute(RequestUtils.wrapCallback(new ApiResponseCallback<CombineCardsResponse>() {
+                    new CombineCardsRequest(client, manager, cardIds).execute(RequestUtils.wrapCallback(new ApiResponseCallback<CombineCardsResponse>() {
                         @Override
                         public void processResponse(CombineCardsResponse response) {
                             progressDialog.dismiss();
@@ -389,7 +398,7 @@ public class CardsFragment extends WrapperFragment {
         } else {
             ((TextView) cardEntryView.findViewById(R.id.card_name)).setText(
                     TextUtils.concat(cardName, " x ", String.valueOf(count)));
-            final TextView cardDescription = (TextView) cardEntryView.findViewById(R.id.card_description);
+            final TextView cardDescription = cardEntryView.findViewById(R.id.card_description);
             if(card.type == null) {
                 cardDescription.setVisibility(View.GONE);
             } else {

@@ -37,6 +37,10 @@ import com.wrewolf.thetaleclient.fragment.GameFragment;
 import com.wrewolf.thetaleclient.fragment.Refreshable;
 import com.wrewolf.thetaleclient.util.onscreen.OnscreenStateListener;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 07.10.2014
@@ -149,47 +153,44 @@ public class UiUtils {
         }
     }
 
-    public static void setupFindPlayerContainer(final View container, final Refreshable refreshable, final Fragment fragment, final MainActivity activity) {
+    public static void setupFindPlayerContainer(OkHttpClient client, CookieManager manager, final View container, final Refreshable refreshable, final Fragment fragment, final MainActivity activity) {
         container.setVisibility(View.GONE);
-        new InfoPrerequisiteRequest(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        final int watchingAccountId = PreferencesManager.getWatchingAccountId();
-                        final boolean isOwnAccount = (watchingAccountId == 0) || (watchingAccountId == PreferencesManager.getAccountId());
-                        if(!isOwnAccount) {
-                            container.setVisibility(View.VISIBLE);
+        new InfoPrerequisiteRequest(client, manager,
+                () -> {
+                    final int watchingAccountId = PreferencesManager.getWatchingAccountId();
+                    final boolean isOwnAccount = (watchingAccountId == 0) || (watchingAccountId == PreferencesManager.getAccountId());
+                    if(!isOwnAccount) {
+                        container.setVisibility(View.VISIBLE);
 
-                            final TextView findPlayerText = (TextView) container.findViewById(R.id.find_player_widget_text);
-                            findPlayerText.setText(Html.fromHtml(activity.getString(R.string.find_player_info_short, PreferencesManager.getWatchingAccountName())));
-                            new GameInfoRequest(true).execute(watchingAccountId, new ApiResponseCallback<GameInfoResponse>() {
-                                @Override
-                                public void processResponse(GameInfoResponse response) {
-                                    findPlayerText.setText(Html.fromHtml(activity.getString(R.string.find_player_info,
-                                            PreferencesManager.getWatchingAccountName(), response.account.hero.basicInfo.name)));
-                                }
+                        final TextView findPlayerText = container.findViewById(R.id.find_player_widget_text);
+                        findPlayerText.setText(Html.fromHtml(activity.getString(R.string.find_player_info_short, PreferencesManager.getWatchingAccountName())));
+                        new GameInfoRequest(client, manager, true).execute(watchingAccountId, new ApiResponseCallback<GameInfoResponse>() {
+                            @Override
+                            public void processResponse(GameInfoResponse response) {
+                                findPlayerText.setText(Html.fromHtml(activity.getString(R.string.find_player_info,
+                                        PreferencesManager.getWatchingAccountName(), response.account.hero.basicInfo.name)));
+                            }
 
-                                @Override
-                                public void processError(GameInfoResponse response) {
-                                    // do nothing
-                                }
-                            }, true);
+                            @Override
+                            public void processError(GameInfoResponse response) {
+                                // do nothing
+                            }
+                        }, true);
 
-                            container.findViewById(R.id.find_player_widget_cancel).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    PreferencesManager.setWatchingAccount(0, null);
-                                    refreshable.refresh(true);
-                                    activity.refreshGameAdjacentFragments();
-                                }
-                            });
-                            container.findViewById(R.id.find_player_widget_search).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    activity.onNavigationDrawerItemSelected(DrawerItem.FIND_PLAYER);
-                                }
-                            });
-                        }
+                        container.findViewById(R.id.find_player_widget_cancel).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PreferencesManager.setWatchingAccount(0, null);
+                                refreshable.refresh(true);
+                                activity.refreshGameAdjacentFragments();
+                            }
+                        });
+                        container.findViewById(R.id.find_player_widget_search).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                activity.onNavigationDrawerItemSelected(DrawerItem.FIND_PLAYER);
+                            }
+                        });
                     }
                 }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
             @Override

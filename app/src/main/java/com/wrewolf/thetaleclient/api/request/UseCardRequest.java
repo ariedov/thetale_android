@@ -8,8 +8,11 @@ import com.wrewolf.thetaleclient.api.response.CommonResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -17,8 +20,8 @@ import java.util.Map;
  */
 public class UseCardRequest extends AbstractApiRequest<CommonResponse> {
 
-    public UseCardRequest() {
-        super(HttpMethod.POST, "game/cards/api/use", "1.0", true);
+    public UseCardRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.POST, "game/cards/api/use", "1.0", true);
     }
 
     public void execute(final int cardId, final ApiResponseCallback<CommonResponse> callback) {

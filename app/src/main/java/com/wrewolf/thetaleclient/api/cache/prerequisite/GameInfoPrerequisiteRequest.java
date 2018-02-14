@@ -7,14 +7,23 @@ import com.wrewolf.thetaleclient.api.request.GameInfoRequest;
 import com.wrewolf.thetaleclient.api.response.GameInfoResponse;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 01.01.2015
  */
 public class GameInfoPrerequisiteRequest extends PrerequisiteRequest<GameInfoResponse> {
 
-    public GameInfoPrerequisiteRequest(Runnable task, ErrorCallback<GameInfoResponse> errorCallback, Fragment fragment) {
+    private final OkHttpClient client;
+    private final CookieManager manager;
+
+    public GameInfoPrerequisiteRequest(OkHttpClient httpClient, CookieManager manager, Runnable task, ErrorCallback<GameInfoResponse> errorCallback, Fragment fragment) {
         super(task, errorCallback, fragment);
+        this.client = httpClient;
+        this.manager = manager;
     }
 
     @Override
@@ -24,7 +33,7 @@ public class GameInfoPrerequisiteRequest extends PrerequisiteRequest<GameInfoRes
 
     @Override
     protected void preExecuteAndRun() {
-        new GameInfoRequest(false).execute(getApiCallback(), false);
+        new GameInfoRequest(client, manager, false).execute(getApiCallback(), false);
     }
 
 }

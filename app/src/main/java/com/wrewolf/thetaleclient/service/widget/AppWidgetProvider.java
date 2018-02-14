@@ -5,8 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.service.WatcherService;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
+
+import java.net.CookieManager;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -14,18 +21,29 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
  */
 public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
+    @Inject OkHttpClient client;
+    @Inject CookieManager cookieManager;
+
     @Override
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        ((TheTaleClientApplication)context.getApplicationContext())
+                .appComponent()
+                .inject(this);
+
         if(!WatcherService.isRunning() && !PreferencesManager.shouldServiceStartBoot()) {
             AppWidgetHelper.updateWithError(context, context.getString(R.string.app_widget_not_updated));
         } else {
-            AppWidgetHelper.updateWithRequest(context);
+            AppWidgetHelper.updateWithRequest(context, client, cookieManager);
         }
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        AppWidgetHelper.updateWithRequest(context);
+        ((TheTaleClientApplication)context.getApplicationContext())
+                .appComponent()
+                .inject(this);
+
+        AppWidgetHelper.updateWithRequest(context, client, cookieManager);
     }
 
     @Override

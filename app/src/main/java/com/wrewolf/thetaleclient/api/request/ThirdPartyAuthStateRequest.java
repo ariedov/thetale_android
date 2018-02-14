@@ -9,14 +9,18 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 29.10.2014
  */
 public class ThirdPartyAuthStateRequest extends AbstractApiRequest<ThirdPartyAuthStateResponse> {
 
-    public ThirdPartyAuthStateRequest() {
-        super(HttpMethod.GET, "accounts/third-party/tokens/api/authorisation-state", "1.0", true);
+    public ThirdPartyAuthStateRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.GET, "accounts/third-party/tokens/api/authorisation-state", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<ThirdPartyAuthStateResponse> callback) {

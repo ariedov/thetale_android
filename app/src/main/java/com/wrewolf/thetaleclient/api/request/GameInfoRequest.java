@@ -12,8 +12,11 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -23,8 +26,8 @@ public class GameInfoRequest extends AbstractApiRequest<GameInfoResponse> {
 
     private final boolean needAuthorization;
 
-    public GameInfoRequest(final boolean needAuthorization) {
-        super(HttpMethod.GET, "game/api/info", "1.3", true);
+    public GameInfoRequest(final OkHttpClient client, CookieManager cookieManager, final boolean needAuthorization) {
+        super(client, cookieManager, HttpMethod.GET, "game/api/info", "1.3", true);
         this.needAuthorization = needAuthorization;
     }
 

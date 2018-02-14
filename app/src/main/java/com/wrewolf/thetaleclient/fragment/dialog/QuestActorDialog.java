@@ -2,6 +2,7 @@ package com.wrewolf.thetaleclient.fragment.dialog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.wrewolf.thetaleclient.DrawerItem;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.activity.MainActivity;
 import com.wrewolf.thetaleclient.api.CommonResponseCallback;
 import com.wrewolf.thetaleclient.api.cache.prerequisite.GameInfoPrerequisiteRequest;
@@ -22,6 +24,12 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 
+import java.net.CookieManager;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 10.10.2014
@@ -29,6 +37,9 @@ import com.wrewolf.thetaleclient.util.UiUtils;
 public class QuestActorDialog extends BaseDialog {
 
     private static final String PARAM_QUEST_ACTOR_INFO = "PARAM_QUEST_ACTOR_INFO";
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     public static QuestActorDialog newInstance(final QuestActorInfo questActorInfo) {
         final QuestActorDialog dialog = new QuestActorDialog();
@@ -41,7 +52,11 @@ public class QuestActorDialog extends BaseDialog {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         final QuestActorInfo questActorInfo = getArguments().getParcelable(PARAM_QUEST_ACTOR_INFO);
         final View view;
 
@@ -58,25 +73,20 @@ public class QuestActorDialog extends BaseDialog {
                         UiUtils.getInfoItem(getString(R.string.quest_actor_profession), questActorInfo.personInfo.profession.getName()));
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_mastery),
                         UiUtils.getInfoItem(getString(R.string.quest_actor_mastery), questActorInfo.personInfo.mastery));
-                new GameInfoPrerequisiteRequest(new Runnable() {
+                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
                     @Override
-                    public void run() {
-                        new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
-                            @Override
-                            public void processResponse(MapResponse response) {
-                                setPlaceLink(
-                                        view.findViewById(R.id.dialog_quest_actor_person_place),
-                                        getString(R.string.quest_actor_place),
-                                        response.places.get(questActorInfo.personInfo.placeId).name,
-                                        questActorInfo.personInfo.placeId);
-                            }
-
-                            @Override
-                            public void processError(String error) {
-                            }
-                        }, QuestActorDialog.this));
+                    public void processResponse(MapResponse response) {
+                        setPlaceLink(
+                                view.findViewById(R.id.dialog_quest_actor_person_place),
+                                getString(R.string.quest_actor_place),
+                                response.places.get(questActorInfo.personInfo.placeId).name,
+                                questActorInfo.personInfo.placeId);
                     }
-                }, null, this).execute();
+
+                    @Override
+                    public void processError(String error) {
+                    }
+                }, QuestActorDialog.this)), null, this).execute();
                 break;
 
             case PLACE:
@@ -86,23 +96,18 @@ public class QuestActorDialog extends BaseDialog {
                         getString(R.string.map_place_name),
                         questActorInfo.placeInfo.name,
                         questActorInfo.placeInfo.id);
-                new GameInfoPrerequisiteRequest(new Runnable() {
+                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
                     @Override
-                    public void run() {
-                        new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
-                            @Override
-                            public void processResponse(MapResponse response) {
-                                UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_place_size), UiUtils.getInfoItem(
-                                        getString(R.string.map_place_size),
-                                        String.valueOf(response.places.get(questActorInfo.placeInfo.id).size)));
-                            }
-
-                            @Override
-                            public void processError(String error) {
-                            }
-                        }, QuestActorDialog.this));
+                    public void processResponse(MapResponse response) {
+                        UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_place_size), UiUtils.getInfoItem(
+                                getString(R.string.map_place_size),
+                                String.valueOf(response.places.get(questActorInfo.placeInfo.id).size)));
                     }
-                }, null, this).execute();
+
+                    @Override
+                    public void processError(String error) {
+                    }
+                }, QuestActorDialog.this)), null, this).execute();
                 break;
 
             case SPENDING:

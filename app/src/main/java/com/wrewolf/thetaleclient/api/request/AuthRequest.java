@@ -9,8 +9,11 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -18,8 +21,8 @@ import java.util.Map;
  */
 public class AuthRequest extends AbstractApiRequest<AuthResponse> {
 
-    public AuthRequest() {
-        super(HttpMethod.POST, "accounts/auth/api/login", "1.0", true);
+    public AuthRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.POST, "accounts/auth/api/login", "1.0", true);
     }
 
     public void execute(final String email, final String password, final boolean remember,

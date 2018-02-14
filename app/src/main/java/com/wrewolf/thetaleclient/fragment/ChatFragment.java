@@ -41,11 +41,16 @@ import com.wrewolf.thetaleclient.util.UiUtils;
 
 import org.xml.sax.XMLReader;
 
+import java.net.CookieManager;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -57,6 +62,9 @@ public class ChatFragment extends WrapperFragment {
     private static final DateFormat dateFormatDate = android.text.format.DateFormat.getDateFormat(TheTaleClientApplication.getContext());
 
     private static final long REFRESH_TIMEOUT_MILLIS = 5000; // 5 s
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRunnable = new Runnable() {
@@ -79,6 +87,10 @@ public class ChatFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 
@@ -199,30 +211,27 @@ public class ChatFragment extends WrapperFragment {
         if(isGlobal) {
             sendContainer.setVisibility(View.GONE);
             mainHandler.removeCallbacks(refreshRunnable);
-            new InfoPrerequisiteRequest(new Runnable() {
-                @Override
-                public void run() {
-                    sendContainer.setVisibility(View.VISIBLE);
-                    ChatManager.init(PreferencesManager.getAccountName(), new ChatManager.ChatCallback() {
-                        @Override
-                        public void onSuccess() {
-                            if(!isAdded()) {
-                                return;
-                            }
-
-                            loadMessages(isGlobal);
+            new InfoPrerequisiteRequest(client, manager, () -> {
+                sendContainer.setVisibility(View.VISIBLE);
+                ChatManager.init(PreferencesManager.getAccountName(), new ChatManager.ChatCallback() {
+                    @Override
+                    public void onSuccess() {
+                        if(!isAdded()) {
+                            return;
                         }
 
-                        @Override
-                        public void onError() {
-                            if(!isAdded()) {
-                                return;
-                            }
+                        loadMessages(isGlobal);
+                    }
 
-                            setError(getString(R.string.chat_error));
+                    @Override
+                    public void onError() {
+                        if(!isAdded()) {
+                            return;
                         }
-                    });
-                }
+
+                        setError(getString(R.string.chat_error));
+                    }
+                });
             }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
                 @Override
                 public void processError(InfoResponse response) {

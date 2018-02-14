@@ -16,6 +16,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,9 +61,8 @@ public class WebsiteUtils
    * Enums all game accounts using provided callback
    * Uses HTML parsing from http://the-tale.org/accounts/
    */
-  public static void enumAccounts(final AccountCallback callback)
+  public static void enumAccounts(OkHttpClient client, CookieManager manager, final AccountCallback callback)
   {
-    OkHttpClient client = new OkHttpClient();
     client.newCall(new Request.Builder().url(PAGE_ACCOUNTS).build()).enqueue(new Callback()
     {
       @Override
@@ -106,7 +106,7 @@ public class WebsiteUtils
           return;
         }
 
-        enumAccounts(callback, accounts);
+        enumAccounts(client, manager, callback, accounts);
       }
     });
 
@@ -115,12 +115,12 @@ public class WebsiteUtils
   /**
    * Enums specified game accounts using provided callback
    */
-  public static void enumAccounts(final AccountCallback callback, final Collection<Integer> accounts)
+  public static void enumAccounts(OkHttpClient client, CookieManager manager, final AccountCallback callback, final Collection<Integer> accounts)
   {
     final Queue<Integer> accountsQueue = new LinkedList<>(accounts);
     for (int i = 0; i < THREADS_COUNT; i++)
     {
-      processAccounts(accountsQueue, callback);
+      processAccounts(client, manager, accountsQueue, callback);
     }
   }
 
@@ -167,7 +167,7 @@ public class WebsiteUtils
 
   }
 
-  private static void processAccounts(final Queue<Integer> accounts, final AccountCallback callback)
+  private static void processAccounts(OkHttpClient client, CookieManager manager, final Queue<Integer> accounts, final AccountCallback callback)
   {
     final Integer id;
     final Integer next;
@@ -181,7 +181,7 @@ public class WebsiteUtils
       return;
     }
 
-    new GameInfoRequest(false).execute(id, new ApiResponseCallback<GameInfoResponse>()
+    new GameInfoRequest(client, manager, false).execute(id, new ApiResponseCallback<GameInfoResponse>()
     {
       @Override
       public void processResponse(GameInfoResponse response)
@@ -193,7 +193,7 @@ public class WebsiteUtils
         }
         else
         {
-          processAccounts(accounts, callback);
+          processAccounts(client, manager, accounts, callback);
         }
       }
 
@@ -210,7 +210,7 @@ public class WebsiteUtils
         }
         else
         {
-          processAccounts(accounts, callback);
+          processAccounts(client, manager, accounts, callback);
         }
       }
     }, false);

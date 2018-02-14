@@ -48,10 +48,15 @@ import com.wrewolf.thetaleclient.util.WebsiteUtils;
 import com.wrewolf.thetaleclient.util.onscreen.OnscreenPart;
 import com.wrewolf.thetaleclient.widget.RequestActionView;
 
+import java.net.CookieManager;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -60,6 +65,9 @@ import java.util.regex.Pattern;
 public class GameInfoFragment extends WrapperFragment {
 
     private static final long REFRESH_TIMEOUT_MILLIS = 10000; // 10 s
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRunnable = new Runnable() {
@@ -116,6 +124,10 @@ public class GameInfoFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_game_info, container, false);
 
@@ -163,7 +175,7 @@ public class GameInfoFragment extends WrapperFragment {
         actionHelp.setActionClickListener(new Runnable() {
             @Override
             public void run() {
-                new AbilityUseRequest(Action.HELP).execute(0, RequestUtils.wrapCallback(new ApiResponseCallback<CommonResponse>() {
+                new AbilityUseRequest(client, manager, Action.HELP).execute(0, RequestUtils.wrapCallback(new ApiResponseCallback<CommonResponse>() {
                     @Override
                     public void processResponse(CommonResponse response) {
                         actionHelp.setMode(RequestActionView.Mode.ACTION);
@@ -216,29 +228,21 @@ public class GameInfoFragment extends WrapperFragment {
                 textLevel.setText(String.valueOf(gameInfoResponse.account.hero.basicInfo.level));
                 textName.setText(gameInfoResponse.account.hero.basicInfo.name);
                 if(gameInfoResponse.account.hero.basicInfo.destinyPoints > 0) {
-                    textLevelUp.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(gameInfoResponse.account.isOwnInfo) {
-                                DialogUtils.showConfirmationDialog(
-                                        getChildFragmentManager(),
-                                        getString(R.string.game_lvlup_dialog_title),
-                                        getString(R.string.game_lvlup_dialog_message, gameInfoResponse.account.hero.basicInfo.destinyPoints),
-                                        getString(R.string.drawer_title_site), new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                startActivity(UiUtils.getOpenLinkIntent(String.format(
-                                                        WebsiteUtils.URL_PROFILE_HERO, gameInfoResponse.account.hero.id)));
-                                            }
-                                        },
-                                        null, null, null);
-                            } else {
-                                DialogUtils.showMessageDialog(
-                                        getChildFragmentManager(),
-                                        getString(R.string.game_lvlup_dialog_title),
-                                        getString(R.string.game_lvlup_dialog_message_foreign,
-                                                gameInfoResponse.account.hero.basicInfo.destinyPoints));
-                            }
+                    textLevelUp.setOnClickListener(v -> {
+                        if(gameInfoResponse.account.isOwnInfo) {
+                            DialogUtils.showConfirmationDialog(
+                                    getChildFragmentManager(),
+                                    getString(R.string.game_lvlup_dialog_title),
+                                    getString(R.string.game_lvlup_dialog_message, gameInfoResponse.account.hero.basicInfo.destinyPoints),
+                                    getString(R.string.drawer_title_site), () -> startActivity(UiUtils.getOpenLinkIntent(String.format(
+                                            WebsiteUtils.URL_PROFILE_HERO, gameInfoResponse.account.hero.id))),
+                                    null, null, null);
+                        } else {
+                            DialogUtils.showMessageDialog(
+                                    getChildFragmentManager(),
+                                    getString(R.string.game_lvlup_dialog_title),
+                                    getString(R.string.game_lvlup_dialog_message_foreign,
+                                            gameInfoResponse.account.hero.basicInfo.destinyPoints));
                         }
                     });
                     textLevelUp.setVisibility(View.VISIBLE);
@@ -369,13 +373,8 @@ public class GameInfoFragment extends WrapperFragment {
                         companionName.setTextColor(getResources().getColor(R.color.common_text));
                     } else {
                         companionName.setTextColor(getResources().getColor(R.color.common_link));
-                        companionName.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DialogUtils.showTabbedDialog(getChildFragmentManager(),
-                                        companion.name, new CompanionTabsAdapter(companion, companion.coherence));
-                            }
-                        });
+                        companionName.setOnClickListener(v -> DialogUtils.showTabbedDialog(getChildFragmentManager(),
+                                companion.name, new CompanionTabsAdapter(companion, companion.coherence)));
                     }
                 }
 
@@ -458,21 +457,18 @@ public class GameInfoFragment extends WrapperFragment {
                         break;
 
                     case REST:
-                        new InfoPrerequisiteRequest(new Runnable() {
-                            @Override
-                            public void run() {
-                                final int turnDelta = PreferencesManager.getTurnDelta();
-                                long timeRest = Math.round(
-                                        (gameInfoResponse.account.hero.basicInfo.healthMax - gameInfoResponse.account.hero.basicInfo.healthCurrent)
-                                        / ( // amount of health restored each turn
-                                                gameInfoResponse.account.hero.basicInfo.healthMax
-                                                / 30.0
-                                                * Math.pow(2.0, GameInfoUtils.getArtifactEffectCount(gameInfoResponse.account.hero, ArtifactEffect.ENDURANCE))
-                                        )
-                                        * turnDelta);
-                                timeRest = Math.round(((double) timeRest) / turnDelta) * turnDelta;
-                                setProgressActionInfo(getActionTimeApproximateString(timeRest < turnDelta ? turnDelta : timeRest));
-                            }
+                        new InfoPrerequisiteRequest(client, manager, () -> {
+                            final int turnDelta = PreferencesManager.getTurnDelta();
+                            long timeRest = Math.round(
+                                    (gameInfoResponse.account.hero.basicInfo.healthMax - gameInfoResponse.account.hero.basicInfo.healthCurrent)
+                                    / ( // amount of health restored each turn
+                                            gameInfoResponse.account.hero.basicInfo.healthMax
+                                            / 30.0
+                                            * Math.pow(2.0, GameInfoUtils.getArtifactEffectCount(gameInfoResponse.account.hero, ArtifactEffect.ENDURANCE))
+                                    )
+                                    * turnDelta);
+                            timeRest = Math.round(((double) timeRest) / turnDelta) * turnDelta;
+                            setProgressActionInfo(getActionTimeApproximateString(timeRest < turnDelta ? turnDelta : timeRest));
                         }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
                             @Override
                             public void processError(InfoResponse response) {
@@ -488,12 +484,9 @@ public class GameInfoFragment extends WrapperFragment {
                 if(gameInfoResponse.account.isOwnInfo) {
                     actionHelp.setVisibility(View.VISIBLE);
                     actionHelp.setEnabled(false);
-                    new InfoPrerequisiteRequest(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(GameInfoUtils.isEnoughEnergy(gameInfoResponse.account.hero.energy, PreferencesManager.getAbilityCost(Action.HELP))) {
-                                actionHelp.setEnabled(true);
-                            }
+                    new InfoPrerequisiteRequest(client, manager, () -> {
+                        if(GameInfoUtils.isEnoughEnergy(gameInfoResponse.account.hero.energy, PreferencesManager.getAbilityCost(Action.HELP))) {
+                            actionHelp.setEnabled(true);
                         }
                     }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
                         @Override
@@ -517,9 +510,9 @@ public class GameInfoFragment extends WrapperFragment {
 
         final int watchingAccountId = PreferencesManager.getWatchingAccountId();
         if(watchingAccountId == 0) {
-            new GameInfoRequest(true).execute(callback, false);
+            new GameInfoRequest(client, manager, true).execute(callback, false);
         } else {
-            new GameInfoRequest(true).execute(watchingAccountId, callback, false);
+            new GameInfoRequest(client, manager, true).execute(watchingAccountId, callback, false);
         }
     }
 

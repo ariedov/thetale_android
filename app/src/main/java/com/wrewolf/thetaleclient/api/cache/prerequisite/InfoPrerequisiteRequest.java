@@ -8,14 +8,23 @@ import com.wrewolf.thetaleclient.api.request.InfoRequest;
 import com.wrewolf.thetaleclient.api.response.InfoResponse;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 01.01.2015
  */
 public class InfoPrerequisiteRequest extends PrerequisiteRequest<InfoResponse> {
 
-    public InfoPrerequisiteRequest(Runnable task, ErrorCallback<InfoResponse> errorCallback, Fragment fragment) {
+    private final OkHttpClient client;
+    private final CookieManager cookieManager;
+
+    public InfoPrerequisiteRequest(OkHttpClient client, CookieManager manager, Runnable task, ErrorCallback<InfoResponse> errorCallback, Fragment fragment) {
         super(task, errorCallback, fragment);
+        this.client = client;
+        this.cookieManager = manager;
     }
 
     @Override
@@ -33,6 +42,6 @@ public class InfoPrerequisiteRequest extends PrerequisiteRequest<InfoResponse> {
 
     @Override
     protected void preExecuteAndRun() {
-        new InfoRequest().execute(getApiCallback());
+        new InfoRequest(client, cookieManager).execute(getApiCallback());
     }
 }

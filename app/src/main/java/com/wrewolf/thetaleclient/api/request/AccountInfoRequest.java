@@ -7,14 +7,18 @@ import com.wrewolf.thetaleclient.api.response.AccountInfoResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 20.02.2015
  */
 public class AccountInfoRequest extends AbstractApiRequest<AccountInfoResponse> {
 
-    public AccountInfoRequest(final int accountId) {
-        super(HttpMethod.GET, String.format("accounts/%d/api/show", accountId), "1.0", true);
+    public AccountInfoRequest(OkHttpClient client, CookieManager manager, final int accountId) {
+        super(client, manager, HttpMethod.GET, String.format("accounts/%d/api/show", accountId), "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<AccountInfoResponse> callback) {

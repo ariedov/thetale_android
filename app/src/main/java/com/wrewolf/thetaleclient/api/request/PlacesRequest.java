@@ -7,14 +7,18 @@ import com.wrewolf.thetaleclient.api.response.PlacesResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 04.05.2015
  */
 public class PlacesRequest extends AbstractApiRequest<PlacesResponse> {
 
-    public PlacesRequest() {
-        super(HttpMethod.GET, "game/map/places/api/list", "1.0", true);
+    public PlacesRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.GET, "game/map/places/api/list", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<PlacesResponse> callback) {

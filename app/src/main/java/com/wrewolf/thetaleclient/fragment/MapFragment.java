@@ -15,7 +15,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,15 +62,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.CookieManager;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -88,6 +89,9 @@ public class MapFragment extends WrapperFragment {
     private static final String KEY_MAP_SHIFT_X = "KEY_MAP_SHIFT_X";
     private static final String KEY_MAP_SHIFT_Y = "KEY_MAP_SHIFT_Y";
     private static final String KEY_MAP_MODIFICATION = "KEY_MAP_MODIFICATION";
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private static final float ZOOM_MAX = 3f;
 
@@ -121,6 +125,10 @@ public class MapFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -140,13 +148,13 @@ public class MapFragment extends WrapperFragment {
         }
 
         findPlayerContainer = rootView.findViewById(R.id.map_find_player);
-        UiUtils.setupFindPlayerContainer(findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
 
         return wrapView(layoutInflater, rootView);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putFloat(KEY_MAP_ZOOM, getMapZoom());
 
         final PointF mapShift = getMapShift();
@@ -205,12 +213,9 @@ public class MapFragment extends WrapperFragment {
         switch(item.getItemId()) {
             case R.id.action_map_style:
                 DialogUtils.showChoiceDialog(getFragmentManager(), getString(R.string.map_style_caption),
-                        ObjectUtils.getNamesForEnum(MapStyle.class), new ChoiceDialog.ItemChooseListener() {
-                            @Override
-                            public void onItemSelected(int position) {
-                                PreferencesManager.setMapStyle(MapStyle.values()[position]);
-                                refresh(true);
-                            }
+                        ObjectUtils.getNamesForEnum(MapStyle.class), position -> {
+                            PreferencesManager.setMapStyle(MapStyle.values()[position]);
+                            refresh(true);
                         });
                 return true;
 
@@ -221,12 +226,9 @@ public class MapFragment extends WrapperFragment {
                     choices[i] = places.get(i).name;
                 }
 
-                DialogUtils.showChoiceDialog(getFragmentManager(), getString(R.string.map_find_place), choices, new ChoiceDialog.ItemChooseListener() {
-                    @Override
-                    public void onItemSelected(int position) {
-                        final MapPlaceInfo placeInfo = places.get(position);
-                        moveToTile(placeInfo.x, placeInfo.y, mapView.getMaximumScale());
-                    }
+                DialogUtils.showChoiceDialog(getFragmentManager(), getString(R.string.map_find_place), choices, position -> {
+                    final MapPlaceInfo placeInfo = places.get(position);
+                    moveToTile(placeInfo.x, placeInfo.y, mapView.getMaximumScale());
                 });
                 return true;
 
@@ -237,12 +239,9 @@ public class MapFragment extends WrapperFragment {
 
             case R.id.action_map_modification:
                 DialogUtils.showChoiceDialog(getChildFragmentManager(), getString(R.string.map_modification_caption),
-                        ObjectUtils.getNamesForEnum(MapModification.class), new ChoiceDialog.ItemChooseListener() {
-                            @Override
-                            public void onItemSelected(int position) {
-                                mapModification = MapModification.values()[position];
-                                refresh(true);
-                            }
+                        ObjectUtils.getNamesForEnum(MapModification.class), position -> {
+                            mapModification = MapModification.values()[position];
+                            refresh(true);
                         },
                         R.layout.dialog_content_map_modification, R.id.dialog_map_modification_list);
                 return true;
@@ -290,24 +289,16 @@ public class MapFragment extends WrapperFragment {
                                 DialogUtils.showConfirmationDialog(getChildFragmentManager(),
                                         getString(R.string.map_save), getString(R.string.map_save_message, fileMap.getPath()),
                                         null, null,
-                                        getString(R.string.map_save_open), new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                final Intent intent = new Intent();
-                                                intent.setAction(Intent.ACTION_VIEW);
-                                                intent.setDataAndType(Uri.fromFile(fileMap), "image/png");
-                                                startActivity(intent);
-                                            }
+                                        getString(R.string.map_save_open), () -> {
+                                            final Intent intent = new Intent();
+                                            intent.setAction(Intent.ACTION_VIEW);
+                                            intent.setDataAndType(Uri.fromFile(fileMap), "image/png");
+                                            startActivity(intent);
                                         }, null);
                             }
                         }
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressDialog.dismiss();
-                            }
-                        });
+                        getActivity().runOnUiThread(() -> progressDialog.dismiss());
                     }
                 }).start();
                 return true;
@@ -330,7 +321,7 @@ public class MapFragment extends WrapperFragment {
         super.refresh(isGlobal);
         shouldShowMenuOptions = false;
 
-        UiUtils.setupFindPlayerContainer(findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
 
         if(menuOptions != null) {
             menuOptions.setVisible(false);
@@ -352,103 +343,100 @@ public class MapFragment extends WrapperFragment {
 
         updateMenuItemTitle(R.id.action_map_modification, getString(R.string.map_modification, mapModification.getName()));
 
-        new InfoPrerequisiteRequest(new Runnable() {
-            @Override
-            public void run() {
-                final ApiResponseCallback<GameInfoResponse> gameInfoCallback = RequestUtils.wrapCallback(new ApiResponseCallback<GameInfoResponse>() {
-                    @Override
-                    public void processResponse(final GameInfoResponse gameInfoResponse) {
-                        new MapRequest(gameInfoResponse.mapVersion).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
-                            @Override
-                            public void processResponse(final MapResponse mapResponse) {
-                                MapUtils.getMapSprite(mapStyle, new MapUtils.MapBitmapCallback() {
-                                    @Override
-                                    public void onBitmapBuilt(final Bitmap sprite) {
-                                        if(!isAdded()) {
-                                            return;
-                                        }
+        new InfoPrerequisiteRequest(client, manager, () -> {
+            final ApiResponseCallback<GameInfoResponse> gameInfoCallback = RequestUtils.wrapCallback(new ApiResponseCallback<GameInfoResponse>() {
+                @Override
+                public void processResponse(final GameInfoResponse gameInfoResponse) {
+                    new MapRequest(gameInfoResponse.mapVersion).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
+                        @Override
+                        public void processResponse(final MapResponse mapResponse) {
+                            MapUtils.getMapSprite(mapStyle, new MapUtils.MapBitmapCallback() {
+                                @Override
+                                public void onBitmapBuilt(final Bitmap sprite) {
+                                    if(!isAdded()) {
+                                        return;
+                                    }
 
-                                        heroPosition = gameInfoResponse.account.hero.position;
+                                    heroPosition = gameInfoResponse.account.hero.position;
 
-                                        final Bitmap map = MapUtils.getMapBitmap(mapResponse);
-                                        final Canvas canvas = new Canvas(map);
+                                    final Bitmap map = MapUtils.getMapBitmap(mapResponse);
+                                    final Canvas canvas = new Canvas(map);
 
-                                        final MenuItem actionMapModification = UiUtils.getMenuItem(getActivity(), R.id.action_map_modification);
-                                        if(actionMapModification != null) {
-                                            if(MapUtils.getCurrentSizeDenominator() == 1) {
-                                                updateMenuMapModificationVisibility();
-                                            } else {
-                                                if(!UiUtils.getMainActivity(MapFragment.this).isPaused()) {
-                                                    DialogUtils.showMessageDialog(getChildFragmentManager(),
-                                                            getString(R.string.common_dialog_attention_title),
-                                                            getString(R.string.map_decreased_quality));
-                                                }
+                                    final MenuItem actionMapModification = UiUtils.getMenuItem(getActivity(), R.id.action_map_modification);
+                                    if(actionMapModification != null) {
+                                        if(MapUtils.getCurrentSizeDenominator() == 1) {
+                                            updateMenuMapModificationVisibility();
+                                        } else {
+                                            if(!UiUtils.getMainActivity(MapFragment.this).isPaused()) {
+                                                DialogUtils.showMessageDialog(getChildFragmentManager(),
+                                                        getString(R.string.common_dialog_attention_title),
+                                                        getString(R.string.map_decreased_quality));
                                             }
                                         }
-
-                                        if(mapModification == MapModification.NONE) {
-                                            MapUtils.drawBaseLayer(canvas, mapResponse, sprite);
-                                            MapUtils.drawPlaceNamesLayer(canvas, mapResponse);
-                                            MapUtils.drawHeroLayer(canvas, gameInfoResponse.account.hero, sprite);
-                                            setMap(map, mapResponse);
-                                        } else {
-                                            new MapTerrainRequest().execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapTerrainResponse, String>() {
-                                                @Override
-                                                public void processResponse(final MapTerrainResponse mapTerrainResponse) {
-                                                    switch(mapModification) {
-                                                        case WIND:
-                                                            MapUtils.drawModificationLayer(canvas, mapResponse, mapTerrainResponse, mapModification);
-                                                            break;
-
-                                                        case INFLUENCE:
-                                                            MapUtils.drawBaseLayer(canvas, mapResponse, sprite);
-                                                            MapUtils.drawModificationLayer(canvas, mapResponse, mapTerrainResponse, mapModification);
-                                                            MapUtils.drawPlaceNamesLayer(canvas, mapResponse);
-                                                            MapUtils.drawHeroLayer(canvas, gameInfoResponse.account.hero, sprite);
-                                                            break;
-                                                    }
-                                                    setMap(map, mapResponse);
-                                                }
-
-                                                @Override
-                                                public void processError(String error) {
-                                                    setError(getString(R.string.map_error));
-                                                    mapModification = MapModification.NONE;
-                                                }
-                                            }, MapFragment.this));
-                                        }
                                     }
 
-                                    @Override
-                                    public void onError() {
-                                        if(!isAdded()) {
-                                            return;
-                                        }
+                                    if(mapModification == MapModification.NONE) {
+                                        MapUtils.drawBaseLayer(canvas, mapResponse, sprite);
+                                        MapUtils.drawPlaceNamesLayer(canvas, mapResponse);
+                                        MapUtils.drawHeroLayer(canvas, gameInfoResponse.account.hero, sprite);
+                                        setMap(map, mapResponse);
+                                    } else {
+                                        new MapTerrainRequest().execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapTerrainResponse, String>() {
+                                            @Override
+                                            public void processResponse(final MapTerrainResponse mapTerrainResponse) {
+                                                switch(mapModification) {
+                                                    case WIND:
+                                                        MapUtils.drawModificationLayer(canvas, mapResponse, mapTerrainResponse, mapModification);
+                                                        break;
 
-                                        setError(getString(R.string.map_error));
+                                                    case INFLUENCE:
+                                                        MapUtils.drawBaseLayer(canvas, mapResponse, sprite);
+                                                        MapUtils.drawModificationLayer(canvas, mapResponse, mapTerrainResponse, mapModification);
+                                                        MapUtils.drawPlaceNamesLayer(canvas, mapResponse);
+                                                        MapUtils.drawHeroLayer(canvas, gameInfoResponse.account.hero, sprite);
+                                                        break;
+                                                }
+                                                setMap(map, mapResponse);
+                                            }
+
+                                            @Override
+                                            public void processError(String error) {
+                                                setError(getString(R.string.map_error));
+                                                mapModification = MapModification.NONE;
+                                            }
+                                        }, MapFragment.this));
                                     }
-                                });
-                            }
+                                }
 
-                            @Override
-                            public void processError(String error) {
-                                setError(getString(R.string.map_error));
-                            }
-                        }, MapFragment.this));
-                    }
+                                @Override
+                                public void onError() {
+                                    if(!isAdded()) {
+                                        return;
+                                    }
 
-                    @Override
-                    public void processError(GameInfoResponse response) {
-                        setError(getString(R.string.map_error));
-                    }
-                }, MapFragment.this);
+                                    setError(getString(R.string.map_error));
+                                }
+                            });
+                        }
 
-                final int watchingAccountId = PreferencesManager.getWatchingAccountId();
-                if(watchingAccountId == 0) {
-                    new GameInfoRequest(true).execute(gameInfoCallback, true);
-                } else {
-                    new GameInfoRequest(true).execute(watchingAccountId, gameInfoCallback, true);
+                        @Override
+                        public void processError(String error) {
+                            setError(getString(R.string.map_error));
+                        }
+                    }, MapFragment.this));
                 }
+
+                @Override
+                public void processError(GameInfoResponse response) {
+                    setError(getString(R.string.map_error));
+                }
+            }, MapFragment.this);
+
+            final int watchingAccountId = PreferencesManager.getWatchingAccountId();
+            if(watchingAccountId == 0) {
+                new GameInfoRequest(client, manager, true).execute(gameInfoCallback, true);
+            } else {
+                new GameInfoRequest(client, manager, true).execute(watchingAccountId, gameInfoCallback, true);
             }
         }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
             @Override
@@ -463,7 +451,7 @@ public class MapFragment extends WrapperFragment {
         super.onOnscreen();
 
         if(findPlayerContainer != null) {
-            UiUtils.setupFindPlayerContainer(findPlayerContainer, this, this, (MainActivity) getActivity());
+            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
         }
     }
 
@@ -605,12 +593,7 @@ public class MapFragment extends WrapperFragment {
                 for (final MapPlaceInfo placeInfo : mapResponse.places.values()) {
                     places.add(placeInfo);
                 }
-                Collections.sort(places, new Comparator<MapPlaceInfo>() {
-                    @Override
-                    public int compare(MapPlaceInfo lhs, MapPlaceInfo rhs) {
-                        return lhs.name.compareTo(rhs.name);
-                    }
-                });
+                Collections.sort(places, (lhs, rhs) -> lhs.name.compareTo(rhs.name));
 
                 shouldShowMenuOptions = true;
                 if(menuOptions != null) {
@@ -682,7 +665,7 @@ public class MapFragment extends WrapperFragment {
         private final int titleResId;
         private final MapCellType[] cellTypes;
 
-        private TileTab(final int titleResId, final MapCellType[] cellTypes) {
+        TileTab(final int titleResId, final MapCellType[] cellTypes) {
             this.titleResId = titleResId;
             this.cellTypes = cellTypes;
         }

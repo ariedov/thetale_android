@@ -7,8 +7,11 @@ import com.wrewolf.thetaleclient.api.response.CommonResponse;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @author Hamster
@@ -16,8 +19,8 @@ import java.util.Map;
  */
 public class QuestChoiceRequest extends AbstractApiRequest<CommonResponse> {
 
-    public QuestChoiceRequest() {
-        super(HttpMethod.POST, "game/quests/api/choose", "1.0", true);
+    public QuestChoiceRequest(OkHttpClient client, CookieManager manager) {
+        super(client, manager, HttpMethod.POST, "game/quests/api/choose", "1.0", true);
     }
 
     public void execute(final String choiceId, final ApiResponseCallback<CommonResponse> callback) {
@@ -34,7 +37,7 @@ public class QuestChoiceRequest extends AbstractApiRequest<CommonResponse> {
     @Override
     protected void retry(final Map<String, String> getParams, final Map<String, String> postParams,
                          final CommonResponse response, final ApiResponseCallback<CommonResponse> callback) {
-        new PostponedTaskRequest(response.statusUrl).execute(callback);
+        new PostponedTaskRequest(getHttpClient(), getCookieManager(), response.statusUrl).execute(callback);
     }
 
     @Override

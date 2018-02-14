@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -30,7 +29,6 @@ import com.wrewolf.thetaleclient.fragment.GameFragment;
 import com.wrewolf.thetaleclient.fragment.NavigationDrawerFragment;
 import com.wrewolf.thetaleclient.fragment.Refreshable;
 import com.wrewolf.thetaleclient.fragment.WrapperFragment;
-import com.wrewolf.thetaleclient.fragment.dialog.ChoiceDialog;
 import com.wrewolf.thetaleclient.login.LoginActivity;
 import com.wrewolf.thetaleclient.util.DialogUtils;
 import com.wrewolf.thetaleclient.util.HistoryStack;
@@ -40,6 +38,12 @@ import com.wrewolf.thetaleclient.util.UiUtils;
 import com.wrewolf.thetaleclient.util.WebsiteUtils;
 import com.wrewolf.thetaleclient.util.onscreen.OnscreenPart;
 
+import java.net.CookieManager;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -47,6 +51,10 @@ public class MainActivity extends AppCompatActivity
     public static final String KEY_SHOULD_RESET_WATCHING_ACCOUNT = "KEY_SHOULD_RESET_WATCHING_ACCOUNT";
 
     private static final String KEY_DRAWER_TAB_INDEX = "KEY_DRAWER_TAB_INDEX";
+
+    @Inject OkHttpClient client;
+
+    @Inject CookieManager manager;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -69,6 +77,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        ((TheTaleClientApplication)getApplication())
+                .appComponent()
+                .inject(this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -79,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         // set up the drawer
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+                findViewById(R.id.drawer_layout));
 
         accountNameTextView = findViewById(R.id.drawer_account_name);
         timeTextView = findViewById(R.id.drawer_time);
@@ -184,45 +198,37 @@ public class MainActivity extends AppCompatActivity
                                     getString(R.string.drawer_dialog_profile_item_keeper),
                                     getString(R.string.drawer_dialog_profile_item_hero)
                             },
-                            new ChoiceDialog.ItemChooseListener() {
-                                @Override
-                                public void onItemSelected(final int position) {
-                                    new InfoPrerequisiteRequest(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            final int accountId = PreferencesManager.getAccountId();
-                                            if(accountId == 0) {
-                                                if(!isPaused()) {
-                                                    DialogUtils.showCommonErrorDialog(getSupportFragmentManager(), MainActivity.this);
-                                                }
-                                            } else {
-                                                switch(position) {
-                                                    case 0:
-                                                        startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_KEEPER, accountId)));
-                                                        break;
+                            position -> new InfoPrerequisiteRequest(client, manager, () -> {
+                                final int accountId = PreferencesManager.getAccountId();
+                                if(accountId == 0) {
+                                    if(!isPaused()) {
+                                        DialogUtils.showCommonErrorDialog(getSupportFragmentManager(), MainActivity.this);
+                                    }
+                                } else {
+                                    switch(position) {
+                                        case 0:
+                                            startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_KEEPER, accountId)));
+                                            break;
 
-                                                    case 1:
-                                                        startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_HERO, accountId)));
-                                                        break;
+                                        case 1:
+                                            startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_HERO, accountId)));
+                                            break;
 
-                                                    default:
-                                                        if(!isPaused()) {
-                                                            DialogUtils.showCommonErrorDialog(getSupportFragmentManager(), MainActivity.this);
-                                                        }
-                                                        break;
-                                                }
-                                            }
-                                        }
-                                    }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
-                                        @Override
-                                        public void processError(InfoResponse response) {
+                                        default:
                                             if(!isPaused()) {
                                                 DialogUtils.showCommonErrorDialog(getSupportFragmentManager(), MainActivity.this);
                                             }
-                                        }
-                                    }, null).execute();
+                                            break;
+                                    }
                                 }
-                            });
+                            }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
+                                @Override
+                                public void processError(InfoResponse response) {
+                                    if(!isPaused()) {
+                                        DialogUtils.showCommonErrorDialog(getSupportFragmentManager(), MainActivity.this);
+                                    }
+                                }
+                            }, null).execute());
                     break;
 
                 case SITE:
@@ -237,7 +243,7 @@ public class MainActivity extends AppCompatActivity
                         ((WrapperFragment) fragment).setMode(DataViewMode.LOADING);
                     }
 
-                    new LogoutRequest().execute(new ApiResponseCallback<CommonResponse>() {
+                    new LogoutRequest(client, manager).execute(new ApiResponseCallback<CommonResponse>() {
                         @Override
                         public void processResponse(CommonResponse response) {
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -355,23 +361,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onDataRefresh() {
-        new InfoPrerequisiteRequest(new Runnable() {
-            @Override
-            public void run() {
-                drawerItemInfoView.setVisibility(View.VISIBLE);
-                UiUtils.setText(accountNameTextView, PreferencesManager.getAccountName());
-                new GameInfoRequest(false).execute(new ApiResponseCallback<GameInfoResponse>() {
-                    @Override
-                    public void processResponse(GameInfoResponse response) {
-                        UiUtils.setText(timeTextView, String.format("%s %s", response.turnInfo.verboseDate, response.turnInfo.verboseTime));
-                    }
+        new InfoPrerequisiteRequest(client, manager, () -> {
+            drawerItemInfoView.setVisibility(View.VISIBLE);
+            UiUtils.setText(accountNameTextView, PreferencesManager.getAccountName());
+            new GameInfoRequest(client, manager, false).execute(new ApiResponseCallback<GameInfoResponse>() {
+                @Override
+                public void processResponse(GameInfoResponse response) {
+                    UiUtils.setText(timeTextView, String.format("%s %s", response.turnInfo.verboseDate, response.turnInfo.verboseTime));
+                }
 
-                    @Override
-                    public void processError(GameInfoResponse response) {
-                        UiUtils.setText(timeTextView, null);
-                    }
-                }, true);
-            }
+                @Override
+                public void processError(GameInfoResponse response) {
+                    UiUtils.setText(timeTextView, null);
+                }
+            }, true);
         }, new PrerequisiteRequest.ErrorCallback<InfoResponse>() {
             @Override
             public void processError(InfoResponse response) {

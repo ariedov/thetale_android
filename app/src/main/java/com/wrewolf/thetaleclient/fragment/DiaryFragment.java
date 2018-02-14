@@ -1,12 +1,14 @@
 package com.wrewolf.thetaleclient.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wrewolf.thetaleclient.DataViewMode;
 import com.wrewolf.thetaleclient.R;
+import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.model.DiaryEntry;
 import com.wrewolf.thetaleclient.api.request.GameInfoRequest;
@@ -15,11 +17,20 @@ import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.RequestUtils;
 import com.wrewolf.thetaleclient.util.UiUtils;
 
+import java.net.CookieManager;
+
+import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
+
 /**
  * @author Hamster
  * @since 06.10.2014
  */
 public class DiaryFragment extends WrapperFragment {
+
+    @Inject OkHttpClient client;
+    @Inject CookieManager manager;
 
     private LayoutInflater layoutInflater;
 
@@ -28,11 +39,15 @@ public class DiaryFragment extends WrapperFragment {
     private ViewGroup diaryContainer;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((TheTaleClientApplication)getActivity().getApplication())
+                .appComponent()
+                .inject(this);
+
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_diary, container, false);
 
-        diaryContainer = (ViewGroup) rootView.findViewById(R.id.diary_container);
+        diaryContainer = rootView.findViewById(R.id.diary_container);
 
         return wrapView(layoutInflater, rootView);
     }
@@ -70,9 +85,9 @@ public class DiaryFragment extends WrapperFragment {
 
         final int watchingAccountId = PreferencesManager.getWatchingAccountId();
         if(watchingAccountId == 0) {
-            new GameInfoRequest(true).execute(callback, true);
+            new GameInfoRequest(client, manager, true).execute(callback, true);
         } else {
-            new GameInfoRequest(true).execute(watchingAccountId, callback, true);
+            new GameInfoRequest(client, manager, true).execute(watchingAccountId, callback, true);
         }
     }
 

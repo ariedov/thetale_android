@@ -11,6 +11,10 @@ import com.wrewolf.thetaleclient.util.RequestUtils;
 
 import org.json.JSONException;
 
+import java.net.CookieManager;
+
+import okhttp3.OkHttpClient;
+
 /**
  * Created by Алексей on 17.05.2017.
  * Запрос данных дневника
@@ -18,9 +22,9 @@ import org.json.JSONException;
 
 public class DiaryRequest extends AbstractApiRequest<DiaryResponse>
 {
-  public DiaryRequest()
+  public DiaryRequest(OkHttpClient client, CookieManager manager)
   {
-    super(HttpMethod.GET, "game/api/diary", "1.0", true);
+    super(client, manager, HttpMethod.GET, "game/api/diary", "1.0", true);
   }
 
   public void execute(final ApiResponseCallback<DiaryResponse> callback)
