@@ -50,7 +50,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun chooseLoginWithCredentials() {
-
+        view.showLoginEmail()
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
@@ -72,7 +72,6 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun loginFromSite() {
-
     }
 
     fun registerAccount() {

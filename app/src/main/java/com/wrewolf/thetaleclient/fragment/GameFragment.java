@@ -55,8 +55,9 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((TheTaleClientApplication)getActivity().getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
 
         final View rootView = inflater.inflate(R.layout.fragment_game, container, false);

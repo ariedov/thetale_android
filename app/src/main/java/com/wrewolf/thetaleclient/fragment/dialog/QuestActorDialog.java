@@ -53,8 +53,9 @@ public class QuestActorDialog extends BaseDialog {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((TheTaleClientApplication)getActivity().getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
 
         final QuestActorInfo questActorInfo = getArguments().getParcelable(PARAM_QUEST_ACTOR_INFO);

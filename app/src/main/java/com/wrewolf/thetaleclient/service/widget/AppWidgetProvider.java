@@ -26,9 +26,11 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        ((TheTaleClientApplication)context.getApplicationContext())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
         if(!WatcherService.isRunning() && !PreferencesManager.shouldServiceStartBoot()) {
             AppWidgetHelper.updateWithError(context, context.getString(R.string.app_widget_not_updated));
@@ -39,9 +41,11 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        ((TheTaleClientApplication)context.getApplicationContext())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
         AppWidgetHelper.updateWithRequest(context, client, cookieManager);
     }

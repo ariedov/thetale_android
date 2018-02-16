@@ -78,9 +78,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        ((TheTaleClientApplication)getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
 
         super.onCreate(savedInstanceState);

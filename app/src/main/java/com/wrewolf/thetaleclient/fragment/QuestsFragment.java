@@ -68,9 +68,11 @@ public class QuestsFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((TheTaleClientApplication)getActivity().getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
         layoutInflater = inflater;
         rootView = layoutInflater.inflate(R.layout.fragment_quests, container, false);

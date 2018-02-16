@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,13 +15,10 @@ import com.wrewolf.thetaleclient.TheTaleClientApplication;
 import com.wrewolf.thetaleclient.activity.MainActivity;
 import com.wrewolf.thetaleclient.api.ApiResponseCallback;
 import com.wrewolf.thetaleclient.api.ApiResponseStatus;
-import com.wrewolf.thetaleclient.api.cache.RequestCacheManager;
 import com.wrewolf.thetaleclient.api.request.AuthRequest;
-import com.wrewolf.thetaleclient.api.request.InfoRequest;
 import com.wrewolf.thetaleclient.api.request.ThirdPartyAuthRequest;
 import com.wrewolf.thetaleclient.api.request.ThirdPartyAuthStateRequest;
 import com.wrewolf.thetaleclient.api.response.AuthResponse;
-import com.wrewolf.thetaleclient.api.response.InfoResponse;
 import com.wrewolf.thetaleclient.api.response.ThirdPartyAuthResponse;
 import com.wrewolf.thetaleclient.api.response.ThirdPartyAuthStateResponse;
 import com.wrewolf.thetaleclient.login.views.LoginContentStartView;
@@ -114,8 +110,8 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
             // Crashlytics.start(this);
         }
 
-        ((TheTaleClientApplication)getApplication())
-                .loginComponent()
+        TheTaleClientApplication.getComponentProvider()
+                .getLoginComponent()
                 .inject(this);
         presenter.view = this;
 
@@ -152,7 +148,6 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     }
 
     private void startRequestInit() {
-        setMode(DataViewMode.LOADING);
         presenter.checkAppInfo();
     }
 
@@ -261,6 +256,16 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(thirdPartyAuthStateRequester);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing()) {
+            TheTaleClientApplication
+                    .getComponentProvider()
+                    .setLoginComponent(null);
+        }
     }
 
     @Override

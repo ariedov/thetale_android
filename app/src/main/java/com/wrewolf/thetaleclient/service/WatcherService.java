@@ -182,9 +182,11 @@ public class WatcherService extends Service {
 
     @Override
     public void onCreate() {
-        ((TheTaleClientApplication)getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
         watchers = new ArrayList<>();
         watchers.add(new CardTaker(client, cookieManager));

@@ -17,9 +17,9 @@ class LoginContentStartView @JvmOverloads constructor(
     @Inject lateinit var presenter: LoginPresenter
 
     init {
-        (context.applicationContext as TheTaleClientApplication)
-                .loginComponent()
-                .inject(this)
+        TheTaleClientApplication
+                .getComponentProvider()
+                .loginComponent?.inject(this)
 
         orientation = VERTICAL
 

@@ -15,6 +15,8 @@ import com.wrewolf.thetaleclient.util.onscreen.OnscreenStateWatcher;
 
 import net.grandcentrix.tray.core.TrayStorage;
 
+import javax.inject.Inject;
+
 /**
  * @author Hamster
  * @since 08.10.2014
@@ -22,6 +24,7 @@ import net.grandcentrix.tray.core.TrayStorage;
 public class TheTaleClientApplication extends Application {
 
     private static Context context;
+    private static ComponentProvider componentProvider;
     private static OnscreenStateWatcher onscreenStateWatcher;
     private static NotificationManager notificationManager;
     private static PreferencesManager preferencesManager;
@@ -41,6 +44,7 @@ public class TheTaleClientApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        componentProvider = new ComponentProvider();
         context = getApplicationContext();
         analytics = FirebaseAnalytics.getInstance(context);
         preferencesManager = new PreferencesManager(context);
@@ -50,6 +54,8 @@ public class TheTaleClientApplication extends Application {
         appComponent = DaggerAppComponent
                 .builder()
                 .build();
+
+        componentProvider.setAppComponent(appComponent);
     }
 
     @Override
@@ -62,12 +68,8 @@ public class TheTaleClientApplication extends Application {
         System.gc();
     }
 
-    public AppComponent appComponent() {
-        return appComponent;
-    }
-
-    public LoginComponent loginComponent() {
-        return appComponent.loginComponent();
+    public static ComponentProvider getComponentProvider() {
+        return componentProvider;
     }
 
     public static Context getContext() {

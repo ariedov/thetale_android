@@ -82,9 +82,11 @@ public class CardUseDialog extends BaseDialog {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((TheTaleClientApplication)getActivity().getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
         final View view = inflater.inflate(R.layout.dialog_content_card_use, container, false);
 

@@ -40,9 +40,11 @@ public class DiaryFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((TheTaleClientApplication)getActivity().getApplication())
-                .appComponent()
+        TheTaleClientApplication
+                .getComponentProvider()
+                .getAppComponent()
                 .inject(this);
+
 
         layoutInflater = inflater;
         rootView = inflater.inflate(R.layout.fragment_diary, container, false);
