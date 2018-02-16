@@ -26,7 +26,7 @@ class ApiRequest<T>(private val request: Observable<Response<T>>) {
                 .onErrorResumeNext(Observable.empty())
                 .doOnNext {
                     if (it.status == "error") {
-                        state.accept(RequestState.Error(ApiError(it.error)))
+                        state.accept(RequestState.Error(ApiError("")))
                     } else {
                         state.accept(RequestState.Done(it))
                     }

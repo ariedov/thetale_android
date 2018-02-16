@@ -8,6 +8,8 @@ import javax.inject.Inject
 interface LoginNavigation {
 
     fun startRegistration()
+
+    fun proceedToGame()
 }
 
 interface LoginView {
@@ -18,7 +20,9 @@ interface LoginView {
 
     fun enableRetry()
 
-    fun showError()
+    fun showInfoError()
+
+    fun showLoginError()
 
     fun showLoginMethodChooser()
 
@@ -29,6 +33,7 @@ interface LoginView {
 class LoginPresenter @Inject constructor(private val service: TheTaleService) {
 
     lateinit var view: LoginView
+    lateinit var navigator: LoginNavigation
 
     fun checkAppInfo() {
         val request = ApiRequest(service.info())
@@ -42,7 +47,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                 }
                 is RequestState.Error -> {
                     view.enableRetry()
-                    view.showError()
+                    view.showInfoError()
                 }
             }
         }
@@ -61,10 +66,10 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                     view.setLoading()
                 }
                 is RequestState.Done<*> -> {
-                    // move to app
+                    navigator.proceedToGame()
                 }
                 is RequestState.Error -> {
-                    view.showError()
+                    view.showLoginError()
                 }
             }
         }

@@ -113,7 +113,8 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
         TheTaleClientApplication.getComponentProvider()
                 .getLoginComponent()
                 .inject(this);
-        presenter.view = this;
+        presenter.setView(this);
+        presenter.setNavigator(this);
 
         setContentView(R.layout.activity_login);
 
@@ -297,8 +298,14 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     }
 
     @Override
-    public void showError() {
+    public void showInfoError() {
         setError("");
+    }
+
+    @Override
+    public void showLoginError() {
+        setMode(DataViewMode.DATA);
+        setLoginContainersVisibility(false);
     }
 
     @Override
@@ -309,6 +316,15 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     @Override
     public void startRegistration() {
         startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION));
+    }
+
+    @Override
+    public void proceedToGame() {
+        final Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtras(getIntent());
+
+        startActivity(intent);
+        finish();
     }
 
     @Override
