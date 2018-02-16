@@ -6,4 +6,5 @@ class Response<T> {
 
     @SerializedName("data") var data: T? = null
     @SerializedName("status") lateinit var status: String
+    @SerializedName("error") lateinit var error: String
 }

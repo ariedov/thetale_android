@@ -4,6 +4,7 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.thetale.api.error.ApiError
 import org.thetale.api.models.Response
 
 class ApiRequest<T>(private val request: Observable<Response<T>>) {
@@ -23,7 +24,13 @@ class ApiRequest<T>(private val request: Observable<Response<T>>) {
                 .doOnError { state.accept(RequestState.Error(it)) }
                 .doOnError(errors)
                 .onErrorResumeNext(Observable.empty())
-                .doOnNext { state.accept(RequestState.Done(it)) }
+                .doOnNext {
+                    if (it.status == "error") {
+                        state.accept(RequestState.Error(ApiError(it.error)))
+                    } else {
+                        state.accept(RequestState.Done(it))
+                    }
+                }
                 .subscribe(response)
     }
 

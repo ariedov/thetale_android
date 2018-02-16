@@ -1,5 +1,6 @@
 package com.wrewolf.thetaleclient.di
 
+import com.wrewolf.thetaleclient.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
@@ -12,6 +13,7 @@ import org.thetale.api.TheTaleService
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
+import java.net.HttpCookie
 import javax.inject.Singleton
 
 @Module
@@ -38,16 +40,31 @@ class ApiModule {
     @Provides
     @Singleton
     @IntoSet
-    fun appVersionInterceptor(): Interceptor {
+    fun appVersionInterceptor(cookieManager: CookieManager): Interceptor {
         return Interceptor {
             var request = it.request()
             val url = request.url()
                     .newBuilder()
-                    .addQueryParameter("app_version", "value")
+                    .addQueryParameter("api_client", "${BuildConfig.VERSION_NAME}-${BuildConfig.VERSION_CODE}")
                     .build()
-            request = request.newBuilder().url(url).build()
+
+            val token = findToken(cookieManager)
+            request = request.newBuilder()
+                    .apply {
+                        if (request.method() == "POST" && token != null) {
+                            addHeader(HEADER_CSRF_TOKEN, token)
+                        }
+                    }
+                    .url(url)
+                    .build()
             it.proceed(request)
         }
+    }
+
+    private fun findToken(cookieManager: CookieManager): String? {
+        val predicate: (HttpCookie) -> Boolean = { it.name == COOKIE_CSRF_TOKEN }
+        return cookieManager.cookieStore.cookies
+                .find(predicate)?.value
     }
 
     @Provides
@@ -67,5 +84,11 @@ class ApiModule {
     fun theTaleApi(client: OkHttpClient): TheTaleService {
         val builder = ClientBuilder()
         return builder.build(client)
+    }
+
+    companion object {
+        private const val COOKIE_CSRF_TOKEN = "csrftoken"
+        private const val HEADER_CSRF_TOKEN = "X-CSRFToken"
+
     }
 }
