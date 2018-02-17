@@ -130,6 +130,9 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
 
         findViewById(R.id.login_logo).setOnClickListener(v -> startActivity(UiUtils.getOpenLinkIntent(URL_HOME)));
 
+        setMode(DataViewMode.DATA);
+        setLoginContainersVisibility(true);
+
 //        findViewById(R.id.login_action_authorization_site).setOnClickListener(v -> startRequestAuthSite());
 
 
@@ -140,16 +143,9 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     protected void onResume() {
         super.onResume();
         PreferencesManager.setShouldExit(false);
-        AppWidgetHelper.update(this, DataViewMode.LOADING, null);
         if(isThirdPartyAuthInProgress) {
             thirdPartyAuthStateRequester.run();
-        } else {
-            startRequestInit();
         }
-    }
-
-    private void startRequestInit() {
-        presenter.checkAppInfo();
     }
 
     private void startRequestAuthSite() {
@@ -290,11 +286,6 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     public void enableLogin() {
         setLoginContainersVisibility(true);
         setMode(DataViewMode.DATA);
-    }
-
-    @Override
-    public void enableRetry() {
-        actionRetry.setOnClickListener(v -> startRequestInit());
     }
 
     @Override
