@@ -40,7 +40,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
-        val request = ApiRequest(appInfo
+        val request = ApiRequest(appInfo.cache()
                 .flatMap { service.login(email, password) })
         request.state.subscribe {
             when (it) {
