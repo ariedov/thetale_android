@@ -2,13 +2,12 @@ package org.thetale.api.common
 
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.thetale.api.error.ApiError
 import org.thetale.api.models.Response
 
-class ApiRequest<T>(private val request: Single<Response<T>>) {
+class ApiRequest<T>(private val request: Observable<Response<T>>) {
 
     var state: BehaviorRelay<RequestState> = BehaviorRelay.createDefault(RequestState.Idle)
     var errors: BehaviorRelay<Throwable> = BehaviorRelay.create()
@@ -20,7 +19,7 @@ class ApiRequest<T>(private val request: Single<Response<T>>) {
         trigger
                 .doOnNext({ state.accept(RequestState.Loading) })
                 .observeOn(Schedulers.io())
-                .flatMapSingle { request }
+                .flatMap { request }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { state.accept(RequestState.Error(it)) }
                 .doOnError(errors)

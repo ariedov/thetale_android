@@ -18,6 +18,8 @@ interface LoginView {
 
     fun enableLogin()
 
+    fun enableRetry()
+
     fun showInfoError()
 
     fun showLoginError()
@@ -33,15 +35,34 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     lateinit var view: LoginView
     lateinit var navigator: LoginNavigation
 
-    private val appInfo = service.info().cache()
+    private val infoRequest = ApiRequest(service.info())
+
+    fun checkAppInfo() {
+        infoRequest.state.subscribe {
+            when (it) {
+                RequestState.Idle -> {
+                    infoRequest.execute()
+                }
+                RequestState.Loading -> {
+                    view.setLoading()
+                }
+                is RequestState.Done<*> -> {
+                    view.enableLogin()
+                }
+                is RequestState.Error -> {
+                    view.enableRetry()
+                    view.showInfoError()
+                }
+            }
+        }
+    }
 
     fun chooseLoginWithCredentials() {
         view.showLoginEmail()
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
-        val request = ApiRequest(appInfo.cache()
-                .flatMap { service.login(email, password) })
+        val request = ApiRequest(service.login(email, password))
         request.state.subscribe {
             when (it) {
                 RequestState.Loading -> {
