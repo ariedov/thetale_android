@@ -9,8 +9,4 @@ import dagger.Subcomponent
 interface LoginComponent {
 
     fun inject(target: LoginActivity)
-
-    fun inject(target: LoginContentStartView)
-
-    fun inject(target: LoginPasswordView)
 }

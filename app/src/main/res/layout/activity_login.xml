@@ -30,27 +30,18 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/game_logo" />
 
-        <TextView
-            android:id="@+id/login_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/common_error"
-            android:visibility="gone" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.wrewolf.thetaleclient.login.views.LoginContentStartView
-                android:id="@+id/login_content_start"
+                android:id="@+id/loginContentStart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
             <com.wrewolf.thetaleclient.login.views.LoginPasswordView
-                android:id="@+id/login_password"
+                android:id="@+id/loginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
@@ -58,32 +49,11 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/login_error_global"
+    <com.wrewolf.thetaleclient.login.views.LoginErrorView
+        android:id="@+id/errorView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/login_error_global_text"
-            style="?android:attr/textAppearanceLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center_horizontal" />
-
-        <Button
-            android:id="@+id/login_error_global_retry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:text="@string/action_retry" />
-
-    </LinearLayout>
+        android:visibility="gone"/>
 
 </RelativeLayout>

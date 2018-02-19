@@ -8,25 +8,24 @@ import android.widget.LinearLayout
 import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.layout_login_password.view.*
+import kotlinx.android.synthetic.main.layout_login_error.view.*
 
-class LoginPasswordView @JvmOverloads constructor(
+class LoginErrorView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     init {
         orientation = VERTICAL
 
-        LayoutInflater.from(context).inflate(R.layout.layout_login_password, this)
+        LayoutInflater.from(getContext()).inflate(R.layout.layout_login_error, this)
     }
 
-    fun loginClicks(): Observable<View> {
-        return RxView.clicks(actionLogin)
-                .map { it as View }
+    fun setErrorText(error: String) {
+        errorText.text = error
     }
 
-    fun remindPasswordClicks(): Observable<View> {
-        return RxView.clicks(passwordRemind)
+    fun retryClicks(): Observable<View> {
+        return RxView.clicks(retry)
                 .map { it as View }
     }
 }
