@@ -10,8 +10,6 @@ import org.thetale.api.models.Response
 class ApiRequest<T>(private val request: Observable<Response<T>>) {
 
     var state: BehaviorRelay<RequestState> = BehaviorRelay.createDefault(RequestState.Idle)
-    var errors: BehaviorRelay<Throwable> = BehaviorRelay.create()
-    var response: BehaviorRelay<Response<T>> = BehaviorRelay.create()
 
     private var trigger: BehaviorRelay<Long> = BehaviorRelay.create()
 
@@ -22,7 +20,6 @@ class ApiRequest<T>(private val request: Observable<Response<T>>) {
                 .flatMap { request }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { state.accept(RequestState.Error(it)) }
-                .doOnError(errors)
                 .onErrorResumeNext(Observable.empty())
                 .doOnNext {
                     if (it.status == "error") {
@@ -31,7 +28,7 @@ class ApiRequest<T>(private val request: Observable<Response<T>>) {
                         state.accept(RequestState.Done(it))
                     }
                 }
-                .subscribe(response)
+                .subscribe()
     }
 
     fun execute() {
