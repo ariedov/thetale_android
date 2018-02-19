@@ -263,6 +263,7 @@ public class LoginActivity extends FragmentActivity implements LoginView, LoginN
     protected void onDestroy() {
         super.onDestroy();
         if (isFinishing()) {
+            presenter.dispose();
             TheTaleClientApplication
                     .getComponentProvider()
                     .setLoginComponent(null);

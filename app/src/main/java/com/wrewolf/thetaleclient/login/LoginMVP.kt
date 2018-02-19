@@ -1,5 +1,6 @@
 package com.wrewolf.thetaleclient.login
 
+import io.reactivex.disposables.CompositeDisposable
 import org.thetale.api.TheTaleService
 import org.thetale.api.common.ApiRequest
 import org.thetale.api.common.RequestState
@@ -35,10 +36,11 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     lateinit var view: LoginView
     lateinit var navigator: LoginNavigation
 
+    private val disposables = CompositeDisposable()
     private val infoRequest = ApiRequest(service.info())
 
     fun checkAppInfo() {
-        infoRequest.state.subscribe {
+        disposables.add(infoRequest.state.subscribe {
             when (it) {
                 RequestState.Idle -> {
                     infoRequest.execute()
@@ -54,7 +56,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                     view.showInfoError()
                 }
             }
-        }
+        })
     }
 
     fun chooseLoginWithCredentials() {
@@ -63,7 +65,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
 
     fun loginWithEmailAndPassword(email: String, password: String) {
         val request = ApiRequest(service.login(email, password))
-        request.state.subscribe {
+        disposables.add(request.state.subscribe {
             when (it) {
                 RequestState.Loading -> {
                     view.setLoading()
@@ -75,7 +77,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                     view.showLoginError()
                 }
             }
-        }
+        })
         request.execute()
     }
 
@@ -87,5 +89,9 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun remindPassword() {
+    }
+
+    fun dispose() {
+        disposables.dispose()
     }
 }
