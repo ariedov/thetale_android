@@ -24,8 +24,7 @@ class LoginErrorView @JvmOverloads constructor(
         errorText.text = error
     }
 
-    fun retryClicks(): Observable<View> {
+    fun retryClicks(): Observable<Any> {
         return RxView.clicks(retry)
-                .map { it as View }
     }
 }

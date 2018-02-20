@@ -77,7 +77,7 @@ public abstract class BaseDialog extends DialogFragment {
                 break;
 
             case ERROR:
-                throw new IllegalArgumentException("Error data view mode is not supported");
+                throw new IllegalArgumentException("Error data viewStates mode is not supported");
         }
     }
 

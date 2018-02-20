@@ -20,13 +20,25 @@ class LoginPasswordView @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.layout_login_password, this)
     }
 
-    fun loginClicks(): Observable<View> {
+    fun loginClicks(): Observable<LoginEvent> {
         return RxView.clicks(actionLogin)
-                .map { it as View }
+                .map { LoginEvent(
+                        emailLayout.editText!!.text.toString(),
+                        passwordLayout.editText!!.text.toString())
+                }
     }
 
-    fun remindPasswordClicks(): Observable<View> {
+    fun remindPasswordClicks(): Observable<Any> {
         return RxView.clicks(passwordRemind)
-                .map { it as View }
+    }
+
+    fun setEmailError(error: String) {
+        emailLayout.error = error
+    }
+
+    fun setPasswordError(error: String) {
+        passwordLayout.error = error
     }
 }
+
+data class LoginEvent(val email: String, val password: String)

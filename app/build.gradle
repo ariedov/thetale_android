@@ -66,6 +66,7 @@ android {
 dependencies {
     // latest versions of libraries as of 11.02.2018
     compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:design:27.0.2'
     compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.google.firebase:firebase-crash:11.8.0'

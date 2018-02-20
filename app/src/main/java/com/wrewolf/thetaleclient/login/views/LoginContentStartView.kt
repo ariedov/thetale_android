@@ -3,7 +3,6 @@ package com.wrewolf.thetaleclient.login.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
@@ -20,21 +19,18 @@ class LoginContentStartView @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.layout_login_content_start, this)
     }
 
-    fun loginFromSiteClicks(): Observable<View> {
+    fun loginFromSiteClicks(): Observable<Any> {
         return RxView
                 .clicks(loginFromSite)
-                .map { it as View }
     }
 
-    fun loginWithCredentialsClicks(): Observable<View> {
+    fun loginWithCredentialsEvents(): Observable<Any> {
         return RxView
                 .clicks(loginWithCredentials)
-                .map { it as View }
     }
 
-    fun registerClicks(): Observable<View> {
+    fun registerClicks(): Observable<Any> {
         return RxView
                 .clicks(registerAccount)
-                .map { it as View }
     }
 }
