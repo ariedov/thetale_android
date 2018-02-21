@@ -7,23 +7,23 @@ import android.widget.LinearLayout
 import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.layout_login_error.view.*
+import kotlinx.android.synthetic.main.layout_login_confirm_third_party.view.*
 
-class LoginErrorView @JvmOverloads constructor(
+class LoginConfirmThirdParty @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     init {
         orientation = VERTICAL
-
-        LayoutInflater.from(getContext()).inflate(R.layout.layout_login_error, this)
+        LayoutInflater.from(context)
+                .inflate(R.layout.layout_login_confirm_third_party, this)
     }
 
-    fun setErrorText(error: String) {
-        errorText.text = error
+    fun confirmClicks(): Observable<Any> {
+        return RxView.clicks(confirmLogin)
     }
 
-    fun retryClicks(): Observable<Any> {
-        return RxView.clicks(retry)
+    fun setError(error: String?) {
+        thirdPartyError.text = error
     }
 }

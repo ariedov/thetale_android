@@ -11,7 +11,6 @@ import android.view.View.VISIBLE
 import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
 import com.wrewolf.thetaleclient.activity.MainActivity
-import com.wrewolf.thetaleclient.util.UiUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -62,6 +61,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .filter { it == LoginState.Loading }
                         .subscribe {
                             progressBar.visibility = VISIBLE
+                            thirdPartyConfirm.visibility = GONE
                             content.visibility = GONE
                             error.visibility = GONE
                         },
@@ -71,6 +71,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .subscribe {
                             content.visibility = VISIBLE
                             loginContentStart.visibility = VISIBLE
+                            thirdPartyConfirm.visibility = GONE
                             progressBar.visibility = GONE
                             loginPassword.visibility = GONE
                             error.visibility = GONE
@@ -81,6 +82,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .subscribe {
                             content.visibility = VISIBLE
                             loginPassword.visibility = VISIBLE
+                            thirdPartyConfirm.visibility = GONE
                             loginContentStart.visibility = GONE
                             progressBar.visibility = GONE
                             error.visibility = GONE
@@ -94,6 +96,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
                             content.visibility = VISIBLE
                             loginPassword.visibility = VISIBLE
+                            thirdPartyConfirm.visibility = GONE
                             loginContentStart.visibility = GONE
                             progressBar.visibility = GONE
                             error.visibility = GONE
@@ -104,6 +107,31 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .subscribe {
                             error.visibility = VISIBLE
                             content.visibility = GONE
+                            thirdPartyConfirm.visibility = GONE
+                            loginPassword.visibility = GONE
+                            loginContentStart.visibility = GONE
+                            progressBar.visibility = GONE
+                        },
+
+                viewStates
+                        .filter { it == LoginState.ThirdPartyConfirm }
+                        .subscribe {
+                            thirdPartyConfirm.visibility = VISIBLE
+                            content.visibility = VISIBLE
+                            error.visibility = GONE
+                            loginPassword.visibility = GONE
+                            loginContentStart.visibility = GONE
+                            progressBar.visibility = GONE
+                        },
+
+                viewStates
+                        .filter { it is LoginState.ThirdPartyError }
+                        .map { it as LoginState.ThirdPartyError }
+                        .subscribe {
+                            content.visibility = VISIBLE
+                            thirdPartyConfirm.visibility = VISIBLE
+                            thirdPartyConfirm.setError(it.error)
+                            error.visibility = GONE
                             loginPassword.visibility = GONE
                             loginContentStart.visibility = GONE
                             progressBar.visibility = GONE
@@ -148,6 +176,14 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .remindPasswordClicks()
                         .subscribe {
                             openUrl(URL_PASSWORD_REMIND)
+                        },
+
+                thirdPartyConfirm
+                        .confirmClicks()
+                        .subscribe {
+                            presenter.thirdPartyAuthStatus()
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe()
                         }
         )
     }
