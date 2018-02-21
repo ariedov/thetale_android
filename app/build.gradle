@@ -3,13 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.firebase-crash'
+
 android {
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
     def versionPropsFile = file('version.properties')
 
     if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
+        Properties versionProps = new Properties()
 
         versionProps.load(new FileInputStream(versionPropsFile))
 
@@ -67,6 +68,7 @@ dependencies {
     // latest versions of libraries as of 11.02.2018
     compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.android.support:design:27.0.2'
+    compile 'com.android.support:customtabs:27.0.2'
     compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.google.firebase:firebase-crash:11.8.0'
@@ -75,9 +77,12 @@ dependencies {
     compile 'com.squareup.okio:okio:1.13.0'
     compile 'org.greenrobot:eventbus:3.1.1'
     compile 'net.grandcentrix.tray:tray:0.11.1'
-    compile 'com.astuetz:pagerslidingtabstrip:1.0.1' // https://github.com/astuetz/PagerSlidingTabStrip
-    compile project(':android-support-v4-preferencefragment') // https://github.com/kolavar/android-support-v4-preferencefragment
-    implementation 'com.github.chrisbanes:PhotoView:2.0.0' // https://github.com/chrisbanes/PhotoView
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    // https://github.com/astuetz/PagerSlidingTabStrip
+    compile project(':android-support-v4-preferencefragment')
+    // https://github.com/kolavar/android-support-v4-preferencefragment
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    // https://github.com/chrisbanes/PhotoView
     compile 'org.jsoup:jsoup:1.11.2' // https://github.com/jhy/jsoup
 
 

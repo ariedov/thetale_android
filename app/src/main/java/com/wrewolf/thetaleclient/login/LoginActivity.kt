@@ -1,7 +1,9 @@
 package com.wrewolf.thetaleclient.login
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -20,6 +22,7 @@ import java.net.CookieManager
 import javax.inject.Inject
 
 import okhttp3.OkHttpClient
+import org.thetale.api.URL
 
 class LoginActivity : AppCompatActivity(), LoginNavigation {
 
@@ -112,6 +115,17 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                             presenter.viewStates.accept(LoginState.Credentials)
                         },
 
+                loginContentStart
+                        .loginFromSiteClicks()
+                        .subscribe {
+                            presenter.thirdPartyLogin(
+                                    getString(R.string.app_name),
+                                    getString(R.string.app_description),
+                                    getString(R.string.app_about))
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe()
+                        },
+
                 error
                         .retryClicks()
                         .subscribe { requestAppInfo() },
@@ -161,6 +175,12 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
         startActivity(intent)
         finish()
+    }
+
+    override fun openThirdPartyAuth(link: String) {
+        val builder = CustomTabsIntent.Builder()
+        val customTabsIntent = builder.build()
+        customTabsIntent.launchUrl(this, Uri.parse("$URL$link"))
     }
 
     companion object {

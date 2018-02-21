@@ -9,7 +9,7 @@ class ClientBuilder {
 
     fun build(client: OkHttpClient): TheTaleService {
         val retrofit = Retrofit.Builder()
-                .baseUrl("http://the-tale.org/")
+                .baseUrl(URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)

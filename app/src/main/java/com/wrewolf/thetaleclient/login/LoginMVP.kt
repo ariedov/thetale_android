@@ -7,6 +7,7 @@ import org.thetale.api.TheTaleService
 import org.thetale.api.models.AppInfo
 import org.thetale.api.models.AuthInfo
 import org.thetale.api.models.Response
+import org.thetale.api.models.ThirdPartyLink
 import javax.inject.Inject
 
 interface LoginNavigation {
@@ -14,6 +15,8 @@ interface LoginNavigation {
     fun startRegistration()
 
     fun proceedToGame()
+
+    fun openThirdPartyAuth(link: String)
 }
 
 class LoginPresenter @Inject constructor(private val service: TheTaleService) {
@@ -53,6 +56,21 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                     }
                 }
                 .doOnError { viewStates.accept(LoginState.CredentialsError(email, password)) }
+    }
+
+    fun thirdPartyLogin(appName: String, appInfo: String, appDescription: String): Observable<Response<ThirdPartyLink>> {
+        return Observable.just(LoginState.Loading)
+                .doOnNext { viewStates.accept(it) }
+                .flatMapSingle { service.login(appName, appInfo, appDescription) }
+                .onErrorResumeNext(Observable.empty())
+                .doOnNext {
+                    if (it.isError()) {
+                        viewStates.accept(LoginState.Error(it.error))
+                    } else {
+                        navigator.openThirdPartyAuth(it.data!!.authorizationPage)
+                    }
+                }
+                .doOnError { viewStates.accept(LoginState.Error()) }
     }
 
     fun dispose() {
