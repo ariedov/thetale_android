@@ -10,7 +10,6 @@ import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
 import com.wrewolf.thetaleclient.activity.MainActivity
 import com.wrewolf.thetaleclient.util.UiUtils
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -54,11 +53,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
         disposables.addAll(
                 viewStates
                         .filter { it == LoginState.Initial }
-                        .subscribe {
-                            presenter.checkAppInfo()
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe()
-                        },
+                        .subscribe { requestAppInfo() },
 
                 viewStates
                         .filter { it == LoginState.Loading }
@@ -117,6 +112,10 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                             presenter.viewStates.accept(LoginState.Credentials)
                         },
 
+                error
+                        .retryClicks()
+                        .subscribe { requestAppInfo() },
+
                 loginPassword
                         .loginClicks()
                         .subscribe {
@@ -124,8 +123,13 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                                     .subscribeOn(Schedulers.io())
                                     .subscribe()
                         }
-
         )
+    }
+
+    private fun requestAppInfo() {
+        presenter.checkAppInfo()
+                .subscribeOn(Schedulers.io())
+                .subscribe()
     }
 
     private fun applyCredentialError(loginError: String?, passwordError: String?) {

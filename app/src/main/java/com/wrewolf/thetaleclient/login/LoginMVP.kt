@@ -29,8 +29,8 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                 .doOnNext { viewStates.accept(it) }
                 .flatMapSingle { service.info() }
                 .doOnNext { viewStates.accept(LoginState.Chooser) }
-                .onErrorResumeNext(Observable.empty())
                 .doOnError { viewStates.accept(LoginState.Error()) }
+                .onErrorResumeNext(Observable.empty())
     }
 
     fun loginWithEmailAndPassword(email: String, password: String): Observable<Response<AuthInfo>> {
