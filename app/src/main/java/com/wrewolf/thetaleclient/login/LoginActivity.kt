@@ -126,6 +126,12 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                                     .subscribe()
                         },
 
+                loginContentStart
+                        .registerClicks()
+                        .subscribe {
+                            startRegistration()
+                        },
+
                 error
                         .retryClicks()
                         .subscribe { requestAppInfo() },
@@ -136,6 +142,12 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                             presenter.loginWithEmailAndPassword(it.email, it.password)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe()
+                        },
+
+                loginPassword
+                        .remindPasswordClicks()
+                        .subscribe {
+                            openUrl(URL_PASSWORD_REMIND)
                         }
         )
     }
@@ -166,7 +178,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
     }
 
     override fun startRegistration() {
-        startActivity(UiUtils.getOpenLinkIntent(URL_REGISTRATION))
+        openUrl(URL_REGISTRATION)
     }
 
     override fun proceedToGame() {
@@ -178,16 +190,18 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
     }
 
     override fun openThirdPartyAuth(link: String) {
+        openUrl("$URL$link")
+    }
+
+    private fun openUrl(url: String) {
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(this, Uri.parse("$URL$link"))
+        customTabsIntent.launchUrl(this, Uri.parse(url))
     }
 
     companion object {
 
-        private val URL_HOME = "http://the-tale.org/?action=the-tale-client"
-        private val URL_REGISTRATION = "http://the-tale.org/accounts/registration/fast?action=the-tale-client"
-        private val URL_PASSWORD_REMIND = "http://the-tale.org/accounts/profile/reset-password?action=the-tale-client"
-        private val THIRD_PARTY_AUTH_STATE_TIMEOUT: Long = 10000
+        private const val URL_REGISTRATION = "http://the-tale.org/accounts/registration/fast?action=the-tale-client"
+        private const val URL_PASSWORD_REMIND = "http://the-tale.org/accounts/profile/reset-password?action=the-tale-client"
     }
 }
