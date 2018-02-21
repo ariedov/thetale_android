@@ -10,7 +10,9 @@ import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
 import com.wrewolf.thetaleclient.activity.MainActivity
 import com.wrewolf.thetaleclient.util.UiUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 
 import java.net.CookieManager
@@ -47,48 +49,52 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
         super.onStart()
 
         disposables.add(
-                presenter.viewStates.subscribe {
-                    when (it) {
-                        LoginState.Initial -> {
-                            presenter.checkAppInfo()
-                        }
-                        LoginState.Loading -> {
-                            progressBar.visibility = VISIBLE
-                            content.visibility = GONE
-                            error.visibility = GONE
-                        }
-                        LoginState.Chooser -> {
-                            content.visibility = VISIBLE
-                            loginContentStart.visibility = VISIBLE
-                            progressBar.visibility = GONE
-                            loginPassword.visibility = GONE
-                            error.visibility = GONE
-                        }
-                        LoginState.Credentials -> {
-                            content.visibility = VISIBLE
-                            loginPassword.visibility = VISIBLE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                            error.visibility = GONE
-                        }
-                        is LoginState.CredentialsError -> {
-                            applyCredentialError(it.loginError, it.passwordError)
+                presenter.viewStates
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            when (it) {
+                                LoginState.Initial -> {
+                                    presenter.checkAppInfo()
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe()
+                                }
+                                LoginState.Loading -> {
+                                    progressBar.visibility = VISIBLE
+                                    content.visibility = GONE
+                                    error.visibility = GONE
+                                }
+                                LoginState.Chooser -> {
+                                    content.visibility = VISIBLE
+                                    loginContentStart.visibility = VISIBLE
+                                    progressBar.visibility = GONE
+                                    loginPassword.visibility = GONE
+                                    error.visibility = GONE
+                                }
+                                LoginState.Credentials -> {
+                                    content.visibility = VISIBLE
+                                    loginPassword.visibility = VISIBLE
+                                    loginContentStart.visibility = GONE
+                                    progressBar.visibility = GONE
+                                    error.visibility = GONE
+                                }
+                                is LoginState.CredentialsError -> {
+                                    applyCredentialError(it.loginError, it.passwordError)
 
-                            content.visibility = VISIBLE
-                            loginPassword.visibility = VISIBLE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                            error.visibility = GONE
-                        }
-                        is LoginState.Error -> {
-                            error.visibility = VISIBLE
-                            content.visibility = GONE
-                            loginPassword.visibility = GONE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                        }
-                    }
-                })
+                                    content.visibility = VISIBLE
+                                    loginPassword.visibility = VISIBLE
+                                    loginContentStart.visibility = GONE
+                                    progressBar.visibility = GONE
+                                    error.visibility = GONE
+                                }
+                                is LoginState.Error -> {
+                                    error.visibility = VISIBLE
+                                    content.visibility = GONE
+                                    loginPassword.visibility = GONE
+                                    loginContentStart.visibility = GONE
+                                    progressBar.visibility = GONE
+                                }
+                            }
+                        })
 
         disposables.add(
                 loginContentStart
