@@ -31,11 +31,11 @@ class LoginPasswordView @JvmOverloads constructor(
         return RxView.clicks(passwordRemind)
     }
 
-    fun setEmailError(error: String) {
+    fun setEmailError(error: String?) {
         emailLayout.error = error
     }
 
-    fun setPasswordError(error: String) {
+    fun setPasswordError(error: String?) {
         passwordLayout.error = error
     }
 }

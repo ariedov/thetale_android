@@ -10,6 +10,7 @@ import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
 import com.wrewolf.thetaleclient.activity.MainActivity
 import com.wrewolf.thetaleclient.util.UiUtils
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -48,70 +49,88 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
     override fun onStart() {
         super.onStart()
 
-        disposables.add(
-                presenter.viewStates
-                        .observeOn(AndroidSchedulers.mainThread())
+        val viewStates = presenter.viewStates
+                .observeOn(AndroidSchedulers.mainThread())
+        disposables.addAll(
+                viewStates
+                        .filter { it == LoginState.Initial }
                         .subscribe {
-                            when (it) {
-                                LoginState.Initial -> {
-                                    presenter.checkAppInfo()
-                                            .subscribeOn(Schedulers.io())
-                                            .subscribe()
-                                }
-                                LoginState.Loading -> {
-                                    progressBar.visibility = VISIBLE
-                                    content.visibility = GONE
-                                    error.visibility = GONE
-                                }
-                                LoginState.Chooser -> {
-                                    content.visibility = VISIBLE
-                                    loginContentStart.visibility = VISIBLE
-                                    progressBar.visibility = GONE
-                                    loginPassword.visibility = GONE
-                                    error.visibility = GONE
-                                }
-                                LoginState.Credentials -> {
-                                    content.visibility = VISIBLE
-                                    loginPassword.visibility = VISIBLE
-                                    loginContentStart.visibility = GONE
-                                    progressBar.visibility = GONE
-                                    error.visibility = GONE
-                                }
-                                is LoginState.CredentialsError -> {
-                                    applyCredentialError(it.loginError, it.passwordError)
+                            presenter.checkAppInfo()
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe()
+                        },
 
-                                    content.visibility = VISIBLE
-                                    loginPassword.visibility = VISIBLE
-                                    loginContentStart.visibility = GONE
-                                    progressBar.visibility = GONE
-                                    error.visibility = GONE
-                                }
-                                is LoginState.Error -> {
-                                    error.visibility = VISIBLE
-                                    content.visibility = GONE
-                                    loginPassword.visibility = GONE
-                                    loginContentStart.visibility = GONE
-                                    progressBar.visibility = GONE
-                                }
-                            }
-                        })
+                viewStates
+                        .filter { it == LoginState.Loading }
+                        .subscribe {
+                            progressBar.visibility = VISIBLE
+                            content.visibility = GONE
+                            error.visibility = GONE
+                        },
 
-        disposables.add(
+                viewStates
+                        .filter { it == LoginState.Chooser }
+                        .subscribe {
+                            content.visibility = VISIBLE
+                            loginContentStart.visibility = VISIBLE
+                            progressBar.visibility = GONE
+                            loginPassword.visibility = GONE
+                            error.visibility = GONE
+                        },
+
+                viewStates
+                        .filter { it == LoginState.Credentials }
+                        .subscribe {
+                            content.visibility = VISIBLE
+                            loginPassword.visibility = VISIBLE
+                            loginContentStart.visibility = GONE
+                            progressBar.visibility = GONE
+                            error.visibility = GONE
+                        },
+
+                viewStates
+                        .filter { it is LoginState.CredentialsError }
+                        .map { it as LoginState.CredentialsError }
+                        .subscribe {
+                            applyCredentialError(it.loginError, it.passwordError)
+
+                            content.visibility = VISIBLE
+                            loginPassword.visibility = VISIBLE
+                            loginContentStart.visibility = GONE
+                            progressBar.visibility = GONE
+                            error.visibility = GONE
+                        },
+
+                viewStates
+                        .filter { it is LoginState.Error }
+                        .subscribe {
+                            error.visibility = VISIBLE
+                            content.visibility = GONE
+                            loginPassword.visibility = GONE
+                            loginContentStart.visibility = GONE
+                            progressBar.visibility = GONE
+                        },
+
                 loginContentStart
                         .loginWithCredentialsEvents()
                         .subscribe {
                             presenter.viewStates.accept(LoginState.Credentials)
+                        },
+
+                loginPassword
+                        .loginClicks()
+                        .subscribe {
+                            presenter.loginWithEmailAndPassword(it.email, it.password)
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe()
                         }
+
         )
     }
 
     private fun applyCredentialError(loginError: String?, passwordError: String?) {
-        if (loginError != null) {
-            loginPassword.setEmailError(loginError)
-        }
-        if (passwordError != null) {
-            loginPassword.setPasswordError(passwordError)
-        }
+        loginPassword.setEmailError(loginError)
+        loginPassword.setPasswordError(passwordError)
     }
 
     override fun onStop() {

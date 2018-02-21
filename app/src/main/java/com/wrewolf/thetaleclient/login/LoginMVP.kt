@@ -2,11 +2,10 @@ package com.wrewolf.thetaleclient.login
 
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.thetale.api.TheTaleService
 import org.thetale.api.models.AppInfo
+import org.thetale.api.models.AuthInfo
 import org.thetale.api.models.Response
 import javax.inject.Inject
 
@@ -34,22 +33,26 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                 .doOnError { viewStates.accept(LoginState.Error()) }
     }
 
-    fun loginWithEmailAndPassword(email: String, password: String) {
-//        val request = ApiRequest(service.login(email, password))
-//        disposables.add(request.state.subscribe {
-//            when (it) {
-//                RequestState.Loading -> {
-//                    viewStates.accept(LoginState.Loading)
-//                }
-//                is RequestState.Done<*> -> {
-//                    navigator.proceedToGame()
-//                }
-//                is RequestState.Error -> {
-//                    viewStates.accept(LoginState.CredentialsError(email, password))
-//                }
-//            }
-//        })
-//        request.execute()
+    fun loginWithEmailAndPassword(email: String, password: String): Observable<Response<AuthInfo>> {
+        return Observable.just(LoginState.Loading)
+                .doOnNext { viewStates.accept(it) }
+                .flatMapSingle { service.login(email, password) }
+                .onErrorResumeNext(Observable.empty())
+                .doOnNext {
+                    if (it.isError()) {
+                        if (it.errors != null) {
+                            viewStates.accept(LoginState.CredentialsError(
+                                    email, password, it.getEmailError(), it.getPasswordError()))
+                        } else {
+                            viewStates.accept(LoginState.CredentialsError(
+                                    email, password, it.error)
+                            )
+                        }
+                    } else {
+                        navigator.proceedToGame()
+                    }
+                }
+                .doOnError { viewStates.accept(LoginState.CredentialsError(email, password)) }
     }
 
     fun dispose() {
