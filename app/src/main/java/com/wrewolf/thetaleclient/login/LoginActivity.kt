@@ -145,14 +145,14 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
                 loginContentStart
                         .loginFromSiteClicks()
-                        .subscribe {
+                        .flatMap {
                             presenter.thirdPartyLogin(
                                     getString(R.string.app_name),
                                     getString(R.string.app_description),
                                     getString(R.string.app_about))
                                     .subscribeOn(Schedulers.io())
-                                    .subscribe()
-                        },
+                        }
+                        .subscribe(),
 
                 loginContentStart
                         .registerClicks()
@@ -166,11 +166,10 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
                 loginPassword
                         .loginClicks()
-                        .subscribe {
-                            presenter.loginWithEmailAndPassword(it.email, it.password)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe()
-                        },
+                        .flatMap {
+                            presenter.loginWithEmailAndPassword(it.email, it.password).subscribeOn(Schedulers.io())
+                        }
+                        .subscribe(),
 
                 loginPassword
                         .remindPasswordClicks()
@@ -180,11 +179,11 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
                 thirdPartyConfirm
                         .confirmClicks()
-                        .subscribe {
+                        .flatMap {
                             presenter.thirdPartyAuthStatus()
                                     .subscribeOn(Schedulers.io())
-                                    .subscribe()
                         }
+                        .subscribe()
         )
     }
 
