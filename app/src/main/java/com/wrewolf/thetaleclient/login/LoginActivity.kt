@@ -135,8 +135,9 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                             loginPassword.visibility = GONE
                             loginContentStart.visibility = GONE
                             progressBar.visibility = GONE
-                        },
+                        })
 
+        disposables.addAll(
                 loginContentStart
                         .loginWithCredentialsEvents()
                         .subscribe {
@@ -158,12 +159,14 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .registerClicks()
                         .subscribe {
                             startRegistration()
-                        },
+                        })
 
+        disposables.add(
                 error
                         .retryClicks()
-                        .subscribe { requestAppInfo() },
+                        .subscribe { requestAppInfo() })
 
+        disposables.addAll(
                 loginPassword
                         .loginClicks()
                         .flatMap {
@@ -175,16 +178,16 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
                         .remindPasswordClicks()
                         .subscribe {
                             openUrl(URL_PASSWORD_REMIND)
-                        },
+                        })
 
+        disposables.add(
                 thirdPartyConfirm
                         .confirmClicks()
                         .flatMap {
                             presenter.thirdPartyAuthStatus()
                                     .subscribeOn(Schedulers.io())
                         }
-                        .subscribe()
-        )
+                        .subscribe())
     }
 
     private fun requestAppInfo() {

@@ -77,10 +77,10 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                 .flatMapSingle { service.authorizationState() }
                 .onErrorResumeNext(Observable.empty())
                 .doOnNext {
-                    if (it.isError()) {
-                        viewStates.accept(LoginState.ThirdPartyError(it.error))
-                    } else {
-                        navigator.proceedToGame()
+                    when {
+                        it.isError() -> viewStates.accept(LoginState.ThirdPartyError(it.error))
+                        !it.data!!.isAcceptedAuth() -> viewStates.accept(LoginState.ThirdPartyError())
+                        else -> navigator.proceedToGame()
                     }
                 }
                 .doOnError { viewStates.accept(LoginState.ThirdPartyError()) }

@@ -13,3 +13,5 @@ class ThirdPartyStatus(
         @SerializedName("session_expire_at") val expireAt: Long,
         @SerializedName("state") val state: Int
 )
+
+fun ThirdPartyStatus.isAcceptedAuth(): Boolean = state == 2
