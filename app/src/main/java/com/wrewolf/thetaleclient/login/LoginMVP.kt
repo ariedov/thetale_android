@@ -68,7 +68,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                         navigator.openThirdPartyAuth(it.data!!.authorizationPage)
                     }
                 }
-                .doOnError { viewStates.accept(LoginState.ThirdPartyError()) }
+                .doOnError { viewStates.accept(LoginState.ThirdPartyError) }
     }
 
     fun thirdPartyAuthStatus(): Observable<Response<ThirdPartyStatus>> {
@@ -78,12 +78,12 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
                 .onErrorResumeNext(Observable.empty())
                 .doOnNext {
                     when {
-                        it.isError() -> viewStates.accept(LoginState.ThirdPartyError(it.error))
-                        !it.data!!.isAcceptedAuth() -> viewStates.accept(LoginState.ThirdPartyError())
+                        it.isError() -> viewStates.accept(LoginState.ThirdPartyError)
+                        !it.data!!.isAcceptedAuth() -> viewStates.accept(LoginState.ThirdPartyStatusError)
                         else -> navigator.proceedToGame()
                     }
                 }
-                .doOnError { viewStates.accept(LoginState.ThirdPartyError()) }
+                .doOnError { viewStates.accept(LoginState.ThirdPartyError) }
     }
 
     fun dispose() {

@@ -23,16 +23,13 @@ import javax.inject.Inject
 import okhttp3.OkHttpClient
 import org.thetale.api.URL
 
-class LoginActivity : AppCompatActivity(), LoginNavigation {
+class LoginActivity : AppCompatActivity(), LoginNavigation, InnerNavigation {
 
-    @Inject
-    lateinit var presenter: LoginPresenter
-    @Inject
-    lateinit var client: OkHttpClient
-    @Inject
-    lateinit var cookieManager: CookieManager
+    @Inject lateinit var presenter: LoginPresenter
+    @Inject lateinit var client: OkHttpClient
+    @Inject lateinit var cookieManager: CookieManager
 
-    private val disposables = CompositeDisposable()
+    private lateinit var disposables: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +41,6 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
         presenter.navigator = this
 
         setContentView(R.layout.activity_login)
-
     }
 
     override fun onStart() {
@@ -52,90 +48,45 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
         val viewStates = presenter.viewStates
                 .observeOn(AndroidSchedulers.mainThread())
+        disposables = CompositeDisposable()
         disposables.addAll(
                 viewStates
                         .filter { it == LoginState.Initial }
-                        .subscribe { requestAppInfo() },
+                        .observeOn(Schedulers.io())
+                        .flatMap { presenter.checkAppInfo() }
+                        .subscribe(),
 
                 viewStates
                         .filter { it == LoginState.Loading }
-                        .subscribe {
-                            progressBar.visibility = VISIBLE
-                            thirdPartyConfirm.visibility = GONE
-                            content.visibility = GONE
-                            error.visibility = GONE
-                        },
+                        .subscribe { showLoading() },
 
                 viewStates
                         .filter { it == LoginState.Chooser }
-                        .subscribe {
-                            content.visibility = VISIBLE
-                            loginContentStart.visibility = VISIBLE
-                            thirdPartyConfirm.visibility = GONE
-                            progressBar.visibility = GONE
-                            loginPassword.visibility = GONE
-                            error.visibility = GONE
-                        },
+                        .subscribe { showChooser() },
 
                 viewStates
                         .filter { it == LoginState.Credentials }
-                        .subscribe {
-                            content.visibility = VISIBLE
-                            loginPassword.visibility = VISIBLE
-                            thirdPartyConfirm.visibility = GONE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                            error.visibility = GONE
-                        },
+                        .subscribe { showEmailPassword() },
 
                 viewStates
                         .filter { it is LoginState.CredentialsError }
                         .map { it as LoginState.CredentialsError }
-                        .subscribe {
-                            applyCredentialError(it.loginError, it.passwordError)
-
-                            content.visibility = VISIBLE
-                            loginPassword.visibility = VISIBLE
-                            thirdPartyConfirm.visibility = GONE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                            error.visibility = GONE
-                        },
+                        .subscribe { showLoginError(it.login, it.password, it.loginError, it.passwordError) },
 
                 viewStates
                         .filter { it is LoginState.Error }
-                        .subscribe {
-                            error.visibility = VISIBLE
-                            content.visibility = GONE
-                            thirdPartyConfirm.visibility = GONE
-                            loginPassword.visibility = GONE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                        },
+                        .subscribe { showInitError() },
 
                 viewStates
                         .filter { it == LoginState.ThirdPartyConfirm }
-                        .subscribe {
-                            thirdPartyConfirm.visibility = VISIBLE
-                            content.visibility = VISIBLE
-                            error.visibility = GONE
-                            loginPassword.visibility = GONE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                        },
+                        .subscribe { showThirdParty() },
+                viewStates
+                        .filter { it == LoginState.ThirdPartyStatusError }
+                        .subscribe { showThirdPartyStatusError() },
 
                 viewStates
-                        .filter { it is LoginState.ThirdPartyError }
-                        .map { it as LoginState.ThirdPartyError }
-                        .subscribe {
-                            content.visibility = VISIBLE
-                            thirdPartyConfirm.visibility = VISIBLE
-                            thirdPartyConfirm.setError(it.error)
-                            error.visibility = GONE
-                            loginPassword.visibility = GONE
-                            loginContentStart.visibility = GONE
-                            progressBar.visibility = GONE
-                        })
+                        .filter { it == LoginState.ThirdPartyError }
+                        .subscribe { showThirdPartyError() })
 
         disposables.addAll(
                 loginContentStart
@@ -146,12 +97,12 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
                 loginContentStart
                         .loginFromSiteClicks()
+                        .observeOn(Schedulers.io())
                         .flatMap {
                             presenter.thirdPartyLogin(
                                     getString(R.string.app_name),
                                     getString(R.string.app_description),
                                     getString(R.string.app_about))
-                                    .subscribeOn(Schedulers.io())
                         }
                         .subscribe(),
 
@@ -164,41 +115,102 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
         disposables.add(
                 error
                         .retryClicks()
-                        .subscribe { requestAppInfo() })
-
-        disposables.addAll(
-                loginPassword
-                        .loginClicks()
-                        .flatMap {
-                            presenter.loginWithEmailAndPassword(it.email, it.password).subscribeOn(Schedulers.io())
-                        }
-                        .subscribe(),
-
-                loginPassword
-                        .remindPasswordClicks()
-                        .subscribe {
-                            openUrl(URL_PASSWORD_REMIND)
-                        })
+                        .observeOn(Schedulers.io())
+                        .flatMap { presenter.checkAppInfo() }
+                        .subscribe())
 
         disposables.add(
                 thirdPartyConfirm
                         .confirmClicks()
-                        .flatMap {
-                            presenter.thirdPartyAuthStatus()
-                                    .subscribeOn(Schedulers.io())
-                        }
+                        .observeOn(Schedulers.io())
+                        .flatMap { presenter.thirdPartyAuthStatus() }
                         .subscribe())
+
+        disposables.addAll(
+                loginPassword
+                        .loginClicks()
+                        .observeOn(Schedulers.io())
+                        .flatMap { presenter.loginWithEmailAndPassword(it.email, it.password) }
+                        .subscribe(),
+
+                loginPassword
+                        .remindPasswordClicks()
+                        .subscribe { openUrl(URL_PASSWORD_REMIND) })
     }
 
-    private fun requestAppInfo() {
-        presenter.checkAppInfo()
-                .subscribeOn(Schedulers.io())
-                .subscribe()
+    override fun showLoading() {
+        progressBar.visibility = VISIBLE
+        content.visibility = GONE
+        error.visibility = GONE
     }
 
-    private fun applyCredentialError(loginError: String?, passwordError: String?) {
-        loginPassword.setEmailError(loginError)
+    override fun showChooser() {
+        content.visibility = VISIBLE
+        loginContentStart.visibility = VISIBLE
+        thirdPartyConfirm.visibility = GONE
+        progressBar.visibility = GONE
+        loginPassword.visibility = GONE
+        error.visibility = GONE
+    }
+
+    override fun showEmailPassword() {
+        content.visibility = VISIBLE
+        loginPassword.visibility = VISIBLE
+        thirdPartyConfirm.visibility = GONE
+        loginContentStart.visibility = GONE
+        progressBar.visibility = GONE
+        error.visibility = GONE
+    }
+
+    override fun showEmailPassword(email: String, password: String) {
+        loginPassword.setEmail(email)
+        loginPassword.setPassword(password)
+
+        showEmailPassword()
+    }
+
+    override fun showLoginError(email: String, password: String, emailError: String?, passwordError: String?) {
+        loginPassword.setEmailError(emailError)
         loginPassword.setPasswordError(passwordError)
+
+        showEmailPassword()
+    }
+
+    override fun showInitError() {
+        error.visibility = VISIBLE
+        content.visibility = GONE
+        thirdPartyConfirm.visibility = GONE
+        loginPassword.visibility = GONE
+        loginContentStart.visibility = GONE
+        progressBar.visibility = GONE
+    }
+
+    override fun showThirdParty() {
+        thirdPartyConfirm.visibility = VISIBLE
+        content.visibility = VISIBLE
+        error.visibility = GONE
+        loginPassword.visibility = GONE
+        loginContentStart.visibility = GONE
+        progressBar.visibility = GONE
+    }
+
+    override fun showThirdPartyError() {
+        error.visibility = VISIBLE
+        content.visibility = GONE
+        thirdPartyConfirm.visibility = GONE
+        loginPassword.visibility = GONE
+        loginContentStart.visibility = GONE
+        progressBar.visibility = GONE
+    }
+
+    override fun showThirdPartyStatusError() {
+        content.visibility = VISIBLE
+        thirdPartyConfirm.visibility = VISIBLE
+        thirdPartyConfirm.setError(getString(R.string.error_third_party_login))
+        error.visibility = GONE
+        loginPassword.visibility = GONE
+        loginContentStart.visibility = GONE
+        progressBar.visibility = GONE
     }
 
     override fun onStop() {

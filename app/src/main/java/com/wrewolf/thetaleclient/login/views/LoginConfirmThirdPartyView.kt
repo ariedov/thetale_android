@@ -9,7 +9,7 @@ import com.wrewolf.thetaleclient.R
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.layout_login_confirm_third_party.view.*
 
-class LoginConfirmThirdParty @JvmOverloads constructor(
+class LoginConfirmThirdPartyView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
