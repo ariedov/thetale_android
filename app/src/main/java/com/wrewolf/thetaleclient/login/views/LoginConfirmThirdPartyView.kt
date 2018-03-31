@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.layout_login_confirm_third_party.view.*
 
 class LoginConfirmThirdPartyView @JvmOverloads constructor(
@@ -19,8 +17,8 @@ class LoginConfirmThirdPartyView @JvmOverloads constructor(
                 .inflate(R.layout.layout_login_confirm_third_party, this)
     }
 
-    fun confirmClicks(): Observable<Any> {
-        return RxView.clicks(confirmLogin)
+    fun onConfirmClick(listener: OnClickListener) {
+        confirmLogin.setOnClickListener(listener)
     }
 
     fun setError(error: String?) {

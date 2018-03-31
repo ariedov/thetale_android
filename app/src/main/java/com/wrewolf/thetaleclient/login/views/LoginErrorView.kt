@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.layout_login_error.view.*
 
 class LoginErrorView @JvmOverloads constructor(
@@ -23,7 +21,7 @@ class LoginErrorView @JvmOverloads constructor(
         errorText.text = error
     }
 
-    fun retryClicks(): Observable<Any> {
-        return RxView.clicks(retry)
+    fun onRetryClick(listener: OnClickListener) {
+        retry.setOnClickListener(listener)
     }
 }

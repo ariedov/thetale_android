@@ -1,9 +1,9 @@
 package com.wrewolf.thetaleclient.login
 
-import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import org.thetale.api.TheTaleService
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.thetale.api.*
 import org.thetale.api.models.*
 import javax.inject.Inject
 
@@ -16,77 +16,69 @@ interface LoginNavigation {
     fun openThirdPartyAuth(link: String)
 }
 
+
 class LoginPresenter @Inject constructor(private val service: TheTaleService) {
 
-    val viewStates: BehaviorRelay<LoginState> = BehaviorRelay.createDefault(LoginState.Initial)
-
+    lateinit var view: LoginView
     lateinit var navigator: LoginNavigation
 
-    private val disposables = CompositeDisposable()
+    private var appInfoDeferred: Deferred<Result<AppInfo>>? = null
+    private var loginDeferred: Deferred<Result<AuthInfo>>? = null
+    private var thirdPartyDeferred: Deferred<Result<ThirdPartyLink>>? = null
+    private var thirdPartyStatusDeferred: Deferred<Result<ThirdPartyStatus>>? = null
 
-    fun checkAppInfo(): Observable<Response<AppInfo>> {
-        return Observable.just(LoginState.Loading)
-                .doOnNext { viewStates.accept(it) }
-                .flatMapSingle { service.info() }
-                .doOnNext { viewStates.accept(LoginState.Chooser) }
-                .doOnError { viewStates.accept(LoginState.Error()) }
-                .onErrorResumeNext(Observable.empty())
+    fun start() {
+        checkAppInfo()
     }
 
-    fun loginWithEmailAndPassword(email: String, password: String): Observable<Response<AuthInfo>> {
-        return Observable.just(LoginState.Loading)
-                .doOnNext { viewStates.accept(it) }
-                .flatMapSingle { service.login(email, password) }
-                .onErrorResumeNext(Observable.empty())
-                .doOnNext {
-                    if (it.isError()) {
-                        if (it.errors != null) {
-                            viewStates.accept(LoginState.CredentialsError(
-                                    email, password, it.getEmailError(), it.getPasswordError()))
+    private fun checkAppInfo() {
+        appInfoDeferred = async(UI) {
+            service.info().getResult()
+                    .onSuccess { view.showChooser() }
+                    .onError { view.showInitError() }
+        }
+    }
+
+    fun loginWithEmailAndPassword(email: String, password: String) {
+
+        loginDeferred = async {
+            service.login(email, password).getResult()
+                    .onSuccess {
+                        if (it.isError()) {
+
                         } else {
-                            viewStates.accept(LoginState.CredentialsError(
-                                    email, password, it.error)
-                            )
+                            navigator.proceedToGame()
                         }
-                    } else {
-                        navigator.proceedToGame()
                     }
-                }
-                .doOnError { viewStates.accept(LoginState.CredentialsError(email, password)) }
+                    .onError {  }
+        }
     }
 
-    fun thirdPartyLogin(appName: String, appInfo: String, appDescription: String): Observable<Response<ThirdPartyLink>> {
-        return Observable.just(LoginState.Loading)
-                .doOnNext { viewStates.accept(it) }
-                .flatMapSingle { service.login(appName, appInfo, appDescription) }
-                .onErrorResumeNext(Observable.empty())
-                .doOnNext {
-                    if (it.isError()) {
-                        viewStates.accept(LoginState.Error(it.error))
-                    } else {
-                        viewStates.accept(LoginState.ThirdPartyConfirm)
-                        navigator.openThirdPartyAuth(it.data!!.authorizationPage)
-                    }
-                }
-                .doOnError { viewStates.accept(LoginState.ThirdPartyError) }
+    fun thirdPartyLogin(appName: String, appInfo: String, appDescription: String) {
+        thirdPartyDeferred = async {
+            service.login(appName, appInfo, appDescription).getResult()
+                    .onSuccess { navigator.openThirdPartyAuth(it.data!!.authorizationPage) }
+                    .onError {  }
+        }
     }
 
-    fun thirdPartyAuthStatus(): Observable<Response<ThirdPartyStatus>> {
-        return Observable.just(LoginState.Loading)
-                .doOnNext { viewStates.accept(it) }
-                .flatMapSingle { service.authorizationState() }
-                .onErrorResumeNext(Observable.empty())
-                .doOnNext {
-                    when {
-                        it.isError() -> viewStates.accept(LoginState.ThirdPartyError)
-                        !it.data!!.isAcceptedAuth() -> viewStates.accept(LoginState.ThirdPartyStatusError)
-                        else -> navigator.proceedToGame()
+    fun thirdPartyAuthStatus() {
+        thirdPartyStatusDeferred = async {
+            service.authorizationState().getResult()
+                    .onSuccess {
+                        if (it.isError()) {
+
+                        } else {
+                            navigator.proceedToGame()
+                        }
                     }
-                }
-                .doOnError { viewStates.accept(LoginState.ThirdPartyError) }
+                    .onError {  }
+        }
     }
 
     fun dispose() {
-        disposables.dispose()
+        appInfoDeferred?.cancel()
+        loginDeferred?.cancel()
+        thirdPartyDeferred?.cancel()
     }
 }

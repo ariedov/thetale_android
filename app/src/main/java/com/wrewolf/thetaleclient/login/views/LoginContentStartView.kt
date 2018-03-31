@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.layout_login_content_start.view.*
 
 class LoginContentStartView @JvmOverloads constructor(
@@ -19,18 +17,15 @@ class LoginContentStartView @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.layout_login_content_start, this)
     }
 
-    fun loginFromSiteClicks(): Observable<Any> {
-        return RxView
-                .clicks(loginFromSite)
+    fun onLoginFromSiteClick(listener: OnClickListener) {
+        loginFromSite.setOnClickListener(listener)
     }
 
-    fun loginWithCredentialsEvents(): Observable<Any> {
-        return RxView
-                .clicks(loginWithCredentials)
+    fun onLoginWithCredentials(listener: OnClickListener) {
+        loginWithCredentials.setOnClickListener(listener)
     }
 
-    fun registerClicks(): Observable<Any> {
-        return RxView
-                .clicks(registerAccount)
+    fun registerClicks(listener: OnClickListener) {
+        registerAccount.setOnClickListener(listener)
     }
 }

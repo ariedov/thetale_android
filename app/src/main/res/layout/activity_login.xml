@@ -21,14 +21,6 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="32dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/game_logo" />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

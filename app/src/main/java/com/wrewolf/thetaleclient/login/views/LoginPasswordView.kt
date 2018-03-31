@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding2.view.RxView
 import com.wrewolf.thetaleclient.R
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.layout_login_password.view.*
 
 class LoginPasswordView @JvmOverloads constructor(
@@ -19,16 +17,12 @@ class LoginPasswordView @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.layout_login_password, this)
     }
 
-    fun loginClicks(): Observable<LoginEvent> {
-        return RxView.clicks(actionLogin)
-                .map { LoginEvent(
-                        emailLayout.editText!!.text.toString(),
-                        passwordLayout.editText!!.text.toString())
-                }
+    fun onLoginClick(listener: OnClickListener) {
+        actionLogin.setOnClickListener(listener)
     }
 
-    fun remindPasswordClicks(): Observable<Any> {
-        return RxView.clicks(passwordRemind)
+    fun onRemindPasswordClick(listener: OnClickListener) {
+        passwordRemind.setOnClickListener(listener)
     }
 
     fun setEmail(email: String) {

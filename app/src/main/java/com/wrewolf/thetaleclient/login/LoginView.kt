@@ -1,6 +1,6 @@
 package com.wrewolf.thetaleclient.login
 
-internal interface InnerNavigation {
+interface LoginView {
 
     fun showLoading()
 

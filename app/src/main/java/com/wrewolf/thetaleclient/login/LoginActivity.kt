@@ -11,9 +11,6 @@ import android.view.View.VISIBLE
 import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
 import com.wrewolf.thetaleclient.activity.MainActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 
 import java.net.CookieManager
@@ -23,13 +20,11 @@ import javax.inject.Inject
 import okhttp3.OkHttpClient
 import org.thetale.api.URL
 
-class LoginActivity : AppCompatActivity(), LoginNavigation, InnerNavigation {
+class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
 
     @Inject lateinit var presenter: LoginPresenter
     @Inject lateinit var client: OkHttpClient
     @Inject lateinit var cookieManager: CookieManager
-
-    private lateinit var disposables: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +34,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, InnerNavigation {
                 .inject(this)
 
         presenter.navigator = this
+        presenter.view = this
 
         setContentView(R.layout.activity_login)
     }
@@ -46,96 +42,98 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, InnerNavigation {
     override fun onStart() {
         super.onStart()
 
-        val viewStates = presenter.viewStates
-                .observeOn(AndroidSchedulers.mainThread())
-        disposables = CompositeDisposable()
-        disposables.addAll(
-                viewStates
-                        .filter { it == LoginState.Initial }
-                        .observeOn(Schedulers.io())
-                        .flatMap { presenter.checkAppInfo() }
-                        .subscribe(),
+        presenter.start()
 
-                viewStates
-                        .filter { it == LoginState.Loading }
-                        .subscribe { showLoading() },
-
-                viewStates
-                        .filter { it == LoginState.Chooser }
-                        .subscribe { showChooser() },
-
-                viewStates
-                        .filter { it == LoginState.Credentials }
-                        .subscribe { showEmailPassword() },
-
-                viewStates
-                        .filter { it is LoginState.CredentialsError }
-                        .map { it as LoginState.CredentialsError }
-                        .subscribe { showLoginError(it.login, it.password, it.loginError, it.passwordError) },
-
-                viewStates
-                        .filter { it is LoginState.Error }
-                        .subscribe { showInitError() },
-
-                viewStates
-                        .filter { it == LoginState.ThirdPartyConfirm }
-                        .subscribe { showThirdParty() },
-                viewStates
-                        .filter { it == LoginState.ThirdPartyStatusError }
-                        .subscribe { showThirdPartyStatusError() },
-
-                viewStates
-                        .filter { it == LoginState.ThirdPartyError }
-                        .subscribe { showThirdPartyError() })
-
-        disposables.addAll(
-                loginContentStart
-                        .loginWithCredentialsEvents()
-                        .subscribe {
-                            presenter.viewStates.accept(LoginState.Credentials)
-                        },
-
-                loginContentStart
-                        .loginFromSiteClicks()
-                        .observeOn(Schedulers.io())
-                        .flatMap {
-                            presenter.thirdPartyLogin(
-                                    getString(R.string.app_name),
-                                    getString(R.string.app_description),
-                                    getString(R.string.app_about))
-                        }
-                        .subscribe(),
-
-                loginContentStart
-                        .registerClicks()
-                        .subscribe {
-                            startRegistration()
-                        })
-
-        disposables.add(
-                error
-                        .retryClicks()
-                        .observeOn(Schedulers.io())
-                        .flatMap { presenter.checkAppInfo() }
-                        .subscribe())
-
-        disposables.add(
-                thirdPartyConfirm
-                        .confirmClicks()
-                        .observeOn(Schedulers.io())
-                        .flatMap { presenter.thirdPartyAuthStatus() }
-                        .subscribe())
-
-        disposables.addAll(
-                loginPassword
-                        .loginClicks()
-                        .observeOn(Schedulers.io())
-                        .flatMap { presenter.loginWithEmailAndPassword(it.email, it.password) }
-                        .subscribe(),
-
-                loginPassword
-                        .remindPasswordClicks()
-                        .subscribe { openUrl(URL_PASSWORD_REMIND) })
+//        val viewStates = presenter.viewStates
+//                .observeOn(AndroidSchedulers.mainThread())
+//        disposables = CompositeDisposable()
+//        disposables.addAll(
+//                viewStates
+//                        .filter { it == LoginState.Initial }
+//                        .observeOn(Schedulers.io())
+//                        .flatMap { presenter.checkAppInfo() }
+//                        .subscribe(),
+//
+//                viewStates
+//                        .filter { it == LoginState.Loading }
+//                        .subscribe { showLoading() },
+//
+//                viewStates
+//                        .filter { it == LoginState.Chooser }
+//                        .subscribe { showChooser() },
+//
+//                viewStates
+//                        .filter { it == LoginState.Credentials }
+//                        .subscribe { showEmailPassword() },
+//
+//                viewStates
+//                        .filter { it is LoginState.CredentialsError }
+//                        .map { it as LoginState.CredentialsError }
+//                        .subscribe { showLoginError(it.login, it.password, it.loginError, it.passwordError) },
+//
+//                viewStates
+//                        .filter { it is LoginState.Error }
+//                        .subscribe { showInitError() },
+//
+//                viewStates
+//                        .filter { it == LoginState.ThirdPartyConfirm }
+//                        .subscribe { showThirdParty() },
+//                viewStates
+//                        .filter { it == LoginState.ThirdPartyStatusError }
+//                        .subscribe { showThirdPartyStatusError() },
+//
+//                viewStates
+//                        .filter { it == LoginState.ThirdPartyError }
+//                        .subscribe { showThirdPartyError() })
+//
+//        disposables.addAll(
+//                loginContentStart
+//                        .loginWithCredentialsEvents()
+//                        .subscribe {
+//                            presenter.viewStates.accept(LoginState.Credentials)
+//                        },
+//
+//                loginContentStart
+//                        .loginFromSiteClicks()
+//                        .observeOn(Schedulers.io())
+//                        .flatMap {
+//                            presenter.thirdPartyLogin(
+//                                    getString(R.string.app_name),
+//                                    getString(R.string.app_description),
+//                                    getString(R.string.app_about))
+//                        }
+//                        .subscribe(),
+//
+//                loginContentStart
+//                        .registerClicks()
+//                        .subscribe {
+//                            startRegistration()
+//                        })
+//
+//        disposables.add(
+//                error
+//                        .retryClicks()
+//                        .observeOn(Schedulers.io())
+//                        .flatMap { presenter.checkAppInfo() }
+//                        .subscribe())
+//
+//        disposables.add(
+//                thirdPartyConfirm
+//                        .confirmClicks()
+//                        .observeOn(Schedulers.io())
+//                        .flatMap { presenter.thirdPartyAuthStatus() }
+//                        .subscribe())
+//
+//        disposables.addAll(
+//                loginPassword
+//                        .loginClicks()
+//                        .observeOn(Schedulers.io())
+//                        .flatMap { presenter.loginWithEmailAndPassword(it.email, it.password) }
+//                        .subscribe(),
+//
+//                loginPassword
+//                        .remindPasswordClicks()
+//                        .subscribe { openUrl(URL_PASSWORD_REMIND) })
     }
 
     override fun showLoading() {
@@ -215,7 +213,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, InnerNavigation {
 
     override fun onStop() {
         super.onStop()
-        disposables.dispose()
+//        disposables.dispose()
     }
 
     override fun onDestroy() {
