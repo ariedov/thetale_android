@@ -10,6 +10,7 @@ import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import org.thetale.api.ClientBuilder
 import org.thetale.api.TheTaleService
+import org.thetale.api.URL
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
@@ -53,6 +54,7 @@ class ApiModule {
                     .apply {
                         if (request.method() == "POST" && token != null) {
                             addHeader(HEADER_CSRF_TOKEN, token)
+                            addHeader(HEADER_REFERER, URL)
                         }
                     }
                     .url(url)
@@ -89,6 +91,7 @@ class ApiModule {
     companion object {
         private const val COOKIE_CSRF_TOKEN = "csrftoken"
         private const val HEADER_CSRF_TOKEN = "X-CSRFToken"
+        private const val HEADER_REFERER = "Referer"
 
     }
 }

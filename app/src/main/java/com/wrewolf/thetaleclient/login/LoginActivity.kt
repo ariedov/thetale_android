@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 
@@ -37,6 +38,26 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
         presenter.view = this
 
         setContentView(R.layout.activity_login)
+
+        loginContentStart.onLoginFromSiteClick(View.OnClickListener {
+            presenter.thirdPartyLogin(
+                    getString(R.string.app_name),
+                    getString(R.string.app_description),
+                    getString(R.string.app_about)
+            )
+        })
+
+        loginContentStart.onLoginWithCredentials(View.OnClickListener {
+            showChooser()
+        })
+
+        loginContentStart.registerClicks(View.OnClickListener {
+            startRegistration()
+        })
+
+        thirdPartyConfirm.onConfirmClick(View.OnClickListener {
+            presenter.thirdPartyAuthStatus()
+        })
     }
 
     override fun onStart() {
@@ -92,17 +113,6 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
 //                        .subscribe {
 //                            presenter.viewStates.accept(LoginState.Credentials)
 //                        },
-//
-//                loginContentStart
-//                        .loginFromSiteClicks()
-//                        .observeOn(Schedulers.io())
-//                        .flatMap {
-//                            presenter.thirdPartyLogin(
-//                                    getString(R.string.app_name),
-//                                    getString(R.string.app_description),
-//                                    getString(R.string.app_about))
-//                        }
-//                        .subscribe(),
 //
 //                loginContentStart
 //                        .registerClicks()
@@ -225,16 +235,16 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
         }
     }
 
-    override fun startRegistration() {
-        openUrl(URL_REGISTRATION)
-    }
-
     override fun proceedToGame() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtras(getIntent())
 
         startActivity(intent)
         finish()
+    }
+
+    override fun startRegistration() {
+        openUrl(URL_REGISTRATION)
     }
 
     override fun openThirdPartyAuth(link: String) {
