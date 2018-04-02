@@ -1,6 +1,6 @@
 package com.wrewolf.thetaleclient.login.steps.chooser
 
-interface ChooserNavigator {
+internal interface ChooserNavigator {
 
     fun openThirdPartyLogin(url: String)
 

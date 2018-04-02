@@ -1,6 +1,6 @@
 package com.wrewolf.thetaleclient.login.steps.chooser
 
-interface ChooserView {
+internal interface ChooserView {
 
     fun showProgress()
 

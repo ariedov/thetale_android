@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
+import kotlinx.android.synthetic.main.fragment_login_chooser.*
 import javax.inject.Inject
 
 class LoginChooserFragment: Fragment(), ChooserView, ChooserNavigator {
@@ -19,6 +22,9 @@ class LoginChooserFragment: Fragment(), ChooserView, ChooserNavigator {
         TheTaleClientApplication.getComponentProvider()
                 .loginComponent!!
                 .inject(this)
+
+        presenter.view = this
+        presenter.navigator = this
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,8 +51,19 @@ class LoginChooserFragment: Fragment(), ChooserView, ChooserNavigator {
     }
 
     override fun showProgress() {
+        progress.visibility = VISIBLE
+        loginContentStart.visibility = GONE
     }
 
     override fun hideProgress() {
+        progress.visibility = GONE
+        loginContentStart.visibility = VISIBLE
+    }
+
+    companion object {
+
+        fun create(): LoginChooserFragment {
+            return LoginChooserFragment()
+        }
     }
 }

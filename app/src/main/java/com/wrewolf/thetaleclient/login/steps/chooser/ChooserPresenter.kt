@@ -9,12 +9,12 @@ import org.thetale.api.call
 
 class ChooserPresenter(private val service: TheTaleService) {
 
-    private lateinit var view: ChooserView
-    private lateinit var navigator: ChooserNavigator
+    internal lateinit var view: ChooserView
+    internal lateinit var navigator: ChooserNavigator
 
     private var thirdPartyDeferred: Job? = null
 
-    private val state = PresenterState()
+    private val state = PresenterState { view.hideProgress() }
 
     fun thirdPartyLogin(appName: String, appInfo: String, appDescription: String) {
         thirdPartyDeferred = launch(UI) {

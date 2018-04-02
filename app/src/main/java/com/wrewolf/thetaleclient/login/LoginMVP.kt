@@ -10,11 +10,7 @@ import javax.inject.Inject
 
 interface LoginNavigation {
 
-    fun startRegistration()
-
-    fun proceedToGame()
-
-    fun openThirdPartyAuth(link: String)
+    fun showChooser()
 }
 
 class LoginPresenter @Inject constructor(private val service: TheTaleService) {
@@ -47,7 +43,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     fun loginWithEmailAndPassword(email: String, password: String) {
         loginDeferred = launch(UI) {
             service.login(email, password).call()
-            navigator.proceedToGame()
+//            navigator.proceedToGame()
             state.clear()
         }
     }
@@ -57,7 +53,7 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
             try {
                 val status = service.authorizationState().call()
                 if (status.isAcceptedAuth()) {
-                    navigator.proceedToGame()
+//                    navigator.proceedToGame()
                     state.clear()
                 } else {
                     state.apply { view.showThirdPartyStatusError() }
