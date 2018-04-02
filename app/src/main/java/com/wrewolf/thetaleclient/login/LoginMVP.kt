@@ -1,11 +1,11 @@
 package com.wrewolf.thetaleclient.login
 
 import com.wrewolf.thetaleclient.PresenterState
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.thetale.api.*
-import org.thetale.api.models.*
+import org.thetale.api.models.isAcceptedAuth
 import javax.inject.Inject
 
 interface LoginNavigation {
@@ -24,60 +24,47 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
 
     private val state = PresenterState { checkAppInfo() }
 
-    private var appInfoDeferred: Deferred<Result<AppInfo>>? = null
-    private var loginDeferred: Deferred<Result<AuthInfo>>? = null
-    private var thirdPartyDeferred: Deferred<Result<ThirdPartyLink>>? = null
-    private var thirdPartyStatusDeferred: Deferred<Result<ThirdPartyStatus>>? = null
+    private var appInfoDeferred: Job? = null
+    private var loginDeferred: Job? = null
+    private var thirdPartyDeferred: Job? = null
+    private var thirdPartyStatusDeferred: Job? = null
 
     fun start() {
         state.apply()
     }
 
     private fun checkAppInfo() {
-        appInfoDeferred = async(UI) {
-            service.info().getResult()
-                    .onSuccess { state.apply { view.showChooser() } }
-                    .onError { state.apply { view.showInitError() } }
+        appInfoDeferred = launch(UI) {
+            try {
+                service.info().call()
+                state.apply { view.showChooser() }
+            } catch (e: Exception) {
+                state.apply { view.showInitError() }
+            }
         }
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
-
-        loginDeferred = async(UI) {
-            service.login(email, password).getResult()
-                    .onSuccess {
-                        if (it.isError()) {
-
-                        } else {
-                            navigator.proceedToGame()
-                            state.clear()
-                        }
-                    }
-                    .onError {
-                    }
-        }
-    }
-
-    fun thirdPartyLogin(appName: String, appInfo: String, appDescription: String) {
-        thirdPartyDeferred = async(UI) {
-            service.login(appName, appInfo, appDescription).getResult()
-                    .onSuccess {
-                        navigator.openThirdPartyAuth(it.data!!.authorizationPage)
-                        state.apply { view.showThirdParty() }
-                    }
+        loginDeferred = launch(UI) {
+            service.login(email, password).call()
+            navigator.proceedToGame()
+            state.clear()
         }
     }
 
     fun thirdPartyAuthStatus() {
-        thirdPartyStatusDeferred = async(UI) {
-            service.authorizationState().getResult()
-                    .onSuccess {
-                        navigator.proceedToGame()
-                        state.clear()
-                    }
-                    .onError {
-                        state.apply {  view.showThirdPartyStatusError() }
-                    }
+        thirdPartyStatusDeferred = launch(UI) {
+            try {
+                val status = service.authorizationState().call()
+                if (status.isAcceptedAuth()) {
+                    navigator.proceedToGame()
+                    state.clear()
+                } else {
+                    state.apply { view.showThirdPartyStatusError() }
+                }
+            } catch (e: Exception) {
+                state.apply { view.showThirdPartyStatusError() }
+            }
         }
     }
 

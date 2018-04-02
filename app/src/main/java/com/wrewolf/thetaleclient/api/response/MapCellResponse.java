@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Parsing html code to get cell info
+ * Parsing html code to call cell info
  * Not quite reliable, really, but we don't have API for that
  * @author Hamster
  * @since 15.10.2014
