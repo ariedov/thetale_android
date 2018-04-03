@@ -1,4 +1,4 @@
-package com.wrewolf.thetaleclient.login.views
+package com.wrewolf.thetaleclient.login.steps.thirdparty
 
 import android.content.Context
 import android.util.AttributeSet
@@ -19,6 +19,10 @@ class LoginConfirmThirdPartyView @JvmOverloads constructor(
 
     fun onConfirmClick(listener: OnClickListener) {
         confirmLogin.setOnClickListener(listener)
+    }
+
+    fun onTryAgainClick(listener: OnClickListener) {
+        tryAgain.setOnClickListener(listener)
     }
 
     fun setError(error: String?) {

@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:layout_height="wrap_content"
-    tools:layout_width="wrap_content"
+    tools:layout_width="match_parent"
     tools:orientation="vertical"
     tools:parentTag="android.widget.LinearLayout">
 
@@ -11,7 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/action_third_party_login"/>
+        android:layout_marginBottom="8dp"
+        android:text="@string/action_third_party_login" />
+
+
+    <TextView
+        android:id="@+id/tryAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="@string/try_again"
+        android:textColor="@android:color/holo_blue_dark" />
 
     <TextView
         android:id="@+id/thirdPartyError"
@@ -19,6 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@color/common_error"
-        tools:text="А вот и не выдал"/>
+        tools:text="А вот и не выдал" />
 
 </merge>

@@ -1,4 +1,4 @@
-package com.wrewolf.thetaleclient.login.views
+package com.wrewolf.thetaleclient.login.steps.chooser
 
 import android.content.Context
 import android.util.AttributeSet

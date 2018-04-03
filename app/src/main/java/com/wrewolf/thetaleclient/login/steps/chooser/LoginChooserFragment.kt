@@ -9,6 +9,8 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
+import com.wrewolf.thetaleclient.login.steps.credentials.LoginCredentialsFragment
+import com.wrewolf.thetaleclient.login.steps.thirdparty.LoginThirdPartyFragment
 import kotlinx.android.synthetic.main.fragment_login_chooser.*
 import javax.inject.Inject
 
@@ -31,6 +33,19 @@ class LoginChooserFragment: Fragment(), ChooserView, ChooserNavigator {
         return inflater.inflate(R.layout.fragment_login_chooser, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        loginContentStart.onLoginFromSiteClick(View.OnClickListener {
+            presenter.thirdPartyLogin(
+                    getString(R.string.app_name),
+                    getString(R.string.app_description),
+                    getString(R.string.app_about))
+        })
+
+        loginContentStart.onLoginWithCredentials(View.OnClickListener { presenter.credentialsLogin() })
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -45,9 +60,17 @@ class LoginChooserFragment: Fragment(), ChooserView, ChooserNavigator {
     }
 
     override fun openThirdPartyLogin(url: String) {
+        fragmentManager!!
+                .beginTransaction()
+                .replace(R.id.container, LoginThirdPartyFragment.create(url))
+                .commit()
     }
 
     override fun openCredentialsLogin() {
+        fragmentManager!!
+                .beginTransaction()
+                .replace(R.id.container, LoginCredentialsFragment.create())
+                .commit()
     }
 
     override fun showProgress() {
@@ -62,8 +85,6 @@ class LoginChooserFragment: Fragment(), ChooserView, ChooserNavigator {
 
     companion object {
 
-        fun create(): LoginChooserFragment {
-            return LoginChooserFragment()
-        }
+        fun create(): LoginChooserFragment = LoginChooserFragment()
     }
 }

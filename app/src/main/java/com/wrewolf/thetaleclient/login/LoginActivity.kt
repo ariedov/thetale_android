@@ -150,12 +150,6 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
 //        openUrl("$URL$link")
 //    }
 
-    private fun openUrl(url: String) {
-        val builder = CustomTabsIntent.Builder()
-        val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(this, Uri.parse(url))
-    }
-
     companion object {
 
         private const val URL_REGISTRATION = "http://the-tale.org/accounts/registration/fast?action=the-tale-client"

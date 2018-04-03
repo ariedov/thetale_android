@@ -2,19 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
-    <com.wrewolf.thetaleclient.login.steps.chooser.LoginContentStartView
-        android:id="@+id/loginContentStart"
+
+    <com.wrewolf.thetaleclient.login.steps.thirdparty.LoginConfirmThirdPartyView
+        android:id="@+id/confirmThirdParty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+
 </FrameLayout>

@@ -369,5 +369,6 @@
     <string name="settings_title_misc_confirmation_quest_choice">Подтверждение при выборе в квесте</string>
     <string name="action_third_party_login">Разрешение выдал. Войти!</string>
     <string name="error_third_party_login">А вот и не выдал</string>
+    <string name="try_again">Попробовать еще разок</string>
 
 </resources>
