@@ -23,7 +23,9 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
         TheTaleClientApplication.getComponentProvider()
                 .createLoginComponent(this)
 
-        showCheckStatus()
+        if (savedInstanceState == null) {
+            showCheckStatus()
+        }
     }
 
     override fun showCheckStatus() {
