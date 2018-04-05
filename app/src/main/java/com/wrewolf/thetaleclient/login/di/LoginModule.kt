@@ -3,6 +3,7 @@ package com.wrewolf.thetaleclient.login.di
 import com.wrewolf.thetaleclient.login.LoginNavigation
 import com.wrewolf.thetaleclient.login.LoginPresenter
 import com.wrewolf.thetaleclient.login.steps.chooser.ChooserPresenter
+import com.wrewolf.thetaleclient.login.steps.credentials.LoginCredentialsPresenter
 import com.wrewolf.thetaleclient.login.steps.status.CheckStatusPresenter
 import com.wrewolf.thetaleclient.login.steps.thirdparty.LoginThirdPartyPresenter
 import dagger.Module
@@ -31,4 +32,9 @@ class LoginModule {
     fun checkStatusPresenter(service: TheTaleService,
                              navigation: LoginNavigation): CheckStatusPresenter
             = CheckStatusPresenter(service, navigation)
+
+    @Provides @LoginScope
+    fun credentialsPresenter(service: TheTaleService,
+                             navigation: LoginNavigation): LoginCredentialsPresenter
+            = LoginCredentialsPresenter(service, navigation)
 }

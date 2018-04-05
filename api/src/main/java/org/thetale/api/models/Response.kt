@@ -12,12 +12,4 @@ class Response<T> {
     fun isError(): Boolean {
         return status == "error"
     }
-
-    fun getEmailError(): String? {
-        return errors?.get("email")?.get(0)
-    }
-
-    fun getPasswordError(): String? {
-        return errors?.get("password")?.get(0)
-    }
 }

@@ -1,5 +1,6 @@
 package org.thetale.api
 
+import org.thetale.api.error.ResponseException
 import org.thetale.api.models.Response
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,10 +16,10 @@ suspend fun <T> Call<Response<T>>.call(): T = suspendCoroutine {
 
         override fun onResponse(call: Call<Response<T>>?, response: retrofit2.Response<Response<T>>?) {
             response?.body()?.run {
-                if (this.error != null || this.errors != null) {
-                    it.resumeWithException(HttpException(response))
+                if (isError()) {
+                    it.resumeWithException(ResponseException(error, errors))
                 } else {
-                    it.resume(this.data!!)
+                    it.resume(data!!)
                 }
             }
             response?.errorBody()?.run { it.resumeWithException(HttpException(response)) }
