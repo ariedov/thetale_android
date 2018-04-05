@@ -8,40 +8,36 @@ import org.thetale.api.*
 import org.thetale.api.models.isAcceptedAuth
 import javax.inject.Inject
 
-interface LoginNavigation {
-
-    fun showChooser()
-}
-
-class LoginPresenter @Inject constructor(private val service: TheTaleService) {
-
-    lateinit var view: LoginView
-    lateinit var navigator: LoginNavigation
+class LoginPresenter @Inject constructor(private val service: TheTaleService,
+                                         private val navigation: LoginNavigation) {
 
     private val state = PresenterState { checkAppInfo() }
 
-    private var appInfoDeferred: Job? = null
-    private var loginDeferred: Job? = null
-    private var thirdPartyDeferred: Job? = null
-    private var thirdPartyStatusDeferred: Job? = null
+    private var appInfoJob: Job? = null
+    private var loginJob: Job? = null
+    private var thirdPartyJob: Job? = null
+    private var thirdPartyStatusJob: Job? = null
 
     fun start() {
-        state.apply()
+        state.start()
+    }
+
+    fun stop() {
+        state.stop()
     }
 
     private fun checkAppInfo() {
-        appInfoDeferred = launch(UI) {
+        appInfoJob = launch(UI) {
             try {
                 service.info().call()
-                state.apply { view.showChooser() }
+                navigation.showChooser()
             } catch (e: Exception) {
-                state.apply { view.showInitError() }
             }
         }
     }
 
     fun loginWithEmailAndPassword(email: String, password: String) {
-        loginDeferred = launch(UI) {
+        loginJob = launch(UI) {
             service.login(email, password).call()
 //            navigator.proceedToGame()
             state.clear()
@@ -49,25 +45,25 @@ class LoginPresenter @Inject constructor(private val service: TheTaleService) {
     }
 
     fun thirdPartyAuthStatus() {
-        thirdPartyStatusDeferred = launch(UI) {
+        thirdPartyStatusJob = launch(UI) {
             try {
                 val status = service.authorizationState().call()
                 if (status.isAcceptedAuth()) {
 //                    navigator.proceedToGame()
                     state.clear()
                 } else {
-                    state.apply { view.showThirdPartyStatusError() }
+//                    view.showThirdPartyStatusError() }
                 }
             } catch (e: Exception) {
-                state.apply { view.showThirdPartyStatusError() }
+//                state.apply { view.showThirdPartyStatusError() }
             }
         }
     }
 
     fun dispose() {
-        appInfoDeferred?.cancel()
-        loginDeferred?.cancel()
-        thirdPartyDeferred?.cancel()
-        thirdPartyStatusDeferred?.cancel()
+        appInfoJob?.cancel()
+        loginJob?.cancel()
+        thirdPartyJob?.cancel()
+        thirdPartyStatusJob?.cancel()
     }
 }

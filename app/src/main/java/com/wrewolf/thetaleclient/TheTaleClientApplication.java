@@ -7,15 +7,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.wrewolf.thetaleclient.api.cache.RequestCacheManager;
 import com.wrewolf.thetaleclient.di.AppComponent;
 import com.wrewolf.thetaleclient.di.DaggerAppComponent;
-import com.wrewolf.thetaleclient.login.di.LoginComponent;
 import com.wrewolf.thetaleclient.util.NotificationManager;
 import com.wrewolf.thetaleclient.util.PreferencesManager;
 import com.wrewolf.thetaleclient.util.map.MapUtils;
 import com.wrewolf.thetaleclient.util.onscreen.OnscreenStateWatcher;
-
-import net.grandcentrix.tray.core.TrayStorage;
-
-import javax.inject.Inject;
 
 /**
  * @author Hamster

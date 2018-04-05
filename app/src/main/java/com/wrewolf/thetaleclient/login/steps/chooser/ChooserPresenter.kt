@@ -1,16 +1,17 @@
 package com.wrewolf.thetaleclient.login.steps.chooser
 
 import com.wrewolf.thetaleclient.PresenterState
+import com.wrewolf.thetaleclient.login.LoginNavigation
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.call
 
-class ChooserPresenter(private val service: TheTaleService) {
+class ChooserPresenter(private val service: TheTaleService,
+                       private val navigation: LoginNavigation) {
 
     internal lateinit var view: ChooserView
-    internal lateinit var navigator: ChooserNavigator
 
     private var thirdPartyDeferred: Job? = null
 
@@ -22,16 +23,20 @@ class ChooserPresenter(private val service: TheTaleService) {
             val link = service.login(appName, appInfo, appDescription).call()
             state.apply { view.hideProgress() }
 
-            navigator.openThirdPartyLogin(link.authorizationPage)
+            navigation.showThirdParty(link.authorizationPage)
         }
     }
 
     fun credentialsLogin() {
-        navigator.openCredentialsLogin()
+        navigation.showCredentials()
     }
 
     fun start() {
-        state.apply()
+        state.start()
+    }
+
+    fun stop() {
+        state.stop()
     }
 
     fun dispose() {

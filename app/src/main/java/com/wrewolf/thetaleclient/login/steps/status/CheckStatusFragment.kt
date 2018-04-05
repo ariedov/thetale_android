@@ -1,4 +1,4 @@
-package com.wrewolf.thetaleclient.login.steps.chooser
+package com.wrewolf.thetaleclient.login.steps.status
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,12 +9,13 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
-import kotlinx.android.synthetic.main.fragment_login_chooser.*
+import kotlinx.android.synthetic.main.fragment_check_status.*
 import javax.inject.Inject
 
-class LoginChooserFragment: Fragment(), ChooserView {
+class CheckStatusFragment : Fragment(), CheckStatusView {
 
-    @Inject lateinit var presenter: ChooserPresenter
+    @Inject
+    lateinit var presenter: CheckStatusPresenter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -27,20 +28,15 @@ class LoginChooserFragment: Fragment(), ChooserView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_login_chooser, container, false)
+        return inflater.inflate(R.layout.fragment_check_status, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginContentStart.onLoginFromSiteClick(View.OnClickListener {
-            presenter.thirdPartyLogin(
-                    getString(R.string.app_name),
-                    getString(R.string.app_description),
-                    getString(R.string.app_about))
+        error.onRetryClick(View.OnClickListener {
+            presenter.retry()
         })
-
-        loginContentStart.onLoginWithCredentials(View.OnClickListener { presenter.credentialsLogin() })
     }
 
     override fun onStart() {
@@ -55,25 +51,37 @@ class LoginChooserFragment: Fragment(), ChooserView {
         presenter.stop()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.view = null
+    }
+
+    override fun showLoading() {
+        progress.visibility = VISIBLE
+        error.visibility = GONE
+    }
+
+    override fun hideLoading() {
+        progress.visibility = GONE
+        error.visibility = GONE
+    }
+
+    override fun showError() {
+        progress.visibility = GONE
+        error.visibility = VISIBLE
+        error.setErrorText(getString(R.string.common_error))
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+
         if (activity!!.isFinishing) {
             presenter.dispose()
         }
     }
 
-    override fun showProgress() {
-        progress.visibility = VISIBLE
-        loginContentStart.visibility = GONE
-    }
-
-    override fun hideProgress() {
-        progress.visibility = GONE
-        loginContentStart.visibility = VISIBLE
-    }
-
     companion object {
-
-        fun create(): LoginChooserFragment = LoginChooserFragment()
+        fun create(): CheckStatusFragment = CheckStatusFragment()
     }
 }

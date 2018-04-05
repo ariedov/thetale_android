@@ -1,128 +1,53 @@
 package com.wrewolf.thetaleclient.login
 
-import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
-import android.support.customtabs.CustomTabsIntent
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
-import android.view.View.GONE
-import android.view.View.VISIBLE
 
 import com.wrewolf.thetaleclient.R
 import com.wrewolf.thetaleclient.TheTaleClientApplication
+import com.wrewolf.thetaleclient.activity.MainActivity
 import com.wrewolf.thetaleclient.login.steps.chooser.LoginChooserFragment
-import kotlinx.android.synthetic.main.activity_login.*
+import com.wrewolf.thetaleclient.login.steps.credentials.LoginCredentialsFragment
+import com.wrewolf.thetaleclient.login.steps.status.CheckStatusFragment
+import com.wrewolf.thetaleclient.login.steps.thirdparty.LoginThirdPartyFragment
 
-import java.net.CookieManager
-
-import javax.inject.Inject
-
-import okhttp3.OkHttpClient
-
-class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
-
-    @Inject lateinit var presenter: LoginPresenter
-    @Inject lateinit var client: OkHttpClient
-    @Inject lateinit var cookieManager: CookieManager
+class LoginActivity : AppCompatActivity(), LoginNavigation {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        TheTaleClientApplication.getComponentProvider()
-                .loginComponent!!
-                .inject(this)
-
-        presenter.navigator = this
-        presenter.view = this
-
         setContentView(R.layout.activity_login)
 
-//        thirdPartyConfirm.onConfirmClick(View.OnClickListener {
-//            presenter.thirdPartyAuthStatus()
-//        })
+        TheTaleClientApplication.getComponentProvider()
+                .createLoginComponent(this)
+
+        showCheckStatus()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        presenter.start()
-    }
-
-    override fun showLoading() {
-        progressBar.visibility = VISIBLE
-//        content.visibility = GONE
-        error.visibility = GONE
+    override fun showCheckStatus() {
+        showFragment(CheckStatusFragment.create())
     }
 
     override fun showChooser() {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, LoginChooserFragment.create())
-                .commit()
+        showFragment(LoginChooserFragment.create())
     }
 
-    override fun showEmailPassword() {
-//        content.visibility = VISIBLE
-//        loginPassword.visibility = VISIBLE
-//        thirdPartyConfirm.visibility = GONE
-//        loginContentStart.visibility = GONE
-        progressBar.visibility = GONE
-        error.visibility = GONE
+    override fun showCredentials() {
+        showFragment(LoginCredentialsFragment.create())
     }
 
-    override fun showEmailPassword(email: String, password: String) {
-//        loginPassword.setEmail(email)
-//        loginPassword.setPassword(password)
-
-        showEmailPassword()
+    override fun showThirdParty(link: String) {
+        showFragment(LoginThirdPartyFragment.create(link))
     }
 
-    override fun showLoginError(email: String, password: String, emailError: String?, passwordError: String?) {
-//        loginPassword.setEmailError(emailError)
-//        loginPassword.setPasswordError(passwordError)
+    override fun openApp() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtras(getIntent())
 
-        showEmailPassword()
-    }
-
-    override fun showInitError() {
-        error.visibility = VISIBLE
-//        content.visibility = GONE
-//        thirdPartyConfirm.visibility = GONE
-//        loginPassword.visibility = GONE
-//        loginContentStart.visibility = GONE
-        progressBar.visibility = GONE
-    }
-
-    override fun showThirdParty() {
-//        thirdPartyConfirm.visibility = VISIBLE
-//        content.visibility = VISIBLE
-        error.visibility = GONE
-//        loginPassword.visibility = GONE
-//        loginContentStart.visibility = GONE
-        progressBar.visibility = GONE
-    }
-
-    override fun showThirdPartyError() {
-        error.visibility = VISIBLE
-//        content.visibility = GONE
-//        thirdPartyConfirm.visibility = GONE
-//        loginPassword.visibility = GONE
-//        loginContentStart.visibility = GONE
-        progressBar.visibility = GONE
-    }
-
-    override fun showThirdPartyStatusError() {
-//        content.visibility = VISIBLE
-//        thirdPartyConfirm.visibility = VISIBLE
-//        thirdPartyConfirm.setError(getString(R.string.error_third_party_login))
-        error.visibility = GONE
-//        loginPassword.visibility = GONE
-//        loginContentStart.visibility = GONE
-        progressBar.visibility = GONE
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        disposables.dispose()
+        startActivity(intent)
+        finish()
     }
 
     override fun onDestroy() {
@@ -130,29 +55,20 @@ class LoginActivity : AppCompatActivity(), LoginNavigation, LoginView {
 
         if (isFinishing) {
             TheTaleClientApplication.getComponentProvider().loginComponent = null
-            presenter.dispose()
         }
     }
-
-//    override fun proceedToGame() {
-//        val intent = Intent(this, MainActivity::class.java)
-//        intent.putExtras(getIntent())
-//
-//        startActivity(intent)
-//        finish()
-//    }
-//
-//    override fun startRegistration() {
-//        openUrl(URL_REGISTRATION)
-//    }
-//
-//    override fun openThirdPartyAuth(link: String) {
-//        openUrl("$URL$link")
-//    }
 
     companion object {
 
         private const val URL_REGISTRATION = "http://the-tale.org/accounts/registration/fast?action=the-tale-client"
         private const val URL_PASSWORD_REMIND = "http://the-tale.org/accounts/profile/reset-password?action=the-tale-client"
     }
+}
+
+private fun FragmentActivity.showFragment(fragment: Fragment) {
+    supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack(null)
+            .commit()
 }

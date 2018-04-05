@@ -54,6 +54,12 @@ class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
         presenter.start()
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        presenter.stop()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 

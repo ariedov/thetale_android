@@ -1,6 +1,7 @@
 package com.wrewolf.thetaleclient.login.steps.thirdparty
 
 import com.wrewolf.thetaleclient.PresenterState
+import com.wrewolf.thetaleclient.login.LoginNavigation
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -9,7 +10,8 @@ import org.thetale.api.URL
 import org.thetale.api.call
 import org.thetale.api.models.isAcceptedAuth
 
-class LoginThirdPartyPresenter(private val service: TheTaleService) {
+class LoginThirdPartyPresenter(private val service: TheTaleService,
+                               private val navigation: LoginNavigation) {
 
     lateinit var link: String
     lateinit var view: LoginThirdPartyView
@@ -19,8 +21,13 @@ class LoginThirdPartyPresenter(private val service: TheTaleService) {
     private var thirdPartyStatusJob: Job? = null
 
     fun start() {
-        state.apply()
+        state.start()
+
         state.clear()
+    }
+
+    fun stop() {
+        state.stop()
     }
 
     fun checkAuthorisation() {
@@ -28,7 +35,7 @@ class LoginThirdPartyPresenter(private val service: TheTaleService) {
             state.apply { view.showProgress() }
             val state = service.authorizationState().call()
             if (state.isAcceptedAuth()) {
-
+                navigation.openApp()
             } else {
                 state.apply { view.showError() }
             }

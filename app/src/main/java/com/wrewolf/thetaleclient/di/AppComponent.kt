@@ -5,6 +5,7 @@ import com.wrewolf.thetaleclient.fragment.*
 import com.wrewolf.thetaleclient.fragment.dialog.CardUseDialog
 import com.wrewolf.thetaleclient.fragment.dialog.QuestActorDialog
 import com.wrewolf.thetaleclient.login.di.LoginComponent
+import com.wrewolf.thetaleclient.login.di.LoginNavigationModule
 import com.wrewolf.thetaleclient.service.WatcherService
 import com.wrewolf.thetaleclient.service.widget.AppWidgetProvider
 import dagger.Component
@@ -41,5 +42,5 @@ interface AppComponent {
 
     fun inject(target: WatcherService)
 
-    fun loginComponent(): LoginComponent
+    fun loginComponent(module: LoginNavigationModule): LoginComponent
 }
