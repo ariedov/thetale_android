@@ -37,6 +37,10 @@ class LoginCredentialsFragment : Fragment(), LoginCredentialsView {
         loginPasswordView.onLoginClick {
             presenter.loginWithCredentials(it.email, it.password)
         }
+
+        loginThirdParty.setOnClickListener {
+            presenter.navigateToThirdParty()
+        }
     }
 
     override fun onStart() {

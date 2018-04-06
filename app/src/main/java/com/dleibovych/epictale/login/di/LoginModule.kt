@@ -1,8 +1,6 @@
 package com.dleibovych.epictale.login.di
 
 import com.dleibovych.epictale.login.LoginNavigation
-import com.dleibovych.epictale.login.LoginPresenter
-import com.dleibovych.epictale.login.steps.chooser.ChooserPresenter
 import com.dleibovych.epictale.login.steps.credentials.LoginCredentialsPresenter
 import com.dleibovych.epictale.login.steps.status.CheckStatusPresenter
 import com.dleibovych.epictale.login.steps.thirdparty.LoginThirdPartyPresenter
@@ -12,16 +10,6 @@ import org.thetale.api.TheTaleService
 
 @Module
 class LoginModule {
-
-    @Provides @LoginScope
-    fun loginPresenter(service: TheTaleService,
-                       navigation: LoginNavigation): LoginPresenter
-            = LoginPresenter(service, navigation)
-
-    @Provides @LoginScope
-    fun chooserPresenter(service: TheTaleService,
-                         navigation: LoginNavigation): ChooserPresenter
-            = ChooserPresenter(service, navigation)
 
     @Provides @LoginScope
     fun thirdPartyPresenter(service: TheTaleService,

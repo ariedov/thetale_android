@@ -14,7 +14,7 @@
 
     <com.dleibovych.epictale.login.steps.thirdparty.LoginConfirmThirdPartyView
         android:id="@+id/confirmThirdParty"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/login_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 

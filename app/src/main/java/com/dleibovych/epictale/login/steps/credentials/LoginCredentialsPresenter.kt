@@ -42,6 +42,10 @@ class LoginCredentialsPresenter(private val service: TheTaleService,
         }
     }
 
+    fun navigateToThirdParty() {
+        navigation.showThirdParty()
+    }
+
     fun dispose() {
         loginJob?.cancel()
     }

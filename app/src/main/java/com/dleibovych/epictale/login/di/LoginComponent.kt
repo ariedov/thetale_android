@@ -1,7 +1,6 @@
 package com.dleibovych.epictale.login.di
 
 import com.dleibovych.epictale.login.LoginActivity
-import com.dleibovych.epictale.login.steps.chooser.LoginChooserFragment
 import com.dleibovych.epictale.login.steps.credentials.LoginCredentialsFragment
 import com.dleibovych.epictale.login.steps.status.CheckStatusFragment
 import com.dleibovych.epictale.login.steps.thirdparty.LoginThirdPartyFragment
@@ -11,8 +10,6 @@ import dagger.Subcomponent
 interface LoginComponent {
 
     fun inject(target: LoginActivity)
-
-    fun inject(target: LoginChooserFragment)
 
     fun inject(target: LoginThirdPartyFragment)
 

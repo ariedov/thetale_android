@@ -33,4 +33,5 @@
     <dimen name="preference_padding_right">8dp</dimen>
     <dimen name="preference_padding_bottom">16dp</dimen>
 
+    <dimen name="login_width">280dp</dimen>
 </resources>

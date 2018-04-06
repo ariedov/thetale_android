@@ -19,8 +19,6 @@ class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
     @Inject
     internal lateinit var presenter: LoginThirdPartyPresenter
 
-    private var link by FragmentArgumentDelegate<String>()
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -29,7 +27,11 @@ class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
                 .inject(this)
 
         presenter.view = this
-        presenter.link = link
+
+        presenter.initAppInfo(
+                getString(R.string.app_name),
+                getString(R.string.app_description),
+                getString(R.string.app_about))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,10 +93,6 @@ class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
     }
 
     companion object {
-        fun create(link: String): LoginThirdPartyFragment {
-            return LoginThirdPartyFragment().apply {
-                this.link = link
-            }
-        }
+        fun create() = LoginThirdPartyFragment()
     }
 }
