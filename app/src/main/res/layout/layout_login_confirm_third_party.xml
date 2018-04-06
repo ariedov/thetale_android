@@ -17,18 +17,19 @@
 
     <TextView
         android:id="@+id/tryAgain"
+        style="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:background="?attr/selectableItemBackground"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
         android:text="@string/try_again"
-        android:textColor="@android:color/holo_blue_dark" />
+        android:textColor="@color/common_link" />
 
     <TextView
         android:id="@+id/thirdPartyError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:layout_gravity="center"
         android:textColor="@color/common_error"
         tools:text="А вот и не выдал" />
