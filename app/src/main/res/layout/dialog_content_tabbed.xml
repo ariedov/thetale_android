@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tab_strip_height"/>
 
-    <com.wrewolf.thetaleclient.widget.WrappingViewPager
+    <com.dleibovych.epictale.widget.WrappingViewPager
         android:id="@+id/dialog_tabbed_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

@@ -1,18 +1,18 @@
-package com.wrewolf.thetaleclient;
+package com.dleibovych.epictale;
 
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.wrewolf.thetaleclient.api.ApiResponseCallback;
-import com.wrewolf.thetaleclient.api.CommonResponseCallback;
-import com.wrewolf.thetaleclient.api.dictionary.MapCellType;
-import com.wrewolf.thetaleclient.api.model.MapCouncilMemberInfo;
-import com.wrewolf.thetaleclient.api.request.GameInfoRequest;
-import com.wrewolf.thetaleclient.api.request.MapCellRequest;
-import com.wrewolf.thetaleclient.api.request.MapRequest;
-import com.wrewolf.thetaleclient.api.response.GameInfoResponse;
-import com.wrewolf.thetaleclient.api.response.MapCellResponse;
-import com.wrewolf.thetaleclient.api.response.MapResponse;
+import com.dleibovych.epictale.api.ApiResponseCallback;
+import com.dleibovych.epictale.api.CommonResponseCallback;
+import com.dleibovych.epictale.api.dictionary.MapCellType;
+import com.dleibovych.epictale.api.model.MapCouncilMemberInfo;
+import com.dleibovych.epictale.api.request.GameInfoRequest;
+import com.dleibovych.epictale.api.request.MapCellRequest;
+import com.dleibovych.epictale.api.request.MapRequest;
+import com.dleibovych.epictale.api.response.GameInfoResponse;
+import com.dleibovych.epictale.api.response.MapCellResponse;
+import com.dleibovych.epictale.api.response.MapResponse;
 
 import junit.framework.TestCase;
 

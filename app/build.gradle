@@ -19,8 +19,8 @@ android {
         versionProps.store(versionPropsFile.newWriter(), null)
 
         defaultConfig {
-            applicationId "com.wrewolf.thetaleclient"
-            minSdkVersion 19
+            applicationId "com.dleibovych.epictale"
+            minSdkVersion 21
             targetSdkVersion 27
             versionCode code
             versionName "1.6.9." + code + "_beta"

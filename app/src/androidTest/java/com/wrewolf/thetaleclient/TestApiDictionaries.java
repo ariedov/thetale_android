@@ -1,29 +1,29 @@
-package com.wrewolf.thetaleclient;
+package com.dleibovych.epictale;
 
 import android.text.TextUtils;
 
-import com.wrewolf.thetaleclient.api.dictionary.Action;
-import com.wrewolf.thetaleclient.api.dictionary.ArtifactEffect;
-import com.wrewolf.thetaleclient.api.dictionary.ArtifactRarity;
-import com.wrewolf.thetaleclient.api.dictionary.ArtifactType;
-import com.wrewolf.thetaleclient.api.dictionary.CardRarity;
-import com.wrewolf.thetaleclient.api.dictionary.CardType;
-import com.wrewolf.thetaleclient.api.dictionary.CompanionFeature;
-import com.wrewolf.thetaleclient.api.dictionary.CompanionFeatureType;
-import com.wrewolf.thetaleclient.api.dictionary.CompanionSpecies;
-import com.wrewolf.thetaleclient.api.dictionary.EquipmentType;
-import com.wrewolf.thetaleclient.api.dictionary.GameState;
-import com.wrewolf.thetaleclient.api.dictionary.Gender;
-import com.wrewolf.thetaleclient.api.dictionary.Habit;
-import com.wrewolf.thetaleclient.api.dictionary.HeroAction;
-import com.wrewolf.thetaleclient.api.dictionary.PlaceSpecialization;
-import com.wrewolf.thetaleclient.api.dictionary.Profession;
-import com.wrewolf.thetaleclient.api.dictionary.QuestActorType;
-import com.wrewolf.thetaleclient.api.dictionary.Race;
-import com.wrewolf.thetaleclient.api.dictionary.Skill;
-import com.wrewolf.thetaleclient.api.dictionary.SocialLink;
-import com.wrewolf.thetaleclient.api.dictionary.ThirdPartyAuthState;
-import com.wrewolf.thetaleclient.util.ObjectUtils;
+import com.dleibovych.epictale.api.dictionary.Action;
+import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
+import com.dleibovych.epictale.api.dictionary.ArtifactRarity;
+import com.dleibovych.epictale.api.dictionary.ArtifactType;
+import com.dleibovych.epictale.api.dictionary.CardRarity;
+import com.dleibovych.epictale.api.dictionary.CardType;
+import com.dleibovych.epictale.api.dictionary.CompanionFeature;
+import com.dleibovych.epictale.api.dictionary.CompanionFeatureType;
+import com.dleibovych.epictale.api.dictionary.CompanionSpecies;
+import com.dleibovych.epictale.api.dictionary.EquipmentType;
+import com.dleibovych.epictale.api.dictionary.GameState;
+import com.dleibovych.epictale.api.dictionary.Gender;
+import com.dleibovych.epictale.api.dictionary.Habit;
+import com.dleibovych.epictale.api.dictionary.HeroAction;
+import com.dleibovych.epictale.api.dictionary.PlaceSpecialization;
+import com.dleibovych.epictale.api.dictionary.Profession;
+import com.dleibovych.epictale.api.dictionary.QuestActorType;
+import com.dleibovych.epictale.api.dictionary.Race;
+import com.dleibovych.epictale.api.dictionary.Skill;
+import com.dleibovych.epictale.api.dictionary.SocialLink;
+import com.dleibovych.epictale.api.dictionary.ThirdPartyAuthState;
+import com.dleibovych.epictale.util.ObjectUtils;
 
 import junit.framework.TestCase;
 

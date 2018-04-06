@@ -62,7 +62,7 @@
     <PreferenceCategory
         android:title="@string/settings_notification_settings">
 
-        <com.wrewolf.thetaleclient.widget.TimeIntervalPreference
+        <com.dleibovych.epictale.widget.TimeIntervalPreference
             android:key="@string/settings_key_notification_settings_nighttime"
             custom:key_enabled="@string/settings_key_notification_settings_nighttime"
             custom:key_from_hour="@string/settings_key_notification_settings_nighttime_from_hour"
