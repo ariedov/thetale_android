@@ -9,7 +9,10 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleClientApplication
+import com.dleibovych.epictale.openUrl
 import kotlinx.android.synthetic.main.fragment_login_credentials.*
+import org.thetale.api.URL_PASSWORD_REMIND
+import org.thetale.api.URL_REGISTRATION
 import javax.inject.Inject
 
 class LoginCredentialsFragment : Fragment(), LoginCredentialsView {
@@ -36,6 +39,14 @@ class LoginCredentialsFragment : Fragment(), LoginCredentialsView {
 
         loginPasswordView.onLoginClick {
             presenter.loginWithCredentials(it.email, it.password)
+        }
+
+        loginPasswordView.onRemindPasswordClick(View.OnClickListener {
+            openUrl(activity!!, URL_PASSWORD_REMIND)
+        })
+
+        registration.setOnClickListener {
+            openUrl(activity!!, URL_REGISTRATION)
         }
 
         loginThirdParty.setOnClickListener {
