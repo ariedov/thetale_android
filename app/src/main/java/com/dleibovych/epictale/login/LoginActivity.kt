@@ -12,15 +12,22 @@ import com.dleibovych.epictale.activity.MainActivity
 import com.dleibovych.epictale.login.steps.credentials.LoginCredentialsFragment
 import com.dleibovych.epictale.login.steps.status.CheckStatusFragment
 import com.dleibovych.epictale.login.steps.thirdparty.LoginThirdPartyFragment
+import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity(), LoginNavigation {
+
+    @Inject
+    lateinit var navigationProvider: LoginNavigationProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         TheTaleClientApplication.getComponentProvider()
-                .createLoginComponent(this)
+                .loginComponent!!
+                .inject(this)
+
+        navigationProvider.navigation = this
 
         if (savedInstanceState == null) {
             showCheckStatus()
@@ -49,6 +56,8 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        navigationProvider.navigation = null
 
         if (isFinishing) {
             TheTaleClientApplication.getComponentProvider().loginComponent = null

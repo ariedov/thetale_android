@@ -1,13 +1,13 @@
 package com.dleibovych.epictale.login.di
 
-import com.dleibovych.epictale.login.LoginNavigation
+import com.dleibovych.epictale.login.LoginNavigationProvider
 import dagger.Module
 import dagger.Provides
 
 @Module
 @LoginScope
-class LoginNavigationModule(private val navigation: LoginNavigation) {
+class LoginNavigationModule {
 
     @LoginScope @Provides
-    fun loginNavigation() = navigation
+    fun navigationProvider() = LoginNavigationProvider()
 }

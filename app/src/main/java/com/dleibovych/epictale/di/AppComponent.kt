@@ -11,7 +11,7 @@ import com.dleibovych.epictale.service.widget.AppWidgetProvider
 import dagger.Component
 import javax.inject.Singleton
 
-@Singleton @Component(modules = [(ApiModule::class)])
+@Singleton @Component(modules = [ApiModule::class, AppInfoModule::class])
 interface AppComponent {
 
     fun inject(target: MainActivity)
@@ -42,5 +42,5 @@ interface AppComponent {
 
     fun inject(target: WatcherService)
 
-    fun loginComponent(module: LoginNavigationModule): LoginComponent
+    fun loginComponent(): LoginComponent
 }

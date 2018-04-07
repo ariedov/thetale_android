@@ -27,11 +27,6 @@ class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
                 .inject(this)
 
         presenter.view = this
-
-        presenter.initAppInfo(
-                getString(R.string.app_name),
-                getString(R.string.app_description),
-                getString(R.string.app_about))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

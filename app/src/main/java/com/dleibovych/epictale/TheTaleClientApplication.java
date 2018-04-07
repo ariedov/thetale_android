@@ -3,6 +3,7 @@ package com.dleibovych.epictale;
 import android.app.Application;
 import android.content.Context;
 
+import com.dleibovych.epictale.di.AppInfoModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.dleibovych.epictale.api.cache.RequestCacheManager;
 import com.dleibovych.epictale.di.AppComponent;
@@ -44,6 +45,7 @@ public class TheTaleClientApplication extends Application {
 
         appComponent = DaggerAppComponent
                 .builder()
+                .appInfoModule(new AppInfoModule(getResources()))
                 .build();
 
         componentProvider.setAppComponent(appComponent);

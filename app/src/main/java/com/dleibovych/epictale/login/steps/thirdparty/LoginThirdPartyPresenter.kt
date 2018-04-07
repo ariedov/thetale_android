@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.login.steps.thirdparty
 
 import com.dleibovych.epictale.PresenterState
-import com.dleibovych.epictale.login.LoginNavigation
+import com.dleibovych.epictale.login.LoginNavigationProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -11,19 +11,18 @@ import org.thetale.api.call
 import org.thetale.api.models.isAcceptedAuth
 
 class LoginThirdPartyPresenter(private val service: TheTaleService,
-                               private val navigation: LoginNavigation) {
+                               private val navigationProvider: LoginNavigationProvider,
+                               private val appName: String,
+                               private val appDescription: String,
+                               private val about: String) {
 
     lateinit var view: LoginThirdPartyView
 
     private lateinit var link: String
-    private val state = PresenterState()
+    private val state = PresenterState { loginThirdParty(appName, appDescription, about) }
 
     private var thirdPartyLinkJob: Job? = null
     private var thirdPartyStatusJob: Job? = null
-
-    fun initAppInfo(appName: String, appDescription: String, about: String) {
-        state.apply { loginThirdParty(appName, appDescription, about) }
-    }
 
     private fun loginThirdParty(appName: String, appInfo: String, appDescription: String) {
         thirdPartyLinkJob = launch(UI) {
@@ -53,7 +52,7 @@ class LoginThirdPartyPresenter(private val service: TheTaleService,
             state.apply { view.showProgress() }
             val state = service.authorizationState().call()
             if (state.isAcceptedAuth()) {
-                navigation.openApp()
+                navigationProvider.navigation?.openApp()
             } else {
                 state.apply { view.showError() }
             }

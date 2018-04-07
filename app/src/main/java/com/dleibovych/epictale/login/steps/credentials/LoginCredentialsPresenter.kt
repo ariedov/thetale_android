@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.login.steps.credentials
 
 import com.dleibovych.epictale.PresenterState
-import com.dleibovych.epictale.login.LoginNavigation
+import com.dleibovych.epictale.login.LoginNavigationProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -10,7 +10,7 @@ import org.thetale.api.call
 import org.thetale.api.error.ResponseException
 
 class LoginCredentialsPresenter(private val service: TheTaleService,
-                                private val navigation: LoginNavigation) {
+                                private val navigationProvider: LoginNavigationProvider) {
 
     private val state = PresenterState { view?.hideProgress() }
     private var loginJob: Job? = null
@@ -31,7 +31,7 @@ class LoginCredentialsPresenter(private val service: TheTaleService,
                 state.apply { view?.showProgress() }
                 service.login(email, password).call()
 
-                navigation.openApp()
+                navigationProvider.navigation?.openApp()
 
                 state.apply { view?.hideProgress() }
             } catch (e: ResponseException) {
@@ -43,7 +43,7 @@ class LoginCredentialsPresenter(private val service: TheTaleService,
     }
 
     fun navigateToThirdParty() {
-        navigation.showThirdParty()
+        navigationProvider.navigation?.showThirdParty()
     }
 
     fun dispose() {

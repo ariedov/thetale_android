@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.login.steps.status
 
 import com.dleibovych.epictale.PresenterState
-import com.dleibovych.epictale.login.LoginNavigation
+import com.dleibovych.epictale.login.LoginNavigationProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -9,7 +9,7 @@ import org.thetale.api.TheTaleService
 import org.thetale.api.call
 
 class CheckStatusPresenter(private val service: TheTaleService,
-                           private val navigation: LoginNavigation) {
+                           private val navigationProvider: LoginNavigationProvider) {
 
     var view: CheckStatusView? = null
 
@@ -38,7 +38,7 @@ class CheckStatusPresenter(private val service: TheTaleService,
                 state.apply { view?.showLoading() }
 
                 service.info().call()
-                navigation.showCredentials()
+                navigationProvider.navigation?.showCredentials()
 
                 state.apply { view?.hideLoading() }
             } catch (e: Exception) {
