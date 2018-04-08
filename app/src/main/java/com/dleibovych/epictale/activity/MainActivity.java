@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_DRAWER_TAB_INDEX = "KEY_DRAWER_TAB_INDEX";
 
     @Inject OkHttpClient client;
-
     @Inject CookieManager manager;
 
     /**
@@ -296,7 +295,6 @@ public class MainActivity extends AppCompatActivity
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }

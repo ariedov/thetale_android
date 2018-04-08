@@ -71,9 +71,9 @@ kotlin {
 
 dependencies {
     // latest versions of libraries as of 11.02.2018
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
-    implementation 'com.android.support:customtabs:27.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
     implementation 'com.google.firebase:firebase-core:12.0.1'
     implementation 'com.google.firebase:firebase-messaging:12.0.1'
     implementation 'com.google.firebase:firebase-crash:12.0.1'
