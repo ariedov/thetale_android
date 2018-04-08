@@ -16,13 +16,10 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleClientApplication
 import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.cache.RequestCacheManager
-import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest
-import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest
 import com.dleibovych.epictale.api.request.GameInfoRequest
 import com.dleibovych.epictale.api.request.LogoutRequest
 import com.dleibovych.epictale.api.response.CommonResponse
 import com.dleibovych.epictale.api.response.GameInfoResponse
-import com.dleibovych.epictale.api.response.InfoResponse
 import com.dleibovych.epictale.fragment.GameFragment
 import com.dleibovych.epictale.fragment.NavigationDrawerFragment
 import com.dleibovych.epictale.fragment.Refreshable
@@ -42,11 +39,15 @@ import javax.inject.Inject
 
 import okhttp3.OkHttpClient
 
+
 class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDrawerCallbacks, GameNavigation {
 
-    @Inject lateinit var navigationProvider: GameNavigationProvider
-    @Inject lateinit var client: OkHttpClient
-    @Inject lateinit var manager: CookieManager
+    @Inject
+    lateinit var navigationProvider: GameNavigationProvider
+    @Inject
+    lateinit var client: OkHttpClient
+    @Inject
+    lateinit var manager: CookieManager
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -118,7 +119,6 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
             finish()
         }
 
-        val intent = intent
         var tabIndex = -1
         if (intent != null) {
             if (intent.hasExtra(KEY_GAME_TAB_INDEX)) {
@@ -185,32 +185,19 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
         if (item != currentItem) {
             when (item) {
                 DrawerItem.PROFILE -> DialogUtils.showChoiceDialog(supportFragmentManager, getString(R.string.drawer_title_site),
-                        arrayOf(getString(R.string.drawer_dialog_profile_item_keeper), getString(R.string.drawer_dialog_profile_item_hero))
-                ) { position ->
-                    InfoPrerequisiteRequest(client, manager, {
-                        val accountId = PreferencesManager.getAccountId()
-                        if (accountId == 0) {
-                            if (!isPaused) {
-                                DialogUtils.showCommonErrorDialog(supportFragmentManager, this@GameActivity)
-                            }
-                        } else {
-                            when (position) {
-                                0 -> startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_KEEPER, accountId)))
+                        arrayOf(getString(R.string.drawer_dialog_profile_item_keeper), getString(R.string.drawer_dialog_profile_item_hero)))
+                { position ->
+                    val accountId = PreferencesManager.getAccountId()
 
-                                1 -> startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_HERO, accountId)))
+                    when (position) {
+                        0 -> startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_KEEPER, accountId)))
 
-                                else -> if (!isPaused) {
-                                    DialogUtils.showCommonErrorDialog(supportFragmentManager, this@GameActivity)
-                                }
-                            }
+                        1 -> startActivity(UiUtils.getOpenLinkIntent(String.format(WebsiteUtils.URL_PROFILE_HERO, accountId)))
+
+                        else -> if (!isPaused) {
+                            DialogUtils.showCommonErrorDialog(supportFragmentManager, this@GameActivity)
                         }
-                    }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
-                        override fun processError(response: InfoResponse) {
-                            if (!isPaused) {
-                                DialogUtils.showCommonErrorDialog(supportFragmentManager, this@GameActivity)
-                            }
-                        }
-                    }, null).execute()
+                    }
                 }
 
                 DrawerItem.SITE -> startActivity(UiUtils.getOpenLinkIntent(WebsiteUtils.URL_GAME))
@@ -333,25 +320,17 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
     }
 
     fun onDataRefresh() {
-        InfoPrerequisiteRequest(client, manager, {
-            drawerItemInfoView!!.visibility = View.VISIBLE
-            UiUtils.setText(accountNameTextView, PreferencesManager.getAccountName())
-            GameInfoRequest(client, manager, false).execute(object : ApiResponseCallback<GameInfoResponse> {
-                override fun processResponse(response: GameInfoResponse) {
-                    UiUtils.setText(timeTextView, String.format("%s %s", response.turnInfo.verboseDate, response.turnInfo.verboseTime))
-                }
+        drawerItemInfoView!!.visibility = View.VISIBLE
+        UiUtils.setText(accountNameTextView, PreferencesManager.getAccountName())
+        GameInfoRequest(client, manager, false).execute(object : ApiResponseCallback<GameInfoResponse> {
+            override fun processResponse(response: GameInfoResponse) {
+                UiUtils.setText(timeTextView, String.format("%s %s", response.turnInfo.verboseDate, response.turnInfo.verboseTime))
+            }
 
-                override fun processError(response: GameInfoResponse) {
-                    UiUtils.setText(timeTextView, null)
-                }
-            }, true)
-        }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
-            override fun processError(response: InfoResponse) {
-                drawerItemInfoView!!.visibility = View.GONE
-                UiUtils.setText(accountNameTextView, null)
+            override fun processError(response: GameInfoResponse) {
                 UiUtils.setText(timeTextView, null)
             }
-        }, null).execute()
+        }, true)
     }
 
     override fun onBackPressed() {
