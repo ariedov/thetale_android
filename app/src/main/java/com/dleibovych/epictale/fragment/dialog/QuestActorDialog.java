@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.dleibovych.epictale.DrawerItem;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleClientApplication;
-import com.dleibovych.epictale.activity.MainActivity;
+import com.dleibovych.epictale.game.GameActivity;
 import com.dleibovych.epictale.api.CommonResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.GameInfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.model.QuestActorInfo;
@@ -127,7 +127,7 @@ public class QuestActorDialog extends BaseDialog {
 
     private void setPlaceLink(final View view, final CharSequence caption, final CharSequence info, final int placeId) {
         final Activity activity = getActivity();
-        if(!(activity instanceof MainActivity)) {
+        if(!(activity instanceof GameActivity)) {
             return;
         }
 
@@ -140,7 +140,7 @@ public class QuestActorDialog extends BaseDialog {
             public void onClick(View v) {
                 PreferencesManager.setMapCenterPlaceId(placeId);
                 dismiss();
-                ((MainActivity) activity).onNavigationDrawerItemSelected(DrawerItem.MAP);
+                ((GameActivity) activity).onNavigationDrawerItemSelected(DrawerItem.MAP);
             }
         });
     }

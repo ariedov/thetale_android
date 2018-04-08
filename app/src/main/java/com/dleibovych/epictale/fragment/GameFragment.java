@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.astuetz.PagerSlidingTabStrip;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleClientApplication;
-import com.dleibovych.epictale.activity.MainActivity;
+import com.dleibovych.epictale.game.GameActivity;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.TextToSpeechUtils;
 import com.dleibovych.epictale.util.UiUtils;
@@ -87,7 +87,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
         }
 
         findPlayerContainer = rootView.findViewById(R.id.fragment_game_find_player);
-        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (GameActivity) getActivity());
 
         return rootView;
     }
@@ -174,7 +174,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
         if(fragment instanceof WrapperFragment) {
             ((WrapperFragment) fragment).refresh(isGlobal);
         }
-        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (GameActivity) getActivity());
     }
 
     private void refreshPageFragment(final int position) {
@@ -228,7 +228,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
         }
 
         if(findPlayerContainer != null) {
-            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
+            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (GameActivity) getActivity());
         }
     }
 

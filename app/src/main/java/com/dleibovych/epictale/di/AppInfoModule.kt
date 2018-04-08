@@ -14,11 +14,11 @@ const val ABOUT = "about"
 class AppInfoModule(private val resources: Resources) {
 
     @Provides @Named(APP_NAME)
-    fun appName() = resources.getString(R.string.app_name)
+    fun appName() = resources.getString(R.string.app_name)!!
 
     @Provides @Named(APP_INFO)
-    fun appInfo() = resources.getString(R.string.app_description)
+    fun appInfo() = resources.getString(R.string.app_description)!!
 
     @Provides @Named(ABOUT)
-    fun about() = resources.getString(R.string.app_about)
+    fun about() = resources.getString(R.string.app_about)!!
 }

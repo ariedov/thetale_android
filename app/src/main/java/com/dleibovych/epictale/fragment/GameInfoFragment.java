@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleClientApplication;
-import com.dleibovych.epictale.activity.MainActivity;
+import com.dleibovych.epictale.game.GameActivity;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest;
@@ -184,8 +184,8 @@ public class GameInfoFragment extends WrapperFragment {
                         refresh(false);
 
                         final Activity activity = getActivity();
-                        if(activity instanceof MainActivity) {
-                            ((MainActivity) activity).refreshGameAdjacentFragments();
+                        if(activity instanceof GameActivity) {
+                            ((GameActivity) activity).refreshGameAdjacentFragments();
                         }
                     }
 

@@ -16,6 +16,9 @@ import javax.inject.Named
 @Module
 class LoginModule {
 
+    @LoginScope @Provides
+    fun navigationProvider() = LoginNavigationProvider()
+
     @Provides @LoginScope
     fun thirdPartyPresenter(service: TheTaleService,
                             navigation: LoginNavigationProvider,

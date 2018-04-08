@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleClientApplication
-import com.dleibovych.epictale.activity.MainActivity
+import com.dleibovych.epictale.game.GameActivity
 import com.dleibovych.epictale.login.steps.credentials.LoginCredentialsFragment
 import com.dleibovych.epictale.login.steps.status.CheckStatusFragment
 import com.dleibovych.epictale.login.steps.thirdparty.LoginThirdPartyFragment
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
     }
 
     override fun openApp() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, GameActivity::class.java)
         intent.putExtras(getIntent())
 
         startActivity(intent)

@@ -6,7 +6,7 @@ import com.dleibovych.epictale.login.steps.status.CheckStatusFragment
 import com.dleibovych.epictale.login.steps.thirdparty.LoginThirdPartyFragment
 import dagger.Subcomponent
 
-@LoginScope @Subcomponent(modules = [LoginModule::class, LoginNavigationModule::class])
+@LoginScope @Subcomponent(modules = [LoginModule::class])
 interface LoginComponent {
 
     fun inject(target: LoginActivity)

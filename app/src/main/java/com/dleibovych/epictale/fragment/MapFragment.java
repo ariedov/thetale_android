@@ -28,7 +28,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleClientApplication;
-import com.dleibovych.epictale.activity.MainActivity;
+import com.dleibovych.epictale.game.GameActivity;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.CommonResponseCallback;
 import com.dleibovych.epictale.api.HttpMethod;
@@ -47,7 +47,6 @@ import com.dleibovych.epictale.api.response.InfoResponse;
 import com.dleibovych.epictale.api.response.MapCellResponse;
 import com.dleibovych.epictale.api.response.MapResponse;
 import com.dleibovych.epictale.api.response.MapTerrainResponse;
-import com.dleibovych.epictale.fragment.dialog.ChoiceDialog;
 import com.dleibovych.epictale.fragment.dialog.TabbedDialog;
 import com.dleibovych.epictale.util.DialogUtils;
 import com.dleibovych.epictale.util.ObjectUtils;
@@ -149,7 +148,7 @@ public class MapFragment extends WrapperFragment {
         }
 
         findPlayerContainer = rootView.findViewById(R.id.map_find_player);
-        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (GameActivity) getActivity());
 
         return wrapView(layoutInflater, rootView);
     }
@@ -322,7 +321,7 @@ public class MapFragment extends WrapperFragment {
         super.refresh(isGlobal);
         shouldShowMenuOptions = false;
 
-        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
+        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (GameActivity) getActivity());
 
         if(menuOptions != null) {
             menuOptions.setVisible(false);
@@ -452,7 +451,7 @@ public class MapFragment extends WrapperFragment {
         super.onOnscreen();
 
         if(findPlayerContainer != null) {
-            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (MainActivity) getActivity());
+            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer, this, this, (GameActivity) getActivity());
         }
     }
 
