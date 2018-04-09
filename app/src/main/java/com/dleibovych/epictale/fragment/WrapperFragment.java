@@ -87,9 +87,9 @@ public class WrapperFragment extends Fragment implements Refreshable, OnscreenSt
 
     @Override
     public void refresh(final boolean isGlobal) {
-        if(!isAdded()) {
-            return;
-        }
+//        if(!isAdded()) {
+//            return;
+//        }
 
         if(isGlobal) {
             setMode(DataViewMode.LOADING);

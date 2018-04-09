@@ -1,9 +1,9 @@
 package com.dleibovych.epictale.game
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -16,10 +16,8 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleClientApplication
 import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.cache.RequestCacheManager
-import com.dleibovych.epictale.api.request.GameInfoRequest
 import com.dleibovych.epictale.api.request.LogoutRequest
 import com.dleibovych.epictale.api.response.CommonResponse
-import com.dleibovych.epictale.api.response.GameInfoResponse
 import com.dleibovych.epictale.fragment.GameFragment
 import com.dleibovych.epictale.fragment.NavigationDrawerFragment
 import com.dleibovych.epictale.fragment.Refreshable
@@ -32,22 +30,20 @@ import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.UiUtils
 import com.dleibovych.epictale.util.WebsiteUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
-
-import java.net.CookieManager
+import org.thetale.api.models.GameInfo
 
 import javax.inject.Inject
 
-import okhttp3.OkHttpClient
 
-
-class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDrawerCallbacks, GameNavigation {
+class GameActivity : AppCompatActivity(),
+        NavigationDrawerFragment.NavigationDrawerCallbacks,
+        GameNavigation,
+        GameView {
 
     @Inject
     lateinit var navigationProvider: GameNavigationProvider
     @Inject
-    lateinit var client: OkHttpClient
-    @Inject
-    lateinit var manager: CookieManager
+    lateinit var presenter: GamePresenter
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -172,6 +168,7 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
 
         navigationProvider.navigation = null
         if (isFinishing) {
+            presenter.dispose()
             TheTaleClientApplication.getComponentProvider().gameComponent = null
         }
     }
@@ -210,18 +207,18 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
                         fragment.setMode(DataViewMode.LOADING)
                     }
 
-                    LogoutRequest(client, manager).execute(object : ApiResponseCallback<CommonResponse> {
-                        override fun processResponse(response: CommonResponse) {
-                            startActivity(Intent(this@GameActivity, LoginActivity::class.java))
-                            finish()
-                        }
-
-                        override fun processError(response: CommonResponse) {
-                            if (fragment is WrapperFragment) {
-                                fragment.setError(response.errorMessage)
-                            }
-                        }
-                    })
+//                    LogoutRequest(client, manager).execute(object : ApiResponseCallback<CommonResponse> {
+//                        override fun processResponse(response: CommonResponse) {
+//                            startActivity(Intent(this@GameActivity, LoginActivity::class.java))
+//                            finish()
+//                        }
+//
+//                        override fun processError(response: CommonResponse) {
+//                            if (fragment is WrapperFragment) {
+//                                fragment.setError(response.errorMessage)
+//                            }
+//                        }
+//                    })
                 }
 
                 DrawerItem.ABOUT -> DialogUtils.showAboutDialog(supportFragmentManager)
@@ -248,13 +245,13 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
                     currentItem = item
                     mTitle = getString(currentItem!!.titleResId)
                     history!!.set(currentItem)
-                    supportInvalidateOptionsMenu()
+                    invalidateOptionsMenu()
                 }
             }
         }
     }
 
-    fun restoreActionBar() {
+    private fun restoreActionBar() {
         val actionBar = supportActionBar
         actionBar!!.setDisplayShowTitleEnabled(true)
         actionBar.title = mTitle
@@ -291,21 +288,22 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_refresh -> {
                 refresh()
-                return true
+                true
             }
 
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
+    @SuppressLint("InflateParams")
     fun onRefreshStarted() {
         if (menu != null) {
             val itemRefresh = menu!!.findItem(R.id.action_refresh)
             if (itemRefresh != null) {
-                MenuItemCompat.setActionView(itemRefresh, layoutInflater.inflate(R.layout.menu_progress, null))
+                itemRefresh.actionView = layoutInflater.inflate(R.layout.menu_progress, null)
             }
         }
     }
@@ -314,7 +312,7 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
         if (menu != null) {
             val itemRefresh = menu!!.findItem(R.id.action_refresh)
             if (itemRefresh != null) {
-                MenuItemCompat.setActionView(itemRefresh, null)
+                itemRefresh.actionView = null
             }
         }
     }
@@ -322,15 +320,16 @@ class GameActivity : AppCompatActivity(), NavigationDrawerFragment.NavigationDra
     fun onDataRefresh() {
         drawerItemInfoView!!.visibility = View.VISIBLE
         UiUtils.setText(accountNameTextView, PreferencesManager.getAccountName())
-        GameInfoRequest(client, manager, false).execute(object : ApiResponseCallback<GameInfoResponse> {
-            override fun processResponse(response: GameInfoResponse) {
-                UiUtils.setText(timeTextView, String.format("%s %s", response.turnInfo.verboseDate, response.turnInfo.verboseTime))
-            }
 
-            override fun processError(response: GameInfoResponse) {
-                UiUtils.setText(timeTextView, null)
-            }
-        }, true)
+        presenter.reload()
+    }
+
+    override fun setGameInfo(info: GameInfo) {
+        UiUtils.setText(timeTextView, String.format("%s %s", info.turn.verboseDate, info.turn.verboseTime))
+    }
+
+    override fun showError() {
+        UiUtils.setText(timeTextView, null)
     }
 
     override fun onBackPressed() {

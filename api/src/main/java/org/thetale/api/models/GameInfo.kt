@@ -36,7 +36,7 @@ data class Hero(
         val diary: String,
         val messages: List<Any>, // this one is f* up. need to convert
         val habits: Map<String, Habit>,
-        val quests: List<Quests>,
+        val quests: Quests,
         val action: Action,
         val position: Position,
         val permissions: Permissions,
@@ -87,7 +87,7 @@ data class Base(
 data class Secondary(
         @SerializedName("max_bag_size") val maxBagSize: Int,
         val power: List<Int>,
-        @SerializedName("move_speed") val moveSpeed: Int,
+        @SerializedName("move_speed") val moveSpeed: Double,
         @SerializedName("loot_items_count") val lootItemsCount: Int,
         val initiative: Double
 )
@@ -98,10 +98,6 @@ data class Habit(
 )
 
 data class Quests(
-        val quests: QuestsHolder
-)
-
-data class QuestsHolder(
         val quests: List<Lines>
 )
 
