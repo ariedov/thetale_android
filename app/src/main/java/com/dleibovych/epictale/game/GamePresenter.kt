@@ -1,12 +1,12 @@
 package com.dleibovych.epictale.game
 
+import com.dleibovych.epictale.game.data.GameInfoProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-import org.thetale.api.TheTaleService
-import org.thetale.api.call
 
-class GamePresenter(private val service: TheTaleService) {
+// TODO: implement logout
+class GamePresenter(private val provider: GameInfoProvider) {
 
     var view: GameView? = null
 
@@ -15,7 +15,7 @@ class GamePresenter(private val service: TheTaleService) {
     fun reload() {
         gameInfoJob = launch(UI) {
             try {
-                val info = service.gameInfo().call()
+                val info = provider.getInfo().await()
                 view?.setGameInfo(info)
             } catch (e: Exception) {
                 view?.showError()

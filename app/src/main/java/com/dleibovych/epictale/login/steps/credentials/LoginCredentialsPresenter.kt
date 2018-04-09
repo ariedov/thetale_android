@@ -35,10 +35,18 @@ class LoginCredentialsPresenter(private val service: TheTaleService,
 
                 state.apply { view?.hideProgress() }
             } catch (e: ResponseException) {
-                state.apply { view?.showLoginError(e.getEmailError(), e.getPasswordError()) }
+                processResponseError(e)
             } catch (e: Exception) {
                 state.apply { view?.showError() }
             }
+        }
+    }
+
+    private fun processResponseError(e: ResponseException) {
+        if (e.errors != null) {
+            state.apply { view?.showLoginError(e.getEmailError(), e.getPasswordError()) }
+        } else if (e.error != null) {
+            state.apply { view?.showLoginError(e.getGeneralError(), null) }
         }
     }
 
@@ -57,4 +65,8 @@ fun ResponseException.getEmailError(): String? {
 
 fun ResponseException.getPasswordError(): String? {
     return errors?.get("password")?.get(0)
+}
+
+fun ResponseException.getGeneralError(): String? {
+    return error
 }
