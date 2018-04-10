@@ -12,3 +12,6 @@ com_crashlytics_export_strings.xml
 crashlytics-build.properties
 *.apk
 app/version.properties
+app/release
+
+screenshots/

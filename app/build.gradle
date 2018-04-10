@@ -23,7 +23,7 @@ android {
             minSdkVersion 21
             targetSdkVersion 27
             versionCode code
-            versionName "1.6.9." + code + "_beta"
+            versionName "0.0.1." + code + "_beta"
             resValue "string", "tray__authority", "${applicationId}.tray"
         }
     } else {
