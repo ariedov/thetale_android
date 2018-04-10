@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "225724928392",
+    "firebase_url": "https://the-tale-debug.firebaseio.com",
+    "project_id": "the-tale-debug",
+    "storage_bucket": "the-tale-debug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225724928392:android:baf5fd6ff5fbd36c",
+        "android_client_info": {
+          "package_name": "com.dleibovych.epictale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225724928392-lh0g5mj986n82g7eo4d7cquosrkn25st.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzRN_fJpVVb-8aby5LoAo9Tx_7ybJSZug"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
