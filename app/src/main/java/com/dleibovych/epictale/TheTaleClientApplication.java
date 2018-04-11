@@ -2,7 +2,6 @@ package com.dleibovych.epictale;
 
 import android.app.Application;
 import android.content.Context;
-import android.preference.PreferenceManager;
 
 import com.dleibovych.epictale.di.AppInfoModule;
 import com.google.firebase.analytics.FirebaseAnalytics;

@@ -7,27 +7,14 @@ apply plugin: 'com.google.firebase.firebase-crash'
 android {
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
-    def versionPropsFile = file('version.properties')
 
-    if (versionPropsFile.canRead()) {
-        Properties versionProps = new Properties()
-
-        versionProps.load(new FileInputStream(versionPropsFile))
-
-        def code = versionProps['VERSION_CODE'].toInteger() + 1
-        versionProps['VERSION_CODE'] = code.toString()
-        versionProps.store(versionPropsFile.newWriter(), null)
-
-        defaultConfig {
-            applicationId "com.dleibovych.epictale"
-            minSdkVersion 21
-            targetSdkVersion 27
-            versionCode code
-            versionName "0.0.1." + code + "_beta"
-            resValue "string", "tray__authority", "${applicationId}.tray"
-        }
-    } else {
-        throw new GradleException("Could not read version.properties!")
+    defaultConfig {
+        applicationId "com.dleibovych.epictale"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 3
+        versionName "0.0.3_beta"
+        resValue "string", "tray__authority", "${applicationId}.tray"
     }
 
     buildTypes {
