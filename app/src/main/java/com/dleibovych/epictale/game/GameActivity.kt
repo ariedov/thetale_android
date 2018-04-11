@@ -14,10 +14,7 @@ import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.DrawerItem
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleClientApplication
-import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.cache.RequestCacheManager
-import com.dleibovych.epictale.api.request.LogoutRequest
-import com.dleibovych.epictale.api.response.CommonResponse
 import com.dleibovych.epictale.fragment.GameFragment
 import com.dleibovych.epictale.fragment.NavigationDrawerFragment
 import com.dleibovych.epictale.fragment.Refreshable
@@ -40,10 +37,8 @@ class GameActivity : AppCompatActivity(),
         GameNavigation,
         GameView {
 
-    @Inject
-    lateinit var navigationProvider: GameNavigationProvider
-    @Inject
-    lateinit var presenter: GamePresenter
+    @Inject lateinit var navigationProvider: GameNavigationProvider
+    @Inject lateinit var presenter: GamePresenter
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -207,18 +202,7 @@ class GameActivity : AppCompatActivity(),
                         fragment.setMode(DataViewMode.LOADING)
                     }
 
-//                    LogoutRequest(client, manager).execute(object : ApiResponseCallback<CommonResponse> {
-//                        override fun processResponse(response: CommonResponse) {
-//                            startActivity(Intent(this@GameActivity, LoginActivity::class.java))
-//                            finish()
-//                        }
-//
-//                        override fun processError(response: CommonResponse) {
-//                            if (fragment is WrapperFragment) {
-//                                fragment.setError(response.errorMessage)
-//                            }
-//                        }
-//                    })
+                    presenter.logout()
                 }
 
                 DrawerItem.ABOUT -> DialogUtils.showAboutDialog(supportFragmentManager)
@@ -330,6 +314,11 @@ class GameActivity : AppCompatActivity(),
 
     override fun showError() {
         UiUtils.setText(timeTextView, null)
+    }
+
+    override fun showLogin() {
+        startActivity(Intent(this@GameActivity, LoginActivity::class.java))
+        finish()
     }
 
     override fun onBackPressed() {

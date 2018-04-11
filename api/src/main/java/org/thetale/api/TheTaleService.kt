@@ -28,6 +28,9 @@ interface TheTaleService {
     @GET("/accounts/third-party/tokens/api/authorisation-state")
     fun authorizationState(@Query("api_version") apiVersion: String = "1.0"): Call<Response<ThirdPartyStatus>>
 
+    @POST("/accounts/auth/api/logout")
+    fun logout(@Query("api_version") apiClient: String = "1.0"): Call<Response<Empty>>
+
     @GET("/game/api/info")
     fun gameInfo(
             @Query("client_turns") clientTurns: String = "",
