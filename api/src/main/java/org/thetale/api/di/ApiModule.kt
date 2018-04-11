@@ -1,6 +1,6 @@
-package com.dleibovych.epictale.di
+package org.thetale.api.di
 
-import com.dleibovych.epictale.BuildConfig
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
@@ -8,28 +8,29 @@ import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
+import org.thetale.api.BuildConfig
 import org.thetale.api.ClientBuilder
 import org.thetale.api.TheTaleService
 import org.thetale.api.URL
-import java.net.CookieHandler
-import java.net.CookieManager
-import java.net.CookiePolicy
-import java.net.HttpCookie
+import org.thetale.api.cookie.PersistentCookieStore
+import java.net.*
 import javax.inject.Singleton
 
 @Module
-class ApiModule {
+class ApiModule(val context: Context) {
 
     @Provides
     @Singleton
-    fun cookieManager(): CookieManager {
+    fun cookieStore(): CookieStore = PersistentCookieStore(context)
+
+    @Provides
+    @Singleton
+    fun cookieManager(store: CookieStore): CookieManager {
         if (CookieHandler.getDefault() == null) {
-            CookieHandler.setDefault(CookieManager())
+            CookieHandler.setDefault(CookieManager(store, CookiePolicy.ACCEPT_ALL))
         }
 
-        val cookieManager = CookieHandler.getDefault() as CookieManager
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL)
-        return cookieManager
+        return CookieHandler.getDefault() as CookieManager
     }
 
     @Provides

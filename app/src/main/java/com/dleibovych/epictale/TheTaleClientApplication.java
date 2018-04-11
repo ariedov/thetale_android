@@ -2,6 +2,7 @@ package com.dleibovych.epictale;
 
 import android.app.Application;
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import com.dleibovych.epictale.di.AppInfoModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -13,38 +14,35 @@ import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.map.MapUtils;
 import com.dleibovych.epictale.util.onscreen.OnscreenStateWatcher;
 
+import org.thetale.api.di.ApiModule;
+
 public class TheTaleClientApplication extends Application {
 
     private static Context context;
     private static ComponentProvider componentProvider;
     private static OnscreenStateWatcher onscreenStateWatcher;
     private static NotificationManager notificationManager;
-    private static PreferencesManager preferencesManager;
     private static FirebaseAnalytics analytics;
 
     public static FirebaseAnalytics getAnalytics() {
         return analytics;
     }
 
-    public static PreferencesManager getPreferencesManager() {
-        return preferencesManager;
-    }
-
-    private AppComponent appComponent;
-
     @Override
     public void onCreate() {
         super.onCreate();
 
+        PreferencesManager.init(this);
+
         componentProvider = new ComponentProvider();
         context = getApplicationContext();
         analytics = FirebaseAnalytics.getInstance(context);
-        preferencesManager = new PreferencesManager(context);
         onscreenStateWatcher = new OnscreenStateWatcher();
         notificationManager = new NotificationManager(context);
 
-        appComponent = DaggerAppComponent
+        AppComponent appComponent = DaggerAppComponent
                 .builder()
+                .apiModule(new ApiModule(this))
                 .appInfoModule(new AppInfoModule(getResources()))
                 .build();
 

@@ -61,7 +61,7 @@ public class PreferencesManager
 
   private static TrayPreferences sharedPreferences = null;
 
-  public PreferencesManager(@NonNull Context context)
+  public static void init(@NonNull Context context)
   {
     sharedPreferences = new TrayPreferences(context, "thetaleclient", 1, TrayStorage.Type.USER);
   }

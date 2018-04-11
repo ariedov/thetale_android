@@ -8,6 +8,7 @@ import com.dleibovych.epictale.login.di.LoginComponent
 import com.dleibovych.epictale.service.WatcherService
 import com.dleibovych.epictale.service.widget.AppWidgetProvider
 import dagger.Component
+import org.thetale.api.di.ApiModule
 import javax.inject.Singleton
 
 @Singleton @Component(modules = [ApiModule::class, AppInfoModule::class])
