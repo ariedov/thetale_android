@@ -14,7 +14,7 @@ interface TheTaleService {
     fun login(
             @Field("email") email: String,
             @Field("password") password: String,
-            @Field("remember") remember: Boolean = false,
+            @Field("remember") remember: Boolean = true,
             @Query("api_version") apiClient: String = "1.0"): Call<Response<AuthInfo>>
 
     @FormUrlEncoded

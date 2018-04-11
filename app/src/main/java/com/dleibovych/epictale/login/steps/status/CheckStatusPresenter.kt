@@ -37,8 +37,12 @@ class CheckStatusPresenter(private val service: TheTaleService,
             try {
                 state.apply { view?.showLoading() }
 
-                service.info().call()
-                navigationProvider.navigation?.showCredentials()
+                val info = service.info().call()
+                if (info.accountId == null) {
+                    navigationProvider.navigation?.showCredentials()
+                } else {
+                    navigationProvider.navigation?.openApp()
+                }
 
                 state.apply { view?.hideLoading() }
             } catch (e: Exception) {

@@ -2,10 +2,12 @@
 
 Android-клиент для многопользовательской zero-player RPG [Сказка](http://the-tale.org).
 
-Поддерживаемые версии Android: 4.4 и выше.
+[![Build Status](https://travis-ci.org/ariedov/TheTaleClient.svg?branch=master)](https://travis-ci.org/ariedov/TheTaleClient)
 
-[Страница приложения в Google Play](https://play.google.com/store/apps/details?id=com.lonebytesoft.thetaleclient).  
-[Обсуждение на форуме игры](http://the-tale.org/forum/threads/2802).  
+Поддерживаемые версии Android: 5.0 и выше.
+
+[Страница приложения в Google Play](https://play.google.com/store/apps/details?id=com.dleibovych.epictale).  
+[Обсуждение на форуме игры](https://the-tale.org/forum/threads/7083).  
 [Issue-tracker](https://github.com/ariedov/TheTaleClient/issues).
 
 Высказывать пожелания по работе приложения и сообщать о багах можно на гитхабе, в трекере задач или на форуме.
