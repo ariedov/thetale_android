@@ -17,21 +17,23 @@ android {
         resValue "string", "tray__authority", "${applicationId}.tray"
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../key/release.keystore")
+            storePassword project.hasProperty('THE_TALE_RELEASE_KEYSTORE_PASSWORD') ? THE_TALE_RELEASE_KEYSTORE_PASSWORD : System.getenv('THE_TALE_RELEASE_KEYSTORE_PASSWORD')
+            keyAlias project.hasProperty('THE_TALE_RELEASE_KEY_ALIAS') ? THE_TALE_RELEASE_KEY_ALIAS : System.getenv('THE_TALE_RELEASE_KEY_ALIAS')
+            keyPassword project.hasProperty('THE_TALE_RELEASE_KEY_PASSWORD') ? THE_TALE_RELEASE_KEY_PASSWORD : System.getenv('THE_TALE_RELEASE_KEY_PASSWORD')
+//            storePassword THE_TALE_RELEASE_KEYSTORE_PASSWORD
+//            keyAlias THE_TALE_RELEASE_KEY_ALIAS
+//            keyPassword THE_TALE_RELEASE_KEY_PASSWORD
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable false
-            jniDebuggable false
-            renderscriptDebuggable false
-            zipAlignEnabled true
+            signingConfig signingConfigs.release
         }
         debug {
-            debuggable false
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            jniDebuggable true
-            renderscriptDebuggable true
         }
     }
 
