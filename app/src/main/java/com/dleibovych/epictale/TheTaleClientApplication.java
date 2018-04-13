@@ -3,6 +3,7 @@ package com.dleibovych.epictale;
 import android.app.Application;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.dleibovych.epictale.di.AppInfoModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.dleibovych.epictale.api.cache.RequestCacheManager;
@@ -14,6 +15,8 @@ import com.dleibovych.epictale.util.map.MapUtils;
 import com.dleibovych.epictale.util.onscreen.OnscreenStateWatcher;
 
 import org.thetale.api.di.ApiModule;
+
+import io.fabric.sdk.android.Fabric;
 
 public class TheTaleClientApplication extends Application {
 
@@ -30,6 +33,8 @@ public class TheTaleClientApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Fabric.with(this, new Crashlytics());
 
         PreferencesManager.init(this);
 
