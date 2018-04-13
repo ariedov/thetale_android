@@ -1,4 +1,4 @@
-﻿#The Tale Client
+﻿# The Tale Client
 
 Android-клиент для многопользовательской zero-player RPG [Сказка](http://the-tale.org).
 
@@ -8,7 +8,8 @@ Android-клиент для многопользовательской zero-play
 
 [Страница приложения в Google Play](https://play.google.com/store/apps/details?id=com.dleibovych.epictale).  
 [Обсуждение на форуме игры](https://the-tale.org/forum/threads/7083).  
-[Issue-tracker](https://github.com/ariedov/TheTaleClient/issues).
+[Issue-tracker](https://github.com/ariedov/TheTaleClient/issues).  
+[Прогресс в карточках](https://trello.com/b/bdUpJtMk/epic-tale).
 
 Высказывать пожелания по работе приложения и сообщать о багах можно на гитхабе, в трекере задач или на форуме.
 
