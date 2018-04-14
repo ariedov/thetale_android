@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.game.GameActivity;
+import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.util.UiUtils;
 import com.dleibovych.epictale.util.onscreen.OnscreenStateListener;
 
@@ -55,15 +55,15 @@ public class WrapperFragment extends Fragment implements Refreshable, OnscreenSt
                 loadingView.setVisibility(mode == DataViewMode.LOADING ? View.VISIBLE : View.GONE);
                 errorView.setVisibility(mode == DataViewMode.ERROR ? View.VISIBLE : View.GONE);
 
-                if(activity instanceof GameActivity) {
+                if(activity instanceof MainActivity) {
                     switch(mode) {
                         case DATA:
                         case ERROR:
-                            ((GameActivity) activity).onRefreshFinished();
+                            ((MainActivity) activity).onRefreshFinished();
                             break;
 
                         case LOADING:
-                            ((GameActivity) activity).onRefreshStarted();
+                            ((MainActivity) activity).onRefreshStarted();
                             break;
                     }
                 }
@@ -96,8 +96,8 @@ public class WrapperFragment extends Fragment implements Refreshable, OnscreenSt
         }
 
         final Activity activity = getActivity();
-        if(activity instanceof GameActivity) {
-            ((GameActivity) activity).onDataRefresh();
+        if(activity instanceof MainActivity) {
+            ((MainActivity) activity).onDataRefresh();
         }
     }
 

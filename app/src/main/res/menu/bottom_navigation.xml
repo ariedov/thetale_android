@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/game"
+        android:enabled="true"
+        android:icon="@drawable/ic_game"
+        android:title="@string/game_title_info"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/map"
+        android:enabled="true"
+        android:icon="@drawable/ic_map"
+        android:title="@string/drawer_title_map"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_account"
+        android:title="@string/game_title_profile"
+        app:showAsAction="ifRoom" />
+</menu>

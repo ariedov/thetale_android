@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spannable;
@@ -25,7 +24,7 @@ import android.widget.TextView;
 
 import com.dleibovych.epictale.DrawerItem;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.game.GameActivity;
+import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.login.LoginActivity;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest;
@@ -125,9 +124,9 @@ public class UiUtils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         if(gamePage != null) {
-            intent.putExtra(GameActivity.KEY_GAME_TAB_INDEX, gamePage.ordinal());
+            intent.putExtra(MainActivity.KEY_GAME_TAB_INDEX, gamePage.ordinal());
         }
-        intent.putExtra(GameActivity.KEY_SHOULD_RESET_WATCHING_ACCOUNT, shouldResetWatchingAccount);
+        intent.putExtra(MainActivity.KEY_SHOULD_RESET_WATCHING_ACCOUNT, shouldResetWatchingAccount);
 
         return PendingIntent.getActivity(
                 context,
@@ -149,7 +148,7 @@ public class UiUtils {
         }
     }
 
-    public static void setupFindPlayerContainer(OkHttpClient client, CookieManager manager, final View container, final Refreshable refreshable, final Fragment fragment, final GameActivity activity) {
+    public static void setupFindPlayerContainer(OkHttpClient client, CookieManager manager, final View container, final Refreshable refreshable, final Fragment fragment, final MainActivity activity) {
         container.setVisibility(View.GONE);
         new InfoPrerequisiteRequest(client, manager,
                 () -> {
@@ -184,7 +183,7 @@ public class UiUtils {
                         container.findViewById(R.id.find_player_widget_search).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                activity.onNavigationDrawerItemSelected(DrawerItem.FIND_PLAYER);
+//                                activity.onNavigationDrawerItemSelected(DrawerItem.FIND_PLAYER);
                             }
                         });
                     }
@@ -197,8 +196,8 @@ public class UiUtils {
     }
 
     public static MenuItem getMenuItem(final Activity activity, final int menuItemResId) {
-        if(activity instanceof GameActivity) {
-            final Menu menu = ((GameActivity) activity).getMenu();
+        if(activity instanceof MainActivity) {
+            final Menu menu = ((MainActivity) activity).getMenu();
             if(menu != null) {
                 return menu.findItem(menuItemResId);
             }
@@ -206,10 +205,10 @@ public class UiUtils {
         return null;
     }
 
-    public static GameActivity getMainActivity(final Fragment fragment) {
+    public static MainActivity getMainActivity(final Fragment fragment) {
         final Activity activity = fragment.getActivity();
-        if(activity instanceof GameActivity) {
-            return (GameActivity) activity;
+        if(activity instanceof MainActivity) {
+            return (MainActivity) activity;
         } else {
             return null;
         }

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.DrawerItem;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.game.GameActivity;
+import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.fragment.dialog.ChoiceDialog;
 import com.dleibovych.epictale.util.DialogUtils;
 import com.dleibovych.epictale.util.PreferencesManager;
@@ -294,8 +294,8 @@ public class FindPlayerFragment extends WrapperFragment {
         }
 
         final Activity activity = getActivity();
-        if(activity instanceof GameActivity) {
-            ((GameActivity) activity).onNavigationDrawerItemSelected(DrawerItem.GAME);
+        if(activity instanceof MainActivity) {
+//            ((MainActivity) activity).onNavigationDrawerItemSelected(DrawerItem.GAME);
         }
     }
 
