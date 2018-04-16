@@ -123,7 +123,7 @@ class PersistentCookieStore(private val context: Context) : CookieStore {
         /**
          * The preferences name.
          */
-        private val PREFS_NAME = PersistentCookieStore::class.java.name
+        private val PREFS_NAME = PersistentCookieStore::class.java.simpleName
 
         /**
          * The preferences session cookie key.

@@ -13,7 +13,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,12 +194,6 @@ public class UiUtils {
     }
 
     public static MenuItem getMenuItem(final Activity activity, final int menuItemResId) {
-        if(activity instanceof MainActivity) {
-            final Menu menu = ((MainActivity) activity).getMenu();
-            if(menu != null) {
-                return menu.findItem(menuItemResId);
-            }
-        }
         return null;
     }
 

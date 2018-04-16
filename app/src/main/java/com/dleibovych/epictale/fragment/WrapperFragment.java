@@ -59,11 +59,9 @@ public class WrapperFragment extends Fragment implements Refreshable, OnscreenSt
                     switch(mode) {
                         case DATA:
                         case ERROR:
-                            ((MainActivity) activity).onRefreshFinished();
                             break;
 
                         case LOADING:
-                            ((MainActivity) activity).onRefreshStarted();
                             break;
                     }
                 }
@@ -93,11 +91,6 @@ public class WrapperFragment extends Fragment implements Refreshable, OnscreenSt
 
         if(isGlobal) {
             setMode(DataViewMode.LOADING);
-        }
-
-        final Activity activity = getActivity();
-        if(activity instanceof MainActivity) {
-            ((MainActivity) activity).onDataRefresh();
         }
     }
 

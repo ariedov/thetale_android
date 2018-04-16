@@ -1,22 +1,21 @@
 package com.dleibovych.epictale.game
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.TextView
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.api.cache.RequestCacheManager
-import com.dleibovych.epictale.fragment.GameInfoFragment
+import com.dleibovych.epictale.fragment.GameFragment
+import com.dleibovych.epictale.fragment.MapFragment
+import com.dleibovych.epictale.fragment.ProfileFragment
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
-import com.dleibovych.epictale.util.UiUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
+import kotlinx.android.synthetic.main.activity_main.*
 import org.thetale.api.models.GameInfo
 import org.thetale.auth.LoginActivity
 
@@ -34,18 +33,6 @@ class MainActivity : AppCompatActivity(),
 
     lateinit var componentProvider: GameComponentProvider
 
-    /**
-     * Used to store the last screen title. For use in [.restoreActionBar].
-     */
-    var isPaused: Boolean = false
-        private set
-
-    var menu: Menu? = null
-        private set
-
-    private var accountNameTextView: TextView? = null
-    private var timeTextView: TextView? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         componentProvider = (application as GameComponentProvider)
@@ -59,9 +46,34 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.container, GameInfoFragment.create())
+                    .replace(R.id.container, GameFragment.create())
                     .commit()
         }
+
+        bottomNavigation.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.game -> {
+                    showFragment(GameFragment.create())
+                    true
+                }
+                R.id.map -> {
+                    showFragment(MapFragment())
+                    true
+                }
+                R.id.profile -> {
+                    showFragment(ProfileFragment())
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit()
     }
 
     override fun onStart() {
@@ -72,24 +84,12 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        isPaused = false
-    }
-
     override fun onPause() {
-        isPaused = true
-
         TheTaleApplication.onscreenStateWatcher?.onscreenStateChange(OnscreenPart.MAIN, false)
         TextToSpeechUtils.pause()
         RequestCacheManager.invalidate()
 
         super.onPause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        isPaused = true
-        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
@@ -104,40 +104,10 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_refresh -> {
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    @SuppressLint("InflateParams")
-    fun onRefreshStarted() {
-    }
-
-    fun onRefreshFinished() {
-    }
-
-    fun onDataRefresh() {
-        UiUtils.setText(accountNameTextView, PreferencesManager.getAccountName())
-
-        presenter.reload()
-    }
-
     override fun setGameInfo(info: GameInfo) {
-        UiUtils.setText(timeTextView, String.format("%s %s", info.turn.verboseDate, info.turn.verboseTime))
     }
 
     override fun showError() {
-        UiUtils.setText(timeTextView, null)
     }
 
     override fun showLogin() {

@@ -284,17 +284,17 @@ public class MapFragment extends WrapperFragment {
                                 showMapSaveError(e.getLocalizedMessage());
                             }
 
-                            if(success && !UiUtils.getMainActivity(MapFragment.this).isPaused()) {
-                                DialogUtils.showConfirmationDialog(getChildFragmentManager(),
-                                        getString(R.string.map_save), getString(R.string.map_save_message, fileMap.getPath()),
-                                        null, null,
-                                        getString(R.string.map_save_open), () -> {
-                                            final Intent intent = new Intent();
-                                            intent.setAction(Intent.ACTION_VIEW);
-                                            intent.setDataAndType(Uri.fromFile(fileMap), "image/png");
-                                            startActivity(intent);
-                                        }, null);
-                            }
+//                            if(success && !UiUtils.getMainActivity(MapFragment.this).isPaused()) {
+//                                DialogUtils.showConfirmationDialog(getChildFragmentManager(),
+//                                        getString(R.string.map_save), getString(R.string.map_save_message, fileMap.getPath()),
+//                                        null, null,
+//                                        getString(R.string.map_save_open), () -> {
+//                                            final Intent intent = new Intent();
+//                                            intent.setAction(Intent.ACTION_VIEW);
+//                                            intent.setDataAndType(Uri.fromFile(fileMap), "image/png");
+//                                            startActivity(intent);
+//                                        }, null);
+//                            }
                         }
 
                         getActivity().runOnUiThread(() -> progressDialog.dismiss());
@@ -308,11 +308,11 @@ public class MapFragment extends WrapperFragment {
     }
 
     private void showMapSaveError(final String error) {
-        if(!UiUtils.getMainActivity(this).isPaused()) {
-            DialogUtils.showMessageDialog(getChildFragmentManager(),
-                    getString(R.string.common_dialog_attention_title),
-                    TextUtils.isEmpty(error) ? getString(R.string.map_save_error_short) : getString(R.string.map_save_error, error));
-        }
+//        if(!UiUtils.getMainActivity(this).isPaused()) {
+//            DialogUtils.showMessageDialog(getChildFragmentManager(),
+//                    getString(R.string.common_dialog_attention_title),
+//                    TextUtils.isEmpty(error) ? getString(R.string.map_save_error_short) : getString(R.string.map_save_error, error));
+//        }
     }
 
     @Override
@@ -366,11 +366,11 @@ public class MapFragment extends WrapperFragment {
                                         if(MapUtils.getCurrentSizeDenominator() == 1) {
                                             updateMenuMapModificationVisibility();
                                         } else {
-                                            if(!UiUtils.getMainActivity(MapFragment.this).isPaused()) {
-                                                DialogUtils.showMessageDialog(getChildFragmentManager(),
-                                                        getString(R.string.common_dialog_attention_title),
-                                                        getString(R.string.map_decreased_quality));
-                                            }
+//                                            if(!UiUtils.getMainActivity(MapFragment.this).isPaused()) {
+//                                                DialogUtils.showMessageDialog(getChildFragmentManager(),
+//                                                        getString(R.string.common_dialog_attention_title),
+//                                                        getString(R.string.map_decreased_quality));
+//                                            }
                                         }
                                     }
 
