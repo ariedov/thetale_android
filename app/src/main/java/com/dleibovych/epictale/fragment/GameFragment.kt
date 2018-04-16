@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 
-import com.astuetz.PagerSlidingTabStrip
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.game.MainActivity
@@ -58,18 +57,6 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
 
         viewPager = rootView.findViewById(R.id.fragment_game_pager)
         viewPager!!.adapter = GamePagerAdapter(activity!!.supportFragmentManager)
-
-        val tabStrip = rootView.findViewById<PagerSlidingTabStrip>(R.id.fragment_game_tab_strip)
-        tabStrip.setViewPager(viewPager!!)
-        tabStrip.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                UiUtils.callOnscreenStateChange(getPageFragment(currentPageIndex), false)
-                UiUtils.callOnscreenStateChange(getPageFragment(position), true)
-                currentPageIndex = position
-
-                updateMenu()
-            }
-        })
 
         val gamePage = PreferencesManager.getDesiredGamePage()
         if (gamePage != null) {

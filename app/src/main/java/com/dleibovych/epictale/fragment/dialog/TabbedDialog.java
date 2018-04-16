@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.widget.WrappingViewPager;
@@ -64,11 +63,10 @@ public class TabbedDialog extends BaseDialog {
     }
 
     private void setupTabs() {
-        final WrappingViewPager viewPager = (WrappingViewPager) getView().findViewById(R.id.dialog_tabbed_pager);
+        final WrappingViewPager viewPager = getView().findViewById(R.id.dialog_tabbed_pager);
         pagerAdapter = new TabbedDialogPagerAdapter(tabsAdapter);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(pagerAdapter.getCount());
-        ((PagerSlidingTabStrip) getView().findViewById(R.id.dialog_tabbed_tab_strip)).setViewPager(viewPager);
     }
 
     public static abstract class TabbedDialogTabsAdapter {

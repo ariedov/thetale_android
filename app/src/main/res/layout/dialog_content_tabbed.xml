@@ -13,6 +13,11 @@
     <com.dleibovych.epictale.widget.WrappingViewPager
         android:id="@+id/dialog_tabbed_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+        <android.support.v4.view.PagerTitleStrip
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.dleibovych.epictale.widget.WrappingViewPager>
 
 </LinearLayout>
