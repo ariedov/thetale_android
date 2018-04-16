@@ -18,7 +18,6 @@ import android.widget.TextView
 import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleClientApplication
-import com.dleibovych.epictale.game.MainActivity
 import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest
@@ -51,10 +50,6 @@ import javax.inject.Inject
 
 import okhttp3.OkHttpClient
 
-/**
- * @author Hamster
- * @since 05.10.2014
- */
 class GameInfoFragment : WrapperFragment() {
 
     @Inject
