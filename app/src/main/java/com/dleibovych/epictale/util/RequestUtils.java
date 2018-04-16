@@ -30,27 +30,6 @@ public class RequestUtils {
 
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
-    public static void setSession(final String session) {
-        if(CookieHandler.getDefault() == null) {
-            CookieHandler.setDefault(new CookieManager());
-        }
-
-        final String domain = "the-tale.org";
-        final String path = "/";
-        final HttpCookie httpCookie = new HttpCookie(COOKIE_SESSION_ID, session);
-        httpCookie.setDomain(domain);
-        httpCookie.setPath(path);
-        ((CookieManager) CookieHandler.getDefault()).getCookieStore().add(
-                URI.create(domain + path), httpCookie);
-    }
-
-    public static void setSession() {
-        final String session = PreferencesManager.getSession();
-        if(!TextUtils.isEmpty(session)) {
-            setSession(session);
-        }
-    }
-
     public static String getGenericErrorResponse(final String error) {
         try {
             final JSONObject json = new JSONObject();

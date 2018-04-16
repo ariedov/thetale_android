@@ -107,8 +107,6 @@ public abstract class AbstractApiRequest<T extends AbstractApiResponse> {
                     String.format("%s%s%s", TheTaleApplication.Companion.getContext().getPackageName(), "-", BuildConfig.VERSION_CODE));
         }
 
-        RequestUtils.setSession();
-
         for (final HttpCookie httpCookie : cookieManager.getCookieStore().getCookies()) {
             if ((httpMethod == HttpMethod.POST) && (httpCookie.getName().equals(COOKIE_CSRF_TOKEN))) {
                 if (requestPostParams == null) {
