@@ -177,7 +177,6 @@ public class UiUtils {
                             public void onClick(View v) {
                                 PreferencesManager.setWatchingAccount(0, null);
                                 refreshable.refresh(true);
-                                activity.refreshGameAdjacentFragments();
                             }
                         });
                         container.findViewById(R.id.find_player_widget_search).setOnClickListener(new View.OnClickListener() {
