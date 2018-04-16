@@ -37,8 +37,10 @@ public class QuestActorDialog extends BaseDialog {
 
     private static final String PARAM_QUEST_ACTOR_INFO = "PARAM_QUEST_ACTOR_INFO";
 
-    @Inject OkHttpClient client;
-    @Inject CookieManager manager;
+    @Inject
+    OkHttpClient client;
+    @Inject
+    CookieManager manager;
 
     public static QuestActorDialog newInstance(final QuestActorInfo questActorInfo) {
         final QuestActorDialog dialog = new QuestActorDialog();
@@ -52,15 +54,14 @@ public class QuestActorDialog extends BaseDialog {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleApplication
-                .getComponentProvider()
-                .getAppComponent()
+        ((TheTaleApplication) getActivity().getApplication())
+                .getApplicationComponent()
                 .inject(this);
 
         final QuestActorInfo questActorInfo = getArguments().getParcelable(PARAM_QUEST_ACTOR_INFO);
         final View view;
 
-        switch(questActorInfo.type) {
+        switch (questActorInfo.type) {
             case PERSON:
                 view = inflater.inflate(R.layout.dialog_content_quest_actor_person, container, false);
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_name),
@@ -126,7 +127,7 @@ public class QuestActorDialog extends BaseDialog {
 
     private void setPlaceLink(final View view, final CharSequence caption, final CharSequence info, final int placeId) {
         final Activity activity = getActivity();
-        if(!(activity instanceof MainActivity)) {
+        if (!(activity instanceof MainActivity)) {
             return;
         }
 

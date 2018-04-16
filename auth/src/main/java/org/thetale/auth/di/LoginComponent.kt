@@ -1,10 +1,10 @@
 package org.thetale.auth.di
 
-import com.dleibovych.epictale.login.LoginActivity
-import com.dleibovych.epictale.login.steps.credentials.LoginCredentialsFragment
-import com.dleibovych.epictale.login.steps.status.CheckStatusFragment
-import com.dleibovych.epictale.login.steps.thirdparty.LoginThirdPartyFragment
 import dagger.Subcomponent
+import org.thetale.auth.LoginActivity
+import org.thetale.auth.steps.credentials.LoginCredentialsFragment
+import org.thetale.auth.steps.status.CheckStatusFragment
+import org.thetale.auth.steps.thirdparty.LoginThirdPartyFragment
 
 @LoginScope
 @Subcomponent(modules = [LoginModule::class])

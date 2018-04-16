@@ -29,7 +29,7 @@ public class NotificationManager {
 
     private static final int NOTIFICATION_ID = 0;
     public static final String BROADCAST_NOTIFICATION_DELETE_ACTION =
-            TheTaleApplication.getContext().getPackageName() + ".notification.delete";
+            TheTaleApplication.Companion.getContext().getPackageName() + ".notification.delete";
 
     private final Context context;
     private final android.app.NotificationManager notificationManager;

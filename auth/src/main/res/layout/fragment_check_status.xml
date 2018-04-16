@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:visibility="visible" />
 
-    <com.dleibovych.epictale.login.views.LoginErrorView
+    <org.thetale.auth.views.LoginErrorView
         android:id="@+id/error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

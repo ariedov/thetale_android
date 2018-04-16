@@ -7,7 +7,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_check_status.*
 import org.thetale.auth.R
+import org.thetale.auth.di.LoginComponentProvider
 import javax.inject.Inject
 
 class CheckStatusFragment : Fragment(), CheckStatusView {
@@ -18,9 +20,9 @@ class CheckStatusFragment : Fragment(), CheckStatusView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        TheTaleClientApplication.getComponentProvider()
-                .loginComponent!!
-                .inject(this)
+        (activity?.application as LoginComponentProvider)
+                .provideLoginComponent()
+                ?.inject(this)
 
         presenter.view = this
     }

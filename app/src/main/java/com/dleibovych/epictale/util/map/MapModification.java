@@ -107,7 +107,7 @@ public enum MapModification {
 
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = false;
-                arrowBitmap = BitmapFactory.decodeResource(TheTaleApplication.getContext().getResources(),
+                arrowBitmap = BitmapFactory.decodeResource(TheTaleApplication.Companion.getContext().getResources(),
                         R.drawable.ic_arrow, options);
 
                 break;

@@ -30,7 +30,7 @@ public class QuestChoiceNotifier implements Notifier {
         if(GameInfoUtils.isQuestChoiceAvailable(gameInfoResponse)) {
             if(PreferencesManager.shouldNotifyQuestChoice()
                     && PreferencesManager.shouldShowNotificationQuestChoice()
-                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.QUESTS)) {
+                    && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.QUESTS)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationQuestChoice(false);

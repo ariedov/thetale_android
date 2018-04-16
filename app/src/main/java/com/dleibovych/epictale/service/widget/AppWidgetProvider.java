@@ -26,9 +26,8 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        TheTaleApplication
-                .getComponentProvider()
-                .getAppComponent()
+        ((TheTaleApplication)context.getApplicationContext())
+                .getApplicationComponent()
                 .inject(this);
 
 
@@ -41,9 +40,8 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        TheTaleApplication
-                .getComponentProvider()
-                .getAppComponent()
+        ((TheTaleApplication)context.getApplicationContext())
+                .getApplicationComponent()
                 .inject(this);
 
 

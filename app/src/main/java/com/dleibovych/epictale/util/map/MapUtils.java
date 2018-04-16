@@ -185,7 +185,7 @@ public class MapUtils {
 
             final Paint textPaint = new Paint();
             textPaint.setTextSize(PLACE_TEXT_SIZE / textSizeDenominator);
-            textPaint.setColor(TheTaleApplication.getContext().getResources().getColor(R.color.map_place_name));
+            textPaint.setColor(TheTaleApplication.Companion.getContext().getResources().getColor(R.color.map_place_name));
 
             final Rect textRect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), textRect);
@@ -194,7 +194,7 @@ public class MapUtils {
             final float y = ((placeInfo.y + 1.0f) * MAP_TILE_SIZE + PLACE_TEXT_Y_SHIFT) / sizeDenominator;
 
             final Paint backgroundPaint = new Paint();
-            backgroundPaint.setColor(TheTaleApplication.getContext().getResources().getColor(R.color.map_place_name_background));
+            backgroundPaint.setColor(TheTaleApplication.Companion.getContext().getResources().getColor(R.color.map_place_name_background));
 
             canvas.drawRect(
                     x + textRect.left - PLACE_TEXT_BACKGROUND_PADDING * 2 * (sizeDenominator / textSizeDenominator),

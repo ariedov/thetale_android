@@ -22,10 +22,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import com.dleibovych.epictale.DrawerItem;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.game.MainActivity;
-import com.dleibovych.epictale.login.LoginActivity;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest;
@@ -35,6 +33,8 @@ import com.dleibovych.epictale.api.response.InfoResponse;
 import com.dleibovych.epictale.fragment.GameFragment;
 import com.dleibovych.epictale.fragment.Refreshable;
 import com.dleibovych.epictale.util.onscreen.OnscreenStateListener;
+
+import org.thetale.auth.LoginActivity;
 
 import java.net.CookieManager;
 

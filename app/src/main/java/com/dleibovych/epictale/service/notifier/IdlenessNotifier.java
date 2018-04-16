@@ -30,7 +30,7 @@ public class IdlenessNotifier implements Notifier {
         if(GameInfoUtils.isHeroIdle(gameInfoResponse)) {
             if(PreferencesManager.shouldNotifyIdleness()
                     && PreferencesManager.shouldShowNotificationIdleness()
-                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
+                    && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationIdleness(false);

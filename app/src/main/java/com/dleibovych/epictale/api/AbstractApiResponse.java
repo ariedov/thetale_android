@@ -39,7 +39,7 @@ public abstract class AbstractApiResponse {
             json = new JSONObject(response);
         } catch(JSONException e) {
             json = new JSONObject(RequestUtils.getGenericErrorResponse(
-                    TheTaleApplication.getContext().getString(R.string.common_error)));
+                    TheTaleApplication.Companion.getContext().getString(R.string.common_error)));
         }
 
         isDeprecated = json.optBoolean("depricated");

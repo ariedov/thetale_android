@@ -68,9 +68,8 @@ public class QuestsFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleApplication
-                .getComponentProvider()
-                .getAppComponent()
+        ((TheTaleApplication) getActivity().getApplication())
+                .getApplicationComponent()
                 .inject(this);
 
 
@@ -280,15 +279,15 @@ public class QuestsFragment extends WrapperFragment {
     @Override
     public void onOffscreen() {
         super.onOffscreen();
-        TheTaleApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, false);
+        TheTaleApplication.Companion.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, false);
     }
 
     @Override
     public void onOnscreen() {
         super.onOnscreen();
-        TheTaleApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, true);
+        TheTaleApplication.Companion.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, true);
 
-        TheTaleApplication.getNotificationManager().clearNotifications();
+        TheTaleApplication.Companion.getNotificationManager().clearNotifications();
     }
 
 }

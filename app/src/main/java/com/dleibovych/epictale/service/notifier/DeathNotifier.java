@@ -29,7 +29,7 @@ public class DeathNotifier implements Notifier {
         if(!gameInfoResponse.account.hero.basicInfo.isAlive) {
             if(PreferencesManager.shouldNotifyDeath()
                     && PreferencesManager.shouldShowNotificationDeath()
-                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
+                    && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationDeath(false);

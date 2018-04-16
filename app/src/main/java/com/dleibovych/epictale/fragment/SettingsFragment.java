@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragment {
                                             getString(R.string.game_read_aloud_wait_message),
                                             true, false);
                                     TextToSpeechUtils.init(
-                                            TheTaleApplication.getContext(),
+                                            getActivity().getApplicationContext(),
                                             new TextToSpeechUtils.InitCallback() {
                                                 @Override
                                                 public void onSuccess() {

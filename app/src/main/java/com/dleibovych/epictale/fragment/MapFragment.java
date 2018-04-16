@@ -124,9 +124,8 @@ public class MapFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleApplication
-                .getComponentProvider()
-                .getAppComponent()
+        ((TheTaleApplication) getActivity().getApplication())
+                .getApplicationComponent()
                 .inject(this);
 
         layoutInflater = inflater;
@@ -615,7 +614,7 @@ public class MapFragment extends WrapperFragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getTileTab(position).getTitle();
+            return getString(getTileTab(position).getTitle());
         }
 
         @Override
@@ -670,8 +669,8 @@ public class MapFragment extends WrapperFragment {
             this.cellTypes = cellTypes;
         }
 
-        public String getTitle() {
-            return TheTaleApplication.getContext().getString(titleResId);
+        public int getTitle() {
+            return titleResId;
         }
 
         public abstract Fragment getFragment(final MapCellResponse cellInfo);

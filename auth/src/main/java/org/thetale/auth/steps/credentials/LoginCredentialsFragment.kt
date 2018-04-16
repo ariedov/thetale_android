@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.fragment_login_credentials.*
 import org.thetale.api.URL_PASSWORD_REMIND
 import org.thetale.api.URL_REGISTRATION
 import org.thetale.auth.R
+import org.thetale.auth.di.LoginComponent
+import org.thetale.auth.di.LoginComponentProvider
 import org.thetale.core.openUrl
 import javax.inject.Inject
 
@@ -19,12 +21,13 @@ class LoginCredentialsFragment : Fragment(), LoginCredentialsView {
     @Inject
     lateinit var presenter: LoginCredentialsPresenter
 
+    lateinit var componentProvider: LoginComponentProvider
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        TheTaleClientApplication.getComponentProvider()
-                .loginComponent!!
-                .inject(this)
+        componentProvider = (activity?.application as LoginComponentProvider)
+        componentProvider.provideLoginComponent()?.inject(this)
 
         presenter.view = this
     }
@@ -76,6 +79,7 @@ class LoginCredentialsFragment : Fragment(), LoginCredentialsView {
 
         if (activity!!.isFinishing) {
             presenter.dispose()
+            componentProvider.cleanLoginComponent()
         }
     }
 

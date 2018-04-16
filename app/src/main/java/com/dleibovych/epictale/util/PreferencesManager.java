@@ -66,17 +66,17 @@ public class PreferencesManager
 
   private static boolean getBoolean(final int resId)
   {
-    return TheTaleApplication.getContext().getResources().getBoolean(resId);
+    return TheTaleApplication.Companion.getContext().getResources().getBoolean(resId);
   }
 
   private static int getInteger(final int resId)
   {
-    return TheTaleApplication.getContext().getResources().getInteger(resId);
+    return TheTaleApplication.Companion.getContext().getResources().getInteger(resId);
   }
 
   private static String getString(final int resId)
   {
-    return TheTaleApplication.getContext().getResources().getString(resId);
+    return TheTaleApplication.Companion.getContext().getResources().getString(resId);
   }
 
   private static int getIntegerIfExist(final int keyResId, final int defaultValueResId)

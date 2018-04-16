@@ -11,7 +11,8 @@ import dagger.Component
 import org.thetale.api.di.ApiModule
 import javax.inject.Singleton
 
-@Singleton @Component(modules = [ApiModule::class, AppInfoModule::class, ComponentModule::class])
+@Singleton @Component(modules = [ApiModule::class, AppInfoModule::class,
+    ComponentModule::class, NavigationModule::class])
 interface AppComponent {
 
     fun inject(target: GameFragment)

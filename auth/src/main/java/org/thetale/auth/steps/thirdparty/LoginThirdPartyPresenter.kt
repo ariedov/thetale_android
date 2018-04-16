@@ -1,6 +1,5 @@
 package org.thetale.auth.steps.thirdparty
 
-import com.dleibovych.epictale.PresenterState
 import org.thetale.auth.LoginNavigationProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -9,6 +8,7 @@ import org.thetale.api.TheTaleService
 import org.thetale.api.URL
 import org.thetale.api.call
 import org.thetale.api.models.isAcceptedAuth
+import org.thetale.core.PresenterState
 
 class LoginThirdPartyPresenter(private val service: TheTaleService,
                                private val navigationProvider: LoginNavigationProvider,

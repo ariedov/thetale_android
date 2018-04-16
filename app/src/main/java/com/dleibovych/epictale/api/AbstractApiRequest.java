@@ -104,7 +104,7 @@ public abstract class AbstractApiRequest<T extends AbstractApiResponse> {
             }
             requestGetParams.put(PARAM_API_VERSION, version);
             requestGetParams.put(PARAM_CLIENT_ID,
-                    String.format("%s%s%s", TheTaleApplication.getContext().getPackageName(), "-", BuildConfig.VERSION_CODE));
+                    String.format("%s%s%s", TheTaleApplication.Companion.getContext().getPackageName(), "-", BuildConfig.VERSION_CODE));
         }
 
         RequestUtils.setSession();

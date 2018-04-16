@@ -29,7 +29,7 @@ public class HealthNotifier implements Notifier {
         if((gameInfoResponse.account.hero.basicInfo.isAlive) && (getValue() < PreferencesManager.getNotificationThresholdHealth())) {
             if(PreferencesManager.shouldNotifyHealth()
                     && PreferencesManager.shouldShowNotificationHealth()
-                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
+                    && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationHealth(false);

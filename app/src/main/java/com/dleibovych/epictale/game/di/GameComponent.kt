@@ -1,5 +1,6 @@
 package com.dleibovych.epictale.game.di
 
+import com.dleibovych.epictale.fragment.GameInfoFragment
 import com.dleibovych.epictale.game.MainActivity
 import dagger.Subcomponent
 
@@ -8,4 +9,6 @@ import dagger.Subcomponent
 interface GameComponent {
 
     fun inject(target: MainActivity)
+
+    fun inject(target: GameInfoFragment)
 }

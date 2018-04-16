@@ -12,12 +12,13 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.api.cache.RequestCacheManager
 import com.dleibovych.epictale.fragment.GameInfoFragment
-import com.dleibovych.epictale.login.LoginActivity
+import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.UiUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
 import org.thetale.api.models.GameInfo
+import org.thetale.auth.LoginActivity
 
 import javax.inject.Inject
 
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity(),
     @Inject
     lateinit var presenter: GamePresenter
 
+    lateinit var componentProvider: GameComponentProvider
 
     /**
      * Used to store the last screen title. For use in [.restoreActionBar].
@@ -46,10 +48,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        TheTaleApplication
-                .componentProvider
-                .gameComponent!!
-                .inject(this)
+        componentProvider = (application as GameComponentProvider)
+        componentProvider.provideGameComponent()?.inject(this)
 
         navigationProvider.navigation = this
 
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(),
     override fun onPause() {
         isPaused = true
 
-        TheTaleApplication.onscreenStateWatcher.onscreenStateChange(OnscreenPart.MAIN, false)
+        TheTaleApplication.onscreenStateWatcher?.onscreenStateChange(OnscreenPart.MAIN, false)
         TextToSpeechUtils.pause()
         RequestCacheManager.invalidate()
 
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(),
         navigationProvider.navigation = null
         if (isFinishing) {
             presenter.dispose()
-            TheTaleApplication.componentProvider.gameComponent = null
+            componentProvider.cleanGameComponent()
         }
     }
 

@@ -55,7 +55,7 @@ public class GameInfoRequest extends AbstractApiRequest<GameInfoResponse> {
 
         if((gameInfoResponse.status == ApiResponseStatus.OK) && (gameInfoResponse.account == null) && needAuthorization) {
             return new GameInfoResponse(RequestUtils.getGenericErrorResponse(
-                    TheTaleApplication.getContext().getString(R.string.game_not_authorized)));
+                    TheTaleApplication.Companion.getContext().getString(R.string.game_not_authorized)));
         } else {
             return gameInfoResponse;
         }

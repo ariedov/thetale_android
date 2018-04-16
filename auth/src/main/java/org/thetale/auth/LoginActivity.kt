@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
+import org.thetale.auth.di.LoginComponentProvider
 import org.thetale.auth.steps.credentials.LoginCredentialsFragment
 import org.thetale.auth.steps.status.CheckStatusFragment
 import org.thetale.auth.steps.thirdparty.LoginThirdPartyFragment
@@ -15,13 +16,14 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
     @Inject lateinit var appNavigation: AppNavigation
     @Inject lateinit var navigationProvider: LoginNavigationProvider
 
+    private lateinit var componentProvider: LoginComponentProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        TheTaleClientApplication.getComponentProvider()
-                .loginComponent!!
-                .inject(this)
+        componentProvider = application as LoginComponentProvider
+        componentProvider.provideLoginComponent()?.inject(this)
 
         navigationProvider.navigation = this
 
@@ -53,7 +55,7 @@ class LoginActivity : AppCompatActivity(), LoginNavigation {
         navigationProvider.navigation = null
 
         if (isFinishing) {
-            TheTaleClientApplication.getComponentProvider().loginComponent = null
+            componentProvider.cleanLoginComponent()
         }
     }
 }

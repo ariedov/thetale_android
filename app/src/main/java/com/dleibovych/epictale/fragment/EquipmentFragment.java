@@ -69,9 +69,8 @@ public class EquipmentFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleApplication
-                .getComponentProvider()
-                .getAppComponent()
+        ((TheTaleApplication) getActivity().getApplication())
+                .getApplicationComponent()
                 .inject(this);
 
 

@@ -32,6 +32,7 @@ import com.dleibovych.epictale.api.response.CommonResponse
 import com.dleibovych.epictale.api.response.GameInfoResponse
 import com.dleibovych.epictale.api.response.InfoResponse
 import com.dleibovych.epictale.fragment.dialog.TabbedDialog
+import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.DialogUtils
 import com.dleibovych.epictale.util.GameInfoUtils
 import com.dleibovych.epictale.util.PreferencesManager
@@ -106,10 +107,7 @@ class GameInfoFragment : WrapperFragment() {
     private var lastKnownHealth: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        TheTaleApplication
-                .componentProvider
-                .appComponent
-                .inject(this)
+        (activity?.application as GameComponentProvider).provideGameComponent()?.inject(this)
 
 
         rootView = inflater.inflate(R.layout.fragment_game_info, container, false)
@@ -359,7 +357,7 @@ class GameInfoFragment : WrapperFragment() {
                 }
 
                 if (!isGlobal
-                        && TheTaleApplication.onscreenStateWatcher.isOnscreen(OnscreenPart.GAME_INFO)
+                        && TheTaleApplication.onscreenStateWatcher!!.isOnscreen(OnscreenPart.GAME_INFO)
                         && PreferencesManager.isJournalReadAloudEnabled()) {
                     for (i in 0 until journalSize) {
                         val journalEntry = journal[i]
@@ -513,16 +511,16 @@ class GameInfoFragment : WrapperFragment() {
 
     override fun onOffscreen() {
         super.onOffscreen()
-        TheTaleApplication.onscreenStateWatcher.onscreenStateChange(OnscreenPart.GAME_INFO, false)
+        TheTaleApplication.onscreenStateWatcher?.onscreenStateChange(OnscreenPart.GAME_INFO, false)
 
         TextToSpeechUtils.pause()
     }
 
     override fun onOnscreen() {
         super.onOnscreen()
-        TheTaleApplication.onscreenStateWatcher.onscreenStateChange(OnscreenPart.GAME_INFO, true)
+        TheTaleApplication.onscreenStateWatcher?.onscreenStateChange(OnscreenPart.GAME_INFO, true)
 
-        TheTaleApplication.notificationManager.clearNotifications()
+        TheTaleApplication.notificationManager?.clearNotifications()
     }
 
     private inner class CompanionTabsAdapter internal constructor(private val companion: CompanionInfo, private val coherence: Int) : TabbedDialog.TabbedDialogTabsAdapter() {

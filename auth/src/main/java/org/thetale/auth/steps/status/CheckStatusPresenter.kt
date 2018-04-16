@@ -6,6 +6,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.call
+import org.thetale.core.PresenterState
 
 class CheckStatusPresenter(private val service: TheTaleService,
                            private val navigationProvider: LoginNavigationProvider) {

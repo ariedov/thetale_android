@@ -30,10 +30,10 @@ public class ThirdPartyAuthRequest extends AbstractApiRequest<ThirdPartyAuthResp
 
     public void execute(final ApiResponseCallback<ThirdPartyAuthResponse> callback) {
         final Map<String, String> postParams = new HashMap<>(3);
-        postParams.put("application_name", TheTaleApplication.getContext().getString(R.string.app_name));
+        postParams.put("application_name", TheTaleApplication.Companion.getContext().getString(R.string.app_name));
         postParams.put("application_info", String.format("%s %s, %s %s (%d)", Build.BRAND, Build.MODEL,
-                TheTaleApplication.getContext().getPackageName(), BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
-        postParams.put("application_description", TheTaleApplication.getContext().getString(R.string.app_description));
+                TheTaleApplication.Companion.getContext().getPackageName(), BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
+        postParams.put("application_description", TheTaleApplication.Companion.getContext().getString(R.string.app_description));
 
         execute(null, postParams, callback);
     }

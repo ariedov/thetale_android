@@ -7,12 +7,10 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import com.dleibovych.epictale.FragmentArgumentDelegate
-import com.dleibovych.epictale.R
-import com.dleibovych.epictale.TheTaleClientApplication
-import com.dleibovych.epictale.openUrl
 import kotlinx.android.synthetic.main.fragment_login_third_party.*
 import org.thetale.auth.R
+import org.thetale.auth.di.LoginComponentProvider
+import org.thetale.core.openUrl
 import javax.inject.Inject
 
 class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
@@ -23,9 +21,9 @@ class LoginThirdPartyFragment : Fragment(), LoginThirdPartyView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        TheTaleClientApplication.getComponentProvider()
-                .loginComponent!!
-                .inject(this)
+        (activity?.application as LoginComponentProvider)
+                .provideLoginComponent()
+                ?.inject(this)
 
         presenter.view = this
     }

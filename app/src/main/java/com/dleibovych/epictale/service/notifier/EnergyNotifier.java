@@ -31,7 +31,7 @@ public class EnergyNotifier implements Notifier {
         if((value >= PreferencesManager.getNotificationThresholdEnergy()) && (value != PreferencesManager.getLastShownNotificationEnergy())) {
             if(PreferencesManager.shouldNotifyEnergy()
                     && PreferencesManager.shouldShowNotificationEnergy()
-                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
+                    && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationEnergy(false);

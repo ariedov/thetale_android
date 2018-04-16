@@ -393,7 +393,7 @@ public class WebsiteUtils
 
         if (elements.size() == 0)
         {
-          callback.onError(ErrorType.ITEMS_LIST, 0, TheTaleApplication.getContext().getString(R.string.find_player_not_found));
+          callback.onError(ErrorType.ITEMS_LIST, 0, TheTaleApplication.Companion.getContext().getString(R.string.find_player_not_found));
           callback.onFinish();
           return;
         }

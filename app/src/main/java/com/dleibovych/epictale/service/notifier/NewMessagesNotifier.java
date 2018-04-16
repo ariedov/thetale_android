@@ -31,7 +31,7 @@ public class NewMessagesNotifier implements Notifier {
         if((value > 0) && (value != PreferencesManager.getLastShownNotificationNewMessages())) {
             if(PreferencesManager.shouldNotifyNewMessages()
                     && PreferencesManager.shouldShowNotificationNewMessages()
-                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
+                    && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationNewMessages(false);
