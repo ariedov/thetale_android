@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest;
 import com.dleibovych.epictale.api.model.ChatMessage;
@@ -58,8 +58,8 @@ import okhttp3.OkHttpClient;
  */
 public class ChatFragment extends WrapperFragment {
 
-    private static final DateFormat dateFormatTime = android.text.format.DateFormat.getTimeFormat(TheTaleClientApplication.getContext());
-    private static final DateFormat dateFormatDate = android.text.format.DateFormat.getDateFormat(TheTaleClientApplication.getContext());
+    private static final DateFormat dateFormatTime = android.text.format.DateFormat.getTimeFormat(TheTaleApplication.getContext());
+    private static final DateFormat dateFormatDate = android.text.format.DateFormat.getDateFormat(TheTaleApplication.getContext());
 
     private static final long REFRESH_TIMEOUT_MILLIS = 5000; // 5 s
 
@@ -87,7 +87,7 @@ public class ChatFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);
@@ -187,12 +187,12 @@ public class ChatFragment extends WrapperFragment {
             case R.id.chat_action_copy:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     ClipboardManager clipboardManager =
-                            (ClipboardManager) TheTaleClientApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                            (ClipboardManager) TheTaleApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clipData = ClipData.newPlainText("", message);
                     clipboardManager.setPrimaryClip(clipData);
                 } else {
                     android.text.ClipboardManager clipboardManager =
-                            (android.text.ClipboardManager) TheTaleClientApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                            (android.text.ClipboardManager) TheTaleApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     clipboardManager.setText(message);
                 }
                 return true;

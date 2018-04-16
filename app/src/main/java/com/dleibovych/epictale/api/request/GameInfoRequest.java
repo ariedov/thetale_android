@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.api.request;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.AbstractApiRequest;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.ApiResponseStatus;
@@ -55,7 +55,7 @@ public class GameInfoRequest extends AbstractApiRequest<GameInfoResponse> {
 
         if((gameInfoResponse.status == ApiResponseStatus.OK) && (gameInfoResponse.account == null) && needAuthorization) {
             return new GameInfoResponse(RequestUtils.getGenericErrorResponse(
-                    TheTaleClientApplication.getContext().getString(R.string.game_not_authorized)));
+                    TheTaleApplication.getContext().getString(R.string.game_not_authorized)));
         } else {
             return gameInfoResponse;
         }

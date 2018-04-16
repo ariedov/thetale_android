@@ -13,7 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.fragment.dialog.TimePickDialog;
 import com.dleibovych.epictale.util.PreferencesManager;
 
@@ -166,7 +166,7 @@ public class TimeIntervalPreference extends Preference {
     }
 
     private static String getTimeText(final int hourOfDay, final int minute) {
-        final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(TheTaleClientApplication.getContext());
+        final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(TheTaleApplication.getContext());
         final Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);

@@ -4,11 +4,10 @@ import android.content.res.Resources
 import com.dleibovych.epictale.R
 import dagger.Module
 import dagger.Provides
+import org.thetale.auth.di.ABOUT
+import org.thetale.auth.di.APP_INFO
+import org.thetale.auth.di.APP_NAME
 import javax.inject.Named
-
-const val APP_NAME = "app_name"
-const val APP_INFO = "app_info"
-const val ABOUT = "about"
 
 @Module
 class AppInfoModule(private val resources: Resources) {

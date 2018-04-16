@@ -10,7 +10,7 @@ import android.preference.PreferenceScreen;
 import android.support.v4.preference.PreferenceFragment;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.service.WatcherService;
 import com.dleibovych.epictale.util.DialogUtils;
 import com.dleibovych.epictale.util.PreferencesManager;
@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragment {
                                             getString(R.string.game_read_aloud_wait_message),
                                             true, false);
                                     TextToSpeechUtils.init(
-                                            TheTaleClientApplication.getContext(),
+                                            TheTaleApplication.getContext(),
                                             new TextToSpeechUtils.InitCallback() {
                                                 @Override
                                                 public void onSuccess() {

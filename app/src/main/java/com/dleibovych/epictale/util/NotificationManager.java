@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.service.notifier.DeathNotifier;
 import com.dleibovych.epictale.service.notifier.EnergyNotifier;
@@ -29,7 +29,7 @@ public class NotificationManager {
 
     private static final int NOTIFICATION_ID = 0;
     public static final String BROADCAST_NOTIFICATION_DELETE_ACTION =
-            TheTaleClientApplication.getContext().getPackageName() + ".notification.delete";
+            TheTaleApplication.getContext().getPackageName() + ".notification.delete";
 
     private final Context context;
     private final android.app.NotificationManager notificationManager;

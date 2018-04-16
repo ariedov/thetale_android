@@ -4,14 +4,14 @@ import com.dleibovych.epictale.fragment.*
 import com.dleibovych.epictale.fragment.dialog.CardUseDialog
 import com.dleibovych.epictale.fragment.dialog.QuestActorDialog
 import com.dleibovych.epictale.game.di.GameComponent
-import com.dleibovych.epictale.login.di.LoginComponent
+import org.thetale.auth.di.LoginComponent
 import com.dleibovych.epictale.service.WatcherService
 import com.dleibovych.epictale.service.widget.AppWidgetProvider
 import dagger.Component
 import org.thetale.api.di.ApiModule
 import javax.inject.Singleton
 
-@Singleton @Component(modules = [ApiModule::class, AppInfoModule::class])
+@Singleton @Component(modules = [ApiModule::class, AppInfoModule::class, ComponentModule::class])
 interface AppComponent {
 
     fun inject(target: GameFragment)

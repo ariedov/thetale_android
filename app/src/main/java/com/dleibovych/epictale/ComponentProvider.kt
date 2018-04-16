@@ -2,25 +2,20 @@ package com.dleibovych.epictale
 
 import com.dleibovych.epictale.di.AppComponent
 import com.dleibovych.epictale.game.di.GameComponent
-import com.dleibovych.epictale.login.di.LoginComponent
+import org.thetale.auth.di.LoginComponent
+import org.thetale.auth.di.LoginComponentProvider
 
-class ComponentProvider {
+class ComponentProvider(private val appComponent: AppComponent) : LoginComponentProvider {
 
-    lateinit var appComponent: AppComponent
+    private var loginComponent: LoginComponent? by ComponentDelegate { appComponent.loginComponent() }
 
-    var loginComponent: LoginComponent? = null
-        get() {
-            if (field == null) {
-                field = appComponent.loginComponent()
-            }
-            return field as LoginComponent
-        }
+    override fun provideLoginComponent(): LoginComponent? = loginComponent
 
     var gameComponent: GameComponent? = null
-            get() {
-                if (field == null) {
-                    field = appComponent.gameComponent()
-                }
-                return field as GameComponent
+        get() {
+            if (field == null) {
+                field = appComponent.gameComponent()
             }
+            return field as GameComponent
+        }
 }

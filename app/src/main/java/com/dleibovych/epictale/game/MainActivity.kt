@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.widget.TextView
 
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.TheTaleClientApplication
+import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.api.cache.RequestCacheManager
 import com.dleibovych.epictale.fragment.GameInfoFragment
 import com.dleibovych.epictale.login.LoginActivity
@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        TheTaleClientApplication
-                .getComponentProvider()
+        TheTaleApplication
+                .componentProvider
                 .gameComponent!!
                 .inject(this)
 
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(),
         super.onStart()
 
         if (PreferencesManager.isReadAloudConfirmed()) {
-            TextToSpeechUtils.init(TheTaleClientApplication.getContext(), null)
+            TextToSpeechUtils.init(TheTaleApplication.context, null)
         }
     }
 
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(),
     override fun onPause() {
         isPaused = true
 
-        TheTaleClientApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.MAIN, false)
+        TheTaleApplication.onscreenStateWatcher.onscreenStateChange(OnscreenPart.MAIN, false)
         TextToSpeechUtils.pause()
         RequestCacheManager.invalidate()
 
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(),
         navigationProvider.navigation = null
         if (isFinishing) {
             presenter.dispose()
-            TheTaleClientApplication.getComponentProvider().gameComponent = null
+            TheTaleApplication.componentProvider.gameComponent = null
         }
     }
 

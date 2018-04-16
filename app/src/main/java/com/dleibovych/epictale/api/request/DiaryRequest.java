@@ -1,13 +1,9 @@
 package com.dleibovych.epictale.api.request;
 
-import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
 import com.dleibovych.epictale.api.AbstractApiRequest;
 import com.dleibovych.epictale.api.ApiResponseCallback;
-import com.dleibovych.epictale.api.ApiResponseStatus;
 import com.dleibovych.epictale.api.HttpMethod;
 import com.dleibovych.epictale.api.response.DiaryResponse;
-import com.dleibovych.epictale.util.RequestUtils;
 
 import org.json.JSONException;
 

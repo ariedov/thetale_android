@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest;
@@ -42,7 +42,6 @@ import com.dleibovych.epictale.widget.RequestActionView;
 
 import java.net.CookieManager;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +69,7 @@ public class EquipmentFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);

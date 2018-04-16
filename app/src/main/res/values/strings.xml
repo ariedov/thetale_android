@@ -146,15 +146,6 @@
     <string name="find_player_reset">Вернуться к своему герою</string>
     <string name="find_player_too_many">Найдено более %1$d игроков. Продолжить?</string>
 
-    <string name="login_action_login">Войти</string>
-    <string name="login_action_password_remind">Забыли пароль?</string>
-    <string name="login_action_registration">Создать героя</string>
-    <string name="login_action_authorization_site">Войти через сайт</string>
-    <string name="login_action_authorization_login_password">Войти с помощью логина и пароля</string>
-    <string name="login_dialog_confirm_authorization">Для входа в игру подтвердите, пожалуйста, авторизацию приложения на сайте.</string>
-    <string name="login_text_login">Email</string>
-    <string name="login_text_password">Пароль</string>
-
     <string name="map_council_member_power">Влиятельность</string>
     <string name="map_decreased_quality">Из-за нехватки памяти на устройстве карта будет показана в меньшем разрешении. Также будут отключены некоторые функции.</string>
     <string name="map_find_hero">Найти героя</string>
@@ -367,8 +358,6 @@
     <string name="settings_key_misc_confirmation_quest_choice">KEY_SETTINGS_MISC_CONFIRMATION_QUEST_CHOICE</string>
     <string name="settings_title_misc_confirmation_bag_drop">Подтверждение при выбрасывании вещи</string>
     <string name="settings_title_misc_confirmation_quest_choice">Подтверждение при выборе в квесте</string>
-    <string name="action_third_party_login">Разрешение выдал. Войти!</string>
-    <string name="error_third_party_login">А вот и не выдал</string>
     <string name="try_again">Попробовать еще разок</string>
 
 </resources>

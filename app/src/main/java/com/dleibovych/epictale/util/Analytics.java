@@ -3,7 +3,7 @@ package com.dleibovych.epictale.util;
 import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 
 /**
  * Created by Алексей on 16.05.2017.
@@ -17,6 +17,6 @@ public class Analytics
     Bundle bundle = new Bundle();
     bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "navigation");
     bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, String.format("nav_fragment_%s", name));
-    TheTaleClientApplication.getAnalytics().logEvent("nav_fragment", bundle);
+    TheTaleApplication.getAnalytics().logEvent("nav_fragment", bundle);
   }
 }

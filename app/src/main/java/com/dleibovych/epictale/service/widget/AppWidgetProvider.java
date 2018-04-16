@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.service.WatcherService;
 import com.dleibovych.epictale.util.PreferencesManager;
 
@@ -26,7 +26,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);
@@ -41,7 +41,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);

@@ -1,0 +1,16 @@
+<resources>
+    <string name="action_retry">Повторить попытку</string>
+    <string name="try_again">Попробовать еще разок</string>
+    <string name="common_error">Произошла неизвестная ошибка. Попробуйте еще раз.</string>
+
+    <string name="action_third_party_login">Разрешение выдал. Войти!</string>
+    <string name="error_third_party_login">А вот и не выдал</string>
+    <string name="login_action_login">Войти</string>
+    <string name="login_action_password_remind">Забыли пароль?</string>
+    <string name="login_action_registration">Создать героя</string>
+    <string name="login_action_authorization_site">Войти через сайт</string>
+    <string name="login_action_authorization_login_password">Войти с помощью логина и пароля</string>
+    <string name="login_dialog_confirm_authorization">Для входа в игру подтвердите, пожалуйста, авторизацию приложения на сайте.</string>
+    <string name="login_text_login">Email</string>
+    <string name="login_text_password">Пароль</string>
+</resources>

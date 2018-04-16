@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.dleibovych.epictale.BuildConfig;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.cache.Request;
 import com.dleibovych.epictale.api.cache.RequestCacheManager;
 import com.dleibovych.epictale.util.PreferencesManager;
@@ -104,7 +104,7 @@ public abstract class AbstractApiRequest<T extends AbstractApiResponse> {
             }
             requestGetParams.put(PARAM_API_VERSION, version);
             requestGetParams.put(PARAM_CLIENT_ID,
-                    String.format("%s%s%s", TheTaleClientApplication.getContext().getPackageName(), "-", BuildConfig.VERSION_CODE));
+                    String.format("%s%s%s", TheTaleApplication.getContext().getPackageName(), "-", BuildConfig.VERSION_CODE));
         }
 
         RequestUtils.setSession();

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.CommonResponseCallback;
 import com.dleibovych.epictale.api.dictionary.QuestType;
@@ -68,7 +68,7 @@ public class QuestsFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);
@@ -280,15 +280,15 @@ public class QuestsFragment extends WrapperFragment {
     @Override
     public void onOffscreen() {
         super.onOffscreen();
-        TheTaleClientApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, false);
+        TheTaleApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, false);
     }
 
     @Override
     public void onOnscreen() {
         super.onOnscreen();
-        TheTaleClientApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, true);
+        TheTaleApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.QUESTS, true);
 
-        TheTaleClientApplication.getNotificationManager().clearNotifications();
+        TheTaleApplication.getNotificationManager().clearNotifications();
     }
 
 }

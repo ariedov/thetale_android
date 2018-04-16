@@ -10,7 +10,7 @@ import android.os.IBinder;
 
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.dictionary.Action;
 import com.dleibovych.epictale.api.model.DiaryEntry;
@@ -47,11 +47,11 @@ import okhttp3.OkHttpClient;
 public class WatcherService extends Service {
 
     public static final String BROADCAST_SERVICE_RESTART_REFRESH_ACTION =
-            TheTaleClientApplication.getContext().getPackageName() + ".service.restart.refresh";
+            TheTaleApplication.getContext().getPackageName() + ".service.restart.refresh";
     public static final String BROADCAST_WIDGET_HELP_ACTION =
-            TheTaleClientApplication.getContext().getPackageName() + ".widget.help";
+            TheTaleApplication.getContext().getPackageName() + ".widget.help";
     public static final String BROADCAST_WIDGET_REFRESH_ACTION =
-            TheTaleClientApplication.getContext().getPackageName() + ".widget.refresh";
+            TheTaleApplication.getContext().getPackageName() + ".widget.refresh";
 
     @Inject OkHttpClient client;
     @Inject CookieManager cookieManager;
@@ -76,7 +76,7 @@ public class WatcherService extends Service {
                             return;
                         }
 
-                        TheTaleClientApplication.getNotificationManager().notify(response);
+                        TheTaleApplication.getNotificationManager().notify(response);
 
                         for (final GameStateWatcher watcher : watchers) {
                             watcher.processGameState(response);
@@ -96,7 +96,7 @@ public class WatcherService extends Service {
                         final int diarySize = response.account.hero.diary.size();
                         final int lastDiaryTimestamp = PreferencesManager.getLastDiaryEntryRead();
                         if (PreferencesManager.isDiaryReadAloudEnabled()
-                                && TheTaleClientApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.MAIN)
+                                && TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.MAIN)
                                 && (lastDiaryTimestamp > 0)) {
                             for (int i = 0; i < diarySize; i++) {
                                 final DiaryEntry diaryEntry = response.account.hero.diary.get(i);
@@ -136,7 +136,7 @@ public class WatcherService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (NotificationManager.BROADCAST_NOTIFICATION_DELETE_ACTION.equals(intent.getAction())) {
-                TheTaleClientApplication.getNotificationManager().onNotificationDelete();
+                TheTaleApplication.getNotificationManager().onNotificationDelete();
             }
         }
     };
@@ -182,7 +182,7 @@ public class WatcherService extends Service {
 
     @Override
     public void onCreate() {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);

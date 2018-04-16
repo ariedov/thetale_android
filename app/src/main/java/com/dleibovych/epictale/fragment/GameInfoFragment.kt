@@ -17,7 +17,7 @@ import android.widget.TextView
 
 import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.TheTaleClientApplication
+import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest
@@ -106,8 +106,8 @@ class GameInfoFragment : WrapperFragment() {
     private var lastKnownHealth: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        TheTaleClientApplication
-                .getComponentProvider()
+        TheTaleApplication
+                .componentProvider
                 .appComponent
                 .inject(this)
 
@@ -229,8 +229,8 @@ class GameInfoFragment : WrapperFragment() {
                 additionalInfoStringBuilder.append(UiUtils.getInfoItem(
                         getString(R.string.game_additional_info_last_visit),
                         String.format("%s %s",
-                                DateFormat.getDateFormat(TheTaleClientApplication.getContext()).format(lastVisit),
-                                DateFormat.getTimeFormat(TheTaleClientApplication.getContext()).format(lastVisit))))
+                                DateFormat.getDateFormat(TheTaleApplication.context).format(lastVisit),
+                                DateFormat.getTimeFormat(TheTaleApplication.context).format(lastVisit))))
                         .append("\n")
                 if (gameInfoResponse.account.isOwnInfo) {
                     additionalInfoStringBuilder.append(UiUtils.getInfoItem(
@@ -359,7 +359,7 @@ class GameInfoFragment : WrapperFragment() {
                 }
 
                 if (!isGlobal
-                        && TheTaleClientApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)
+                        && TheTaleApplication.onscreenStateWatcher.isOnscreen(OnscreenPart.GAME_INFO)
                         && PreferencesManager.isJournalReadAloudEnabled()) {
                     for (i in 0 until journalSize) {
                         val journalEntry = journal[i]
@@ -513,16 +513,16 @@ class GameInfoFragment : WrapperFragment() {
 
     override fun onOffscreen() {
         super.onOffscreen()
-        TheTaleClientApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.GAME_INFO, false)
+        TheTaleApplication.onscreenStateWatcher.onscreenStateChange(OnscreenPart.GAME_INFO, false)
 
         TextToSpeechUtils.pause()
     }
 
     override fun onOnscreen() {
         super.onOnscreen()
-        TheTaleClientApplication.getOnscreenStateWatcher().onscreenStateChange(OnscreenPart.GAME_INFO, true)
+        TheTaleApplication.onscreenStateWatcher.onscreenStateChange(OnscreenPart.GAME_INFO, true)
 
-        TheTaleClientApplication.getNotificationManager().clearNotifications()
+        TheTaleApplication.notificationManager.clearNotifications()
     }
 
     private inner class CompanionTabsAdapter internal constructor(private val companion: CompanionInfo, private val coherence: Int) : TabbedDialog.TabbedDialogTabsAdapter() {

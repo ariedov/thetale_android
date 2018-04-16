@@ -11,9 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dleibovych.epictale.DrawerItem;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.api.CommonResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.GameInfoPrerequisiteRequest;
@@ -53,7 +52,7 @@ public class QuestActorDialog extends BaseDialog {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);

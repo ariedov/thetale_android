@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.dictionary.MapStyle;
 import com.dleibovych.epictale.api.model.HeroInfo;
 import com.dleibovych.epictale.api.model.MapCellTerrainInfo;
@@ -80,7 +80,7 @@ public class MapUtils {
         for(sizeDenominator = 1;; sizeDenominator *= 2) {
             final long size = (mapInfo.width * MAP_TILE_SIZE / sizeDenominator) *
                     (mapInfo.height * MAP_TILE_SIZE / sizeDenominator) * 4;
-            if(size < TheTaleClientApplication.getFreeMemory() * 0.9) {
+            if(size < TheTaleApplication.Companion.getFreeMemory() * 0.9) {
                 final Bitmap.Config bitmapConfig;
                 if((sizeDenominator > 1) || (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)) {
                     bitmapConfig = Bitmap.Config.RGB_565;
@@ -185,7 +185,7 @@ public class MapUtils {
 
             final Paint textPaint = new Paint();
             textPaint.setTextSize(PLACE_TEXT_SIZE / textSizeDenominator);
-            textPaint.setColor(TheTaleClientApplication.getContext().getResources().getColor(R.color.map_place_name));
+            textPaint.setColor(TheTaleApplication.getContext().getResources().getColor(R.color.map_place_name));
 
             final Rect textRect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), textRect);
@@ -194,7 +194,7 @@ public class MapUtils {
             final float y = ((placeInfo.y + 1.0f) * MAP_TILE_SIZE + PLACE_TEXT_Y_SHIFT) / sizeDenominator;
 
             final Paint backgroundPaint = new Paint();
-            backgroundPaint.setColor(TheTaleClientApplication.getContext().getResources().getColor(R.color.map_place_name_background));
+            backgroundPaint.setColor(TheTaleApplication.getContext().getResources().getColor(R.color.map_place_name_background));
 
             canvas.drawRect(
                     x + textRect.left - PLACE_TEXT_BACKGROUND_PADDING * 2 * (sizeDenominator / textSizeDenominator),

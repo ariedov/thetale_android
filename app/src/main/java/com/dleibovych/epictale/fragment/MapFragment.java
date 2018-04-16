@@ -27,7 +27,7 @@ import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.CommonResponseCallback;
@@ -124,7 +124,7 @@ public class MapFragment extends WrapperFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);
@@ -671,7 +671,7 @@ public class MapFragment extends WrapperFragment {
         }
 
         public String getTitle() {
-            return TheTaleClientApplication.getContext().getString(titleResId);
+            return TheTaleApplication.getContext().getString(titleResId);
         }
 
         public abstract Fragment getFragment(final MapCellResponse cellInfo);

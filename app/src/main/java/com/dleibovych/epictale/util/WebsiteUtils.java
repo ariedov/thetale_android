@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.util;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.HttpMethod;
 import com.dleibovych.epictale.api.model.ArtifactBaseInfo;
@@ -393,7 +393,7 @@ public class WebsiteUtils
 
         if (elements.size() == 0)
         {
-          callback.onError(ErrorType.ITEMS_LIST, 0, TheTaleClientApplication.getContext().getString(R.string.find_player_not_found));
+          callback.onError(ErrorType.ITEMS_LIST, 0, TheTaleApplication.getContext().getString(R.string.find_player_not_found));
           callback.onFinish();
           return;
         }

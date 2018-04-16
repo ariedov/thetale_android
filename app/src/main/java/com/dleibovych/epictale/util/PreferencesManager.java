@@ -2,14 +2,12 @@ package com.dleibovych.epictale.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.dictionary.Action;
 import com.dleibovych.epictale.api.dictionary.MapStyle;
 import com.dleibovych.epictale.fragment.GameFragment;
@@ -68,17 +66,17 @@ public class PreferencesManager
 
   private static boolean getBoolean(final int resId)
   {
-    return TheTaleClientApplication.getContext().getResources().getBoolean(resId);
+    return TheTaleApplication.getContext().getResources().getBoolean(resId);
   }
 
   private static int getInteger(final int resId)
   {
-    return TheTaleClientApplication.getContext().getResources().getInteger(resId);
+    return TheTaleApplication.getContext().getResources().getInteger(resId);
   }
 
   private static String getString(final int resId)
   {
-    return TheTaleClientApplication.getContext().getResources().getString(resId);
+    return TheTaleApplication.getContext().getResources().getString(resId);
   }
 
   private static int getIntegerIfExist(final int keyResId, final int defaultValueResId)

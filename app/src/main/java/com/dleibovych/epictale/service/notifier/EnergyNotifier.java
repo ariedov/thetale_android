@@ -4,7 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.fragment.GameFragment;
 import com.dleibovych.epictale.util.PreferencesManager;
@@ -31,7 +31,7 @@ public class EnergyNotifier implements Notifier {
         if((value >= PreferencesManager.getNotificationThresholdEnergy()) && (value != PreferencesManager.getLastShownNotificationEnergy())) {
             if(PreferencesManager.shouldNotifyEnergy()
                     && PreferencesManager.shouldShowNotificationEnergy()
-                    && !TheTaleClientApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
+                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationEnergy(false);

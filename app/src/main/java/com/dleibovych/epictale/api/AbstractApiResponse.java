@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.api;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.util.ObjectUtils;
 import com.dleibovych.epictale.util.RequestUtils;
 
@@ -39,7 +39,7 @@ public abstract class AbstractApiResponse {
             json = new JSONObject(response);
         } catch(JSONException e) {
             json = new JSONObject(RequestUtils.getGenericErrorResponse(
-                    TheTaleClientApplication.getContext().getString(R.string.common_error)));
+                    TheTaleApplication.getContext().getString(R.string.common_error)));
         }
 
         isDeprecated = json.optBoolean("depricated");

@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.TextToSpeechUtils;
@@ -55,7 +55,7 @@ public class GameFragment extends Fragment implements Refreshable, OnscreenState
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        TheTaleClientApplication
+        TheTaleApplication
                 .getComponentProvider()
                 .getAppComponent()
                 .inject(this);

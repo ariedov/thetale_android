@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.dictionary.MapCellWindSpeed;
 import com.dleibovych.epictale.api.model.MapCellTerrainInfo;
 import com.dleibovych.epictale.api.model.MapPlaceInfo;
@@ -107,7 +107,7 @@ public enum MapModification {
 
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = false;
-                arrowBitmap = BitmapFactory.decodeResource(TheTaleClientApplication.getContext().getResources(),
+                arrowBitmap = BitmapFactory.decodeResource(TheTaleApplication.getContext().getResources(),
                         R.drawable.ic_arrow, options);
 
                 break;

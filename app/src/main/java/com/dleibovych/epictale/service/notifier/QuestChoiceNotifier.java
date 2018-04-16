@@ -4,7 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.TheTaleClientApplication;
+import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.fragment.GameFragment;
 import com.dleibovych.epictale.util.GameInfoUtils;
@@ -30,7 +30,7 @@ public class QuestChoiceNotifier implements Notifier {
         if(GameInfoUtils.isQuestChoiceAvailable(gameInfoResponse)) {
             if(PreferencesManager.shouldNotifyQuestChoice()
                     && PreferencesManager.shouldShowNotificationQuestChoice()
-                    && !TheTaleClientApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.QUESTS)) {
+                    && !TheTaleApplication.getOnscreenStateWatcher().isOnscreen(OnscreenPart.QUESTS)) {
                 return true;
             }
             PreferencesManager.setShouldShowNotificationQuestChoice(false);
