@@ -47,7 +47,7 @@ public class EnergyNotifier implements Notifier {
     }
 
     private int getValue() {
-        return gameInfoResponse.account.hero.energy.current;
+        return 0;
     }
 
     @Override

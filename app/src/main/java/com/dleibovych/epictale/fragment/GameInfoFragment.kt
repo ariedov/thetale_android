@@ -289,7 +289,9 @@ class GameInfoFragment : WrapperFragment() {
                 blockEnergy!!.visibility = if (gameInfoResponse.account.isOwnInfo) View.VISIBLE else View.GONE
                 if (gameInfoResponse.account.isOwnInfo) {
                     val energy = gameInfoResponse.account.hero.energy
-                    textEnergy!!.text = energy.current.toString()
+                    if (energy != null) {
+                        textEnergy!!.text = energy.toString()
+                    }
                 }
 
                 textPowerPhysical!!.text = gameInfoResponse.account.hero.basicInfo.powerPhysical.toString()
@@ -424,9 +426,7 @@ class GameInfoFragment : WrapperFragment() {
                     actionHelp!!.visibility = View.VISIBLE
                     actionHelp!!.isEnabled = false
                     InfoPrerequisiteRequest(client, manager, {
-                        if (GameInfoUtils.isEnoughEnergy(gameInfoResponse.account.hero.energy, PreferencesManager.getAbilityCost(Action.HELP))) {
-                            actionHelp!!.isEnabled = true
-                        }
+                        actionHelp!!.isEnabled = gameInfoResponse.account.hero.energy > 0
                     }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
                         override fun processError(response: InfoResponse) {
                             actionHelp!!.setErrorText(response.errorMessage)

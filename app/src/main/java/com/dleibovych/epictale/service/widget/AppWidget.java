@@ -56,8 +56,6 @@ public enum AppWidget {
                     GameInfoUtils.getHealthString(gameInfoResponse.account.hero.basicInfo));
             remoteViews.setTextViewText(R.id.app_widget_hero_bars_progress_experience_text,
                     GameInfoUtils.getExperienceString(gameInfoResponse.account.hero.basicInfo));
-            remoteViews.setTextViewText(R.id.app_widget_hero_bars_progress_energy_text,
-                    GameInfoUtils.getEnergyString(gameInfoResponse.account.hero.energy));
 
             final CompanionInfo companionInfo = gameInfoResponse.account.hero.companionInfo;
             if(companionInfo == null) {
@@ -95,7 +93,7 @@ public enum AppWidget {
     private final Class<? extends AppWidgetProvider> providerClass;
     private final int layoutResId;
 
-    private AppWidget(final Class<? extends android.appwidget.AppWidgetProvider> providerClass,
+    AppWidget(final Class<? extends android.appwidget.AppWidgetProvider> providerClass,
                       final int layoutResId) {
         this.providerClass = providerClass;
         this.layoutResId = layoutResId;
@@ -120,10 +118,6 @@ public enum AppWidget {
                 gameInfoResponse.account.hero.basicInfo.experienceForNextLevel,
                 gameInfoResponse.account.hero.basicInfo.experienceCurrent,
                 false);
-        remoteViews.setProgressBar(R.id.app_widget_hero_bars_progress_energy,
-                gameInfoResponse.account.hero.energy.max,
-                gameInfoResponse.account.hero.energy.current,
-                false);
     }
 
     private static void fillHeroBarsNearbyText(final RemoteViews remoteViews, final GameInfoResponse gameInfoResponse) {
@@ -131,8 +125,10 @@ public enum AppWidget {
                 GameInfoUtils.getHealthString(gameInfoResponse.account.hero.basicInfo));
         remoteViews.setTextViewText(R.id.app_widget_hero_bars_text_experience,
                 GameInfoUtils.getExperienceString(gameInfoResponse.account.hero.basicInfo));
-        remoteViews.setTextViewText(R.id.app_widget_hero_bars_text_energy,
-                GameInfoUtils.getEnergyString(gameInfoResponse.account.hero.energy));
+        if (gameInfoResponse.account.hero.energy != null) {
+            remoteViews.setTextViewText(R.id.app_widget_hero_bars_text_energy,
+                    gameInfoResponse.account.hero.energy.toString());
+        }
     }
 
     private static void setHelpAction(final Context context, final RemoteViews remoteViews, final int resId) {

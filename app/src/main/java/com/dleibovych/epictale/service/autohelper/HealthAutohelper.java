@@ -12,14 +12,15 @@ public class HealthAutohelper implements Autohelper {
 
     @Override
     public boolean shouldHelp(GameInfoResponse gameInfoResponse) {
-        return (gameInfoResponse.account.hero.basicInfo.healthCurrent < PreferencesManager.getAutohelpHealthAmountThreshold())
-                && PreferencesManager.shouldAutohelpHealth()
-                && (!PreferencesManager.shouldAutohelpHealthBossOnly() || gameInfoResponse.account.hero.action.isBossFight)
-                && GameInfoUtils.isEnoughEnergy(
-                    gameInfoResponse.account.hero.energy,
-                    PreferencesManager.getAutohelpHealthEnergyThreshold(),
-                    PreferencesManager.shouldAutohelpHealthUseBonusEnergy(),
-                    PreferencesManager.getAutohelpHealthBonusEnergyThreshold());
+//        return (gameInfoResponse.account.hero.basicInfo.healthCurrent < PreferencesManager.getAutohelpHealthAmountThreshold())
+//                && PreferencesManager.shouldAutohelpHealth()
+//                && (!PreferencesManager.shouldAutohelpHealthBossOnly() || gameInfoResponse.account.hero.action.isBossFight)
+//                && GameInfoUtils.isEnoughEnergy(
+//                    gameInfoResponse.account.hero.energy,
+//                    PreferencesManager.getAutohelpHealthEnergyThreshold(),
+//                    PreferencesManager.shouldAutohelpHealthUseBonusEnergy(),
+//                    PreferencesManager.getAutohelpHealthBonusEnergyThreshold());
+        return false;
     }
 
 }

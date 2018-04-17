@@ -12,13 +12,14 @@ public class DeathAutohelper implements Autohelper {
 
     @Override
     public boolean shouldHelp(GameInfoResponse gameInfoResponse) {
-        return !gameInfoResponse.account.hero.basicInfo.isAlive
-                && PreferencesManager.shouldAutohelpDeath()
-                && GameInfoUtils.isEnoughEnergy(
-                    gameInfoResponse.account.hero.energy,
-                    PreferencesManager.getAutohelpDeathEnergyThreshold(),
-                    PreferencesManager.shouldAutohelpDeathUseBonusEnergy(),
-                    PreferencesManager.getAutohelpDeathBonusEnergyThreshold());
+//        return !gameInfoResponse.account.hero.basicInfo.isAlive
+//                && PreferencesManager.shouldAutohelpDeath()
+//                && GameInfoUtils.isEnoughEnergy(
+//                    gameInfoResponse.account.hero.energy,
+//                    PreferencesManager.getAutohelpDeathEnergyThreshold(),
+//                    PreferencesManager.shouldAutohelpDeathUseBonusEnergy(),
+//                    PreferencesManager.getAutohelpDeathBonusEnergyThreshold());
+        return false;
     }
 
 }

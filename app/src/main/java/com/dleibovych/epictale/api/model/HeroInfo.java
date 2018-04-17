@@ -24,7 +24,7 @@ public class HeroInfo {
     public final int actualityTurnNumber;
     public final int spriteId;
     public final PvpHeroInfo pvpInfo;
-    public final EnergyInfo energy;
+    public final Integer energy;
     public final Map<EquipmentType, ArtifactInfo> equipment;
     public final CardsInfo cards;
     public final Map<Integer, ArtifactInfo> bag;
@@ -43,7 +43,11 @@ public class HeroInfo {
     public HeroInfo(final JSONObject json) throws JSONException {
         pvpInfo = ObjectUtils.getModelFromJson(PvpHeroInfo.class, json.getJSONObject("pvp"));
 
-        energy = ObjectUtils.getModelFromJson(EnergyInfo.class, json.getJSONObject("energy"));
+        if (json.has("energy")) {
+            energy = json.getInt("energy");
+        } else {
+            energy = null;
+        }
 
         equipment = new HashMap<>(EquipmentType.values().length);
         final JSONObject equipmentJson = json.getJSONObject("equipment");

@@ -13,14 +13,16 @@ public class CompanionCareAutohelper implements Autohelper {
 
     @Override
     public boolean shouldHelp(GameInfoResponse gameInfoResponse) {
-        return (gameInfoResponse.account.hero.action.type == HeroAction.COMPANION_CARE)
-                && (gameInfoResponse.account.hero.companionInfo.healthCurrent < PreferencesManager.getAutohelpCompanionCareHealthAmountThreshold())
-                && PreferencesManager.shouldAutohelpCompanionCare()
-                && GameInfoUtils.isEnoughEnergy(
-                gameInfoResponse.account.hero.energy,
-                PreferencesManager.getAutohelpCompanionCareEnergyThreshold(),
-                PreferencesManager.shouldAutohelpCompanionCareUseBonusEnergy(),
-                PreferencesManager.getAutohelpCompanionCareBonusEnergyThreshold());
+//        return (gameInfoResponse.account.hero.action.type == HeroAction.COMPANION_CARE)
+//                && (gameInfoResponse.account.hero.companionInfo.healthCurrent < PreferencesManager.getAutohelpCompanionCareHealthAmountThreshold())
+//                && PreferencesManager.shouldAutohelpCompanionCare()
+//                && GameInfoUtils.isEnoughEnergy(
+//                gameInfoResponse.account.hero.energy,
+//                PreferencesManager.getAutohelpCompanionCareEnergyThreshold(),
+//                PreferencesManager.shouldAutohelpCompanionCareUseBonusEnergy(),
+//                PreferencesManager.getAutohelpCompanionCareBonusEnergyThreshold());
+
+        return false;
     }
 
 }

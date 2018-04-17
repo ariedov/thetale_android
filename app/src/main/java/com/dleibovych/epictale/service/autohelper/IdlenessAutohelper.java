@@ -12,13 +12,14 @@ public class IdlenessAutohelper implements Autohelper {
 
     @Override
     public boolean shouldHelp(GameInfoResponse gameInfoResponse) {
-        return GameInfoUtils.isHeroIdle(gameInfoResponse)
-                && PreferencesManager.shouldAutohelpIdle()
-                && GameInfoUtils.isEnoughEnergy(
-                    gameInfoResponse.account.hero.energy,
-                    PreferencesManager.getAutohelpIdleEnergyThreshold(),
-                    PreferencesManager.shouldAutohelpIdleUseBonusEnergy(),
-                    PreferencesManager.getAutohelpIdleBonusEnergyThreshold());
+//        return GameInfoUtils.isHeroIdle(gameInfoResponse)
+//                && PreferencesManager.shouldAutohelpIdle()
+//                && GameInfoUtils.isEnoughEnergy(
+//                    gameInfoResponse.account.hero.energy,
+//                    PreferencesManager.getAutohelpIdleEnergyThreshold(),
+//                    PreferencesManager.shouldAutohelpIdleUseBonusEnergy(),
+//                    PreferencesManager.getAutohelpIdleBonusEnergyThreshold());
+        return false;
     }
 
 }
