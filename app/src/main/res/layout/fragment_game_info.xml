@@ -147,37 +147,6 @@
 
                 </TableRow>
 
-                <TableRow
-                    android:id="@+id/game_info_energy"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="@dimen/game_info_icon_size"
-                        android:layout_height="@dimen/game_info_icon_size"
-                        android:src="@drawable/ic_energy"
-                        android:contentDescription="@string/game_info_energy"/>
-
-                    <ProgressBar
-                        android:id="@+id/game_info_energy_progress"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/game_info_bar_height"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="16dp"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:progressDrawable="@drawable/game_info_energy"/>
-
-                    <TextView
-                        android:id="@+id/game_info_energy_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:includeFontPadding="false"
-                        style="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/common_text"/>
-
-                </TableRow>
-
             </TableLayout>
 
             <!-- power, money, might -->
@@ -226,6 +195,31 @@
 
                         <TextView
                             android:id="@+id/game_info_money"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:includeFontPadding="false"
+                            style="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/common_text"/>
+
+                    </LinearLayout>
+
+                    <!-- energy -->
+                    <LinearLayout
+                        android:id="@+id/game_info_energy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/game_info_icon_size"
+                            android:layout_height="@dimen/game_info_icon_size"
+                            android:src="@drawable/ic_energy"
+                            android:contentDescription="@string/game_info_energy"/>
+
+                        <TextView
+                            android:id="@+id/game_info_energy_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"

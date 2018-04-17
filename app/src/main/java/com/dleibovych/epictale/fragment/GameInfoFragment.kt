@@ -78,7 +78,6 @@ class GameInfoFragment : WrapperFragment() {
     private var progressExperience: ProgressBar? = null
     private var textExperience: TextView? = null
     private var blockEnergy: View? = null
-    private var progressEnergy: ProgressBar? = null
     private var textEnergy: TextView? = null
 
     private var textPowerPhysical: TextView? = null
@@ -122,7 +121,6 @@ class GameInfoFragment : WrapperFragment() {
         progressExperience = rootView!!.findViewById(R.id.game_info_experience_progress)
         textExperience = rootView!!.findViewById(R.id.game_info_experience_text)
         blockEnergy = rootView!!.findViewById(R.id.game_info_energy)
-        progressEnergy = rootView!!.findViewById(R.id.game_info_energy_progress)
         textEnergy = rootView!!.findViewById(R.id.game_info_energy_text)
 
         textPowerPhysical = rootView!!.findViewById(R.id.game_info_power_physical)
@@ -291,13 +289,7 @@ class GameInfoFragment : WrapperFragment() {
                 blockEnergy!!.visibility = if (gameInfoResponse.account.isOwnInfo) View.VISIBLE else View.GONE
                 if (gameInfoResponse.account.isOwnInfo) {
                     val energy = gameInfoResponse.account.hero.energy
-                    progressEnergy!!.max = energy.max
-                    // https://code.google.com/p/android/issues/detail?id=12945
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                        progressEnergy!!.progress = 0
-                    }
-                    progressEnergy!!.progress = energy.current
-                    textEnergy!!.text = GameInfoUtils.getEnergyString(energy)
+                    textEnergy!!.text = energy.current.toString()
                 }
 
                 textPowerPhysical!!.text = gameInfoResponse.account.hero.basicInfo.powerPhysical.toString()
