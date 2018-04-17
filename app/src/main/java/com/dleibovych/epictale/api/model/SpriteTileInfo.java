@@ -2,10 +2,6 @@ package com.dleibovych.epictale.api.model;
 
 import org.json.JSONObject;
 
-/**
- * @author Hamster
- * @since 13.10.2014
- */
 public class SpriteTileInfo {
 
     public final int x;

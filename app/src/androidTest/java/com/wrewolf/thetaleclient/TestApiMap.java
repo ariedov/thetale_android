@@ -9,10 +9,8 @@ import com.dleibovych.epictale.api.dictionary.MapCellType;
 import com.dleibovych.epictale.api.model.MapCouncilMemberInfo;
 import com.dleibovych.epictale.api.request.GameInfoRequest;
 import com.dleibovych.epictale.api.request.MapCellRequest;
-import com.dleibovych.epictale.api.request.MapRequest;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.api.response.MapCellResponse;
-import com.dleibovych.epictale.api.response.MapResponse;
 
 import junit.framework.TestCase;
 

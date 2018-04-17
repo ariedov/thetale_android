@@ -9,7 +9,7 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.api.cache.RequestCacheManager
 import com.dleibovych.epictale.fragment.GameFragment
-import com.dleibovych.epictale.fragment.MapFragment
+import com.dleibovych.epictale.game.map.MapFragment
 import com.dleibovych.epictale.fragment.ProfileFragment
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.PreferencesManager

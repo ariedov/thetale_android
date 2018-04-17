@@ -35,4 +35,13 @@ interface TheTaleService {
     fun gameInfo(
             @Query("client_turns") clientTurns: String = "",
             @Query("api_version") apiVersion: String = "1.9"): Call<Response<GameInfo>>
+
+    @GET("/game/map/api/region-versions")
+    fun mapRegionVersions(
+            @Query("api_version") apiVersion: String = "0.1"): Call<Response<MapRegionVersions>>
+
+    @GET("/game/map/api/region")
+    fun mapRegion(
+            @Query("turn") turn: Int,
+            @Query("api_version") apiVersion: String = "0.1"): Call<Response<MapRegion>>
 }

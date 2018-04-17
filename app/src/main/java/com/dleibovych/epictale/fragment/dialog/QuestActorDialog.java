@@ -17,8 +17,6 @@ import com.dleibovych.epictale.game.MainActivity;
 import com.dleibovych.epictale.api.CommonResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.GameInfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.model.QuestActorInfo;
-import com.dleibovych.epictale.api.request.MapRequest;
-import com.dleibovych.epictale.api.response.MapResponse;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.RequestUtils;
 import com.dleibovych.epictale.util.UiUtils;
@@ -74,20 +72,20 @@ public class QuestActorDialog extends BaseDialog {
                         UiUtils.getInfoItem(getString(R.string.quest_actor_profession), questActorInfo.personInfo.profession.getName()));
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_mastery),
                         UiUtils.getInfoItem(getString(R.string.quest_actor_mastery), questActorInfo.personInfo.mastery));
-                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
-                    @Override
-                    public void processResponse(MapResponse response) {
-                        setPlaceLink(
-                                view.findViewById(R.id.dialog_quest_actor_person_place),
-                                getString(R.string.quest_actor_place),
-                                response.places.get(questActorInfo.personInfo.placeId).name,
-                                questActorInfo.personInfo.placeId);
-                    }
-
-                    @Override
-                    public void processError(String error) {
-                    }
-                }, QuestActorDialog.this)), null, this).execute();
+//                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
+//                    @Override
+//                    public void processResponse(MapResponse response) {
+//                        setPlaceLink(
+//                                view.findViewById(R.id.dialog_quest_actor_person_place),
+//                                getString(R.string.quest_actor_place),
+//                                response.places.get(questActorInfo.personInfo.placeId).name,
+//                                questActorInfo.personInfo.placeId);
+//                    }
+//
+//                    @Override
+//                    public void processError(String error) {
+//                    }
+//                }, QuestActorDialog.this)), null, this).execute();
                 break;
 
             case PLACE:
@@ -97,18 +95,18 @@ public class QuestActorDialog extends BaseDialog {
                         getString(R.string.map_place_name),
                         questActorInfo.placeInfo.name,
                         questActorInfo.placeInfo.id);
-                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
-                    @Override
-                    public void processResponse(MapResponse response) {
-                        UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_place_size), UiUtils.getInfoItem(
-                                getString(R.string.map_place_size),
-                                String.valueOf(response.places.get(questActorInfo.placeInfo.id).size)));
-                    }
-
-                    @Override
-                    public void processError(String error) {
-                    }
-                }, QuestActorDialog.this)), null, this).execute();
+//                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
+//                    @Override
+//                    public void processResponse(MapResponse response) {
+//                        UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_place_size), UiUtils.getInfoItem(
+//                                getString(R.string.map_place_size),
+//                                String.valueOf(response.places.get(questActorInfo.placeInfo.id).size)));
+//                    }
+//
+//                    @Override
+//                    public void processError(String error) {
+//                    }
+//                }, QuestActorDialog.this)), null, this).execute();
                 break;
 
             case SPENDING:

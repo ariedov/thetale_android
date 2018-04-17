@@ -13,7 +13,7 @@ import com.dleibovych.epictale.game.di.GameComponent
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.NotificationManager
 import com.dleibovych.epictale.util.PreferencesManager
-import com.dleibovych.epictale.util.map.MapUtils
+import com.dleibovych.epictale.game.map.MapDrawer
 import com.dleibovych.epictale.util.onscreen.OnscreenStateWatcher
 
 import org.thetale.api.di.ApiModule
@@ -67,7 +67,6 @@ class TheTaleApplication : Application(),
         super.onLowMemory()
 
         RequestCacheManager.invalidate()
-        MapUtils.cleanup()
 
         System.gc()
     }

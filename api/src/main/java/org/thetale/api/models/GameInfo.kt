@@ -38,7 +38,7 @@ data class Hero(
         val habits: Map<String, Habit>,
         val quests: Quests,
         val action: Action,
-        val position: Position,
+        val position: HeroPosition,
         val permissions: Permissions,
         val might: Might,
         val id: Int,
@@ -125,7 +125,7 @@ data class Action(
         val data: List<Any>?
 )
 
-data class Position(
+data class HeroPosition(
         val x: Double,
         val y: Double,
         val dx: Double,

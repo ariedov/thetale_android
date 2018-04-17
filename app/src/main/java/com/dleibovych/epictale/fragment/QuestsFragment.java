@@ -26,11 +26,9 @@ import com.dleibovych.epictale.api.model.QuestActorInfo;
 import com.dleibovych.epictale.api.model.QuestChoiceInfo;
 import com.dleibovych.epictale.api.model.QuestStepInfo;
 import com.dleibovych.epictale.api.request.GameInfoRequest;
-import com.dleibovych.epictale.api.request.MapRequest;
 import com.dleibovych.epictale.api.request.QuestChoiceRequest;
 import com.dleibovych.epictale.api.response.CommonResponse;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
-import com.dleibovych.epictale.api.response.MapResponse;
 import com.dleibovych.epictale.util.DialogUtils;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.RequestUtils;
@@ -217,24 +215,24 @@ public class QuestsFragment extends WrapperFragment {
 
                 // add town name to quest person actors
                 if(actorNames.size() > 0) {
-                    new MapRequest(response.mapVersion).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
-                        @Override
-                        public void processResponse(MapResponse response) {
-                            for (final Map.Entry<TextView, Integer> actorNameEntry : actorNames.entrySet()) {
-                                final Spannable placeText = new SpannableString(String.format(" (%s)", response.places.get(actorNameEntry.getValue()).name));
-                                placeText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.game_additional_info)),
-                                        0, placeText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                                final TextView actorName = actorNameEntry.getKey();
-                                actorName.setText(TextUtils.concat(actorName.getText(), placeText));
-                            }
-                        }
-
-                        @Override
-                        public void processError(String error) {
-                            // do nothing
-                        }
-                    }, QuestsFragment.this));
+//                    new MapRequest(response.mapVersion).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
+//                        @Override
+//                        public void processResponse(MapResponse response) {
+//                            for (final Map.Entry<TextView, Integer> actorNameEntry : actorNames.entrySet()) {
+//                                final Spannable placeText = new SpannableString(String.format(" (%s)", response.places.get(actorNameEntry.getValue()).name));
+//                                placeText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.game_additional_info)),
+//                                        0, placeText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//                                final TextView actorName = actorNameEntry.getKey();
+//                                actorName.setText(TextUtils.concat(actorName.getText(), placeText));
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void processError(String error) {
+//                            // do nothing
+//                        }
+//                    }, QuestsFragment.this));
                 }
 
                 setMode(DataViewMode.DATA);

@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import com.dleibovych.epictale.fragment.ChatFragment;
 import com.dleibovych.epictale.fragment.FindPlayerFragment;
 import com.dleibovych.epictale.fragment.GameFragment;
-import com.dleibovych.epictale.fragment.MapFragment;
+import com.dleibovych.epictale.game.map.MapFragment;
 import com.dleibovych.epictale.fragment.SettingsFragment;
 
 /**
