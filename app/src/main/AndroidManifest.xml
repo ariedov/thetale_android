@@ -91,6 +91,11 @@
             android:name="com.dleibovych.epictale.service.WatcherService"
             android:exported="false"/>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d123d1e4c43254953b65d80129a92088dcbec59d"
+            />
+
     </application>
 
 </manifest>
