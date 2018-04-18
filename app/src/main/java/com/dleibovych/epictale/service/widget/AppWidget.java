@@ -7,12 +7,13 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.api.model.CompanionInfo;
 import com.dleibovych.epictale.api.model.HeroActionInfo;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.service.WatcherService;
 import com.dleibovych.epictale.util.GameInfoUtils;
 import com.dleibovych.epictale.util.UiUtils;
+
+import org.thetale.api.models.CompanionInfo;
 
 /**
  * @author Hamster
@@ -65,25 +66,25 @@ public enum AppWidget {
                 UiUtils.setRemoteViewsViewVisibility(remoteViews, R.id.app_widget_no_companion, false);
                 UiUtils.setRemoteViewsViewVisibility(remoteViews, R.id.app_widget_companion_right_info, true);
 
-                remoteViews.setTextViewText(R.id.app_widget_companion_right_level, String.valueOf(companionInfo.coherence));
-                remoteViews.setTextViewText(R.id.app_widget_companion_right_name, companionInfo.name);
+                remoteViews.setTextViewText(R.id.app_widget_companion_right_level, String.valueOf(companionInfo.getCoherence()));
+                remoteViews.setTextViewText(R.id.app_widget_companion_right_name, companionInfo.getName());
 
                 remoteViews.setProgressBar(R.id.app_widget_companion_right_bars_progress_health,
-                        companionInfo.healthMax, companionInfo.healthCurrent, false);
+                        companionInfo.getMaxHealth(), companionInfo.getHealth(), false);
                 remoteViews.setProgressBar(R.id.app_widget_companion_right_bars_progress_experience,
-                        companionInfo.experienceForNextLevel, companionInfo.experienceCurrent, false);
+                        companionInfo.getExperienceToLevel(), companionInfo.getExperience(), false);
 
                 remoteViews.setTextViewText(R.id.app_widget_companion_right_bars_progress_health_text,
-                        GameInfoUtils.getCompanionHealthString(companionInfo));
+                        String.valueOf(companionInfo.getHealth()));
                 remoteViews.setTextViewText(R.id.app_widget_companion_right_bars_progress_experience_text,
-                        GameInfoUtils.getCompanionExperienceString(companionInfo));
+                        String.valueOf(companionInfo.getExperience()));
             }
 
             setHelpAction(context, remoteViews, R.id.app_widget_help_right_bottom);
 
             final HeroActionInfo actionInfo = gameInfoResponse.account.hero.action;
             remoteViews.setTextViewText(R.id.app_widget_action_info_text,
-                    GameInfoUtils.getActionString(context, actionInfo));
+                    actionInfo.description);
             remoteViews.setProgressBar(R.id.app_widget_action_info_progress,
                     1000, (int) (1000.0 * actionInfo.completion), false);
         }

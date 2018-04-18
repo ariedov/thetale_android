@@ -5,8 +5,9 @@ import android.content.Context;
 
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
+import com.dleibovych.epictale.api.dictionary.HeroMode;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
-import com.dleibovych.epictale.fragment.GameFragment;
+import com.dleibovych.epictale.game.GameFragment;
 import com.dleibovych.epictale.util.GameInfoUtils;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.UiUtils;
@@ -27,7 +28,7 @@ public class IdlenessNotifier implements Notifier {
 
     @Override
     public boolean isNotifying() {
-        if(GameInfoUtils.isHeroIdle(gameInfoResponse)) {
+        if(false) {
             if(PreferencesManager.shouldNotifyIdleness()
                     && PreferencesManager.shouldShowNotificationIdleness()
                     && !TheTaleApplication.Companion.getOnscreenStateWatcher().isOnscreen(OnscreenPart.GAME_INFO)) {

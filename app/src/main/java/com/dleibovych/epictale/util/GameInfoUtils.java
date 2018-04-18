@@ -4,16 +4,15 @@ import android.content.Context;
 
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
-import com.dleibovych.epictale.api.dictionary.EquipmentType;
-import com.dleibovych.epictale.api.dictionary.HeroAction;
-import com.dleibovych.epictale.api.model.ArtifactInfo;
-import com.dleibovych.epictale.api.model.CompanionInfo;
 import com.dleibovych.epictale.api.model.EnergyInfo;
-import com.dleibovych.epictale.api.model.HeroActionInfo;
 import com.dleibovych.epictale.api.model.HeroBasicInfo;
-import com.dleibovych.epictale.api.model.HeroInfo;
 import com.dleibovych.epictale.api.model.QuestStepInfo;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
+
+import org.thetale.api.models.ArtifactInfo;
+import org.thetale.api.models.GameInfo;
+import org.thetale.api.models.Hero;
+import org.thetale.api.models.HeroAction;
 
 import java.util.List;
 import java.util.Map;
@@ -34,8 +33,8 @@ public class GameInfoUtils {
         return (energyInfo.current + energyInfo.bonus - energyInfo.discount) >= need;
     }
 
-    public static boolean isHeroIdle(final GameInfoResponse gameInfoResponse) {
-        return gameInfoResponse.account.hero.action.type == HeroAction.IDLE;
+    public static boolean isHeroIdle(final GameInfo gameInfoResponse) {
+        return gameInfoResponse.getAccount().getHero().getAction().getType() == 0;
     }
 
     public static boolean isQuestChoiceAvailable(final GameInfoResponse gameInfoResponse) {
@@ -63,30 +62,20 @@ public class GameInfoUtils {
         return String.format("%d/%d + %d", energyInfo.current, energyInfo.max, energyInfo.bonus);
     }
 
-    public static String getCompanionHealthString(final CompanionInfo companionInfo) {
-        return String.format("%d/%d", companionInfo.healthCurrent, companionInfo.healthMax);
-    }
 
-    public static String getCompanionExperienceString(final CompanionInfo companionInfo) {
-        return String.format("%d/%d", companionInfo.experienceCurrent, companionInfo.experienceForNextLevel);
-    }
-
-    public static String getActionString(final Context context, final HeroActionInfo actionInfo) {
-        String actionDescription = actionInfo.description;
-        if(actionInfo.isBossFight) {
-            actionDescription += context.getString(R.string.game_boss_fight);
-        }
+    public static String getActionString(final Context context, final HeroAction actionInfo) {
+        String actionDescription = actionInfo.getDescription();
         return actionDescription;
     }
 
-    public static int getArtifactEffectCount(final HeroInfo heroInfo, final ArtifactEffect artifactEffect) {
+    public static int getArtifactEffectCount(final Hero hero, final ArtifactEffect artifactEffect) {
         int count = 0;
-        for(final Map.Entry<EquipmentType, ArtifactInfo> equipmentEntry : heroInfo.equipment.entrySet()) {
+        for(final Map.Entry<Integer, ArtifactInfo> equipmentEntry : hero.getEquipment().entrySet()) {
             final ArtifactInfo artifactInfo = equipmentEntry.getValue();
-            if(artifactInfo.effect == artifactEffect) {
+            if(artifactInfo.getEffect() == artifactEffect.getCode()) {
                 count++;
             }
-            if(artifactInfo.effectSpecial == artifactEffect) {
+            if(artifactInfo.getSpecialEffect() == artifactEffect.getCode()) {
                 count++;
             }
         }

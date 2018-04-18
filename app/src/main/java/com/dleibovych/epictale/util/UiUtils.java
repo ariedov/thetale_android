@@ -29,7 +29,7 @@ import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest;
 import com.dleibovych.epictale.api.request.GameInfoRequest;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.api.response.InfoResponse;
-import com.dleibovych.epictale.fragment.GameFragment;
+import com.dleibovych.epictale.game.GameFragment;
 import com.dleibovych.epictale.fragment.Refreshable;
 import com.dleibovych.epictale.util.onscreen.OnscreenStateListener;
 

@@ -10,7 +10,7 @@ import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.dictionary.Action;
 import com.dleibovych.epictale.api.dictionary.MapStyle;
-import com.dleibovych.epictale.fragment.GameFragment;
+import com.dleibovych.epictale.game.GameFragment;
 
 import net.grandcentrix.tray.TrayPreferences;
 import net.grandcentrix.tray.core.TrayStorage;

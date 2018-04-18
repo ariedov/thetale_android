@@ -7,6 +7,7 @@ import com.dleibovych.epictale.util.ObjectUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.thetale.api.models.CompanionInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +101,7 @@ public class HeroInfo {
         habits = new HashMap<>(Habit.values().length);
         final JSONObject habitsJson = json.getJSONObject("habits");
         for(final Habit habit : Habit.values()) {
-            habits.put(habit, ObjectUtils.getModelFromJson(HabitInfo.class, habitsJson.getJSONObject(habit.name)));
+            habits.put(habit, ObjectUtils.getModelFromJson(HabitInfo.class, habitsJson.getJSONObject(habit.getName())));
         }
 
         final JSONArray questsJson = json.getJSONObject("quests").getJSONArray("quests");

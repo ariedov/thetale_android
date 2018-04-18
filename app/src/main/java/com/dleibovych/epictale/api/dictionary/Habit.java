@@ -10,9 +10,9 @@ public enum Habit {
     PEACEFULNESS(1, "peacefulness", "миролюбие"),
     ;
 
-    public final int code;
-    public final String name;
-    public final String description;
+    private final int code;
+    private final String name;
+    private final String description;
 
     Habit(final int code, final String name, final String description) {
         this.code = code;
@@ -28,4 +28,7 @@ public enum Habit {
         return name;
     }
 
+    public String getDescription() {
+        return description;
+    }
 }

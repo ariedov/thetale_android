@@ -34,10 +34,10 @@ data class Hero(
         val base: Base,
         val secondary: Secondary,
         val diary: String,
-        val messages: List<Any>, // this one is f* up. need to convert
+        val messages: List<List<Any>>, // this one is f* up. need to convert
         val habits: Map<String, Habit>,
         val quests: Quests,
-        val action: Action,
+        val action: HeroAction,
         val position: HeroPosition,
         val permissions: Permissions,
         val might: Might,
@@ -117,7 +117,7 @@ data class Quest(
         val actors: List<List<Any>> // f* up
 )
 
-data class Action(
+data class HeroAction(
         val percents: Double,
         val description: String,
         val infoLink: String?,

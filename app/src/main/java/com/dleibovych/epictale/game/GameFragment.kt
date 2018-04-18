@@ -1,4 +1,4 @@
-package com.dleibovych.epictale.fragment
+package com.dleibovych.epictale.game
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,7 +13,8 @@ import android.view.ViewGroup
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
-import com.dleibovych.epictale.game.MainActivity
+import com.dleibovych.epictale.fragment.*
+import com.dleibovych.epictale.game.gameinfo.GameInfoFragment
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.UiUtils
@@ -88,12 +89,12 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
             R.id.action_read_aloud -> if (PreferencesManager.isReadAloudConfirmed()) {
                 val wasReadAloudEnabled: Boolean
                 when (GamePage.values()[currentPageIndex]) {
-                    GameFragment.GamePage.GAME_INFO -> {
+                    GamePage.GAME_INFO -> {
                         wasReadAloudEnabled = PreferencesManager.isJournalReadAloudEnabled()
                         PreferencesManager.setJournalReadAloudEnabled(!wasReadAloudEnabled)
                     }
 
-                    GameFragment.GamePage.DIARY -> {
+                    GamePage.DIARY -> {
                         wasReadAloudEnabled = PreferencesManager.isDiaryReadAloudEnabled()
                         PreferencesManager.setDiaryReadAloudEnabled(!wasReadAloudEnabled)
                     }
@@ -120,14 +121,14 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
             var isVisible = false
             var isOn = false
             when (GamePage.values()[currentPageIndex]) {
-                GameFragment.GamePage.GAME_INFO -> {
+                GamePage.GAME_INFO -> {
                     isVisible = PreferencesManager.isReadAloudConfirmed()
                     if (isVisible) {
                         isOn = PreferencesManager.isJournalReadAloudEnabled()
                     }
                 }
 
-                GameFragment.GamePage.DIARY -> {
+                GamePage.DIARY -> {
                     isVisible = PreferencesManager.isReadAloudConfirmed()
                     if (isVisible) {
                         isOn = PreferencesManager.isDiaryReadAloudEnabled()
