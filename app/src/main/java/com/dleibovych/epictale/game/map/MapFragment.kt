@@ -179,7 +179,7 @@ class MapFragment : WrapperFragment(), MapView {
 
     override fun drawMap(region: Region, hero: Hero) {
         launch(UI) {
-            val sprite = drawer.getMapSprite(MapStyle.STANDARD).await()!!
+            val sprite = drawer.getMapSprite(getContext()!!, MapStyle.STANDARD)
 
             val map = drawer.getMapBitmap(region)
             val canvas = Canvas(map)

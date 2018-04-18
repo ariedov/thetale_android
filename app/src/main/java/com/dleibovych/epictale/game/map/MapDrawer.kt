@@ -1,11 +1,16 @@
 package com.dleibovych.epictale.game.map
 
+import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
@@ -13,12 +18,10 @@ import com.dleibovych.epictale.api.dictionary.MapStyle
 import com.dleibovych.epictale.api.model.SpriteTileInfo
 import com.dleibovych.epictale.api.response.MapTerrainResponse
 import com.dleibovych.epictale.util.PreferencesManager
-import kotlinx.coroutines.experimental.async
 import org.thetale.api.models.Hero
 import org.thetale.api.models.Region
 
-import java.net.URL
-import java.util.HashMap
+import kotlin.coroutines.experimental.suspendCoroutine
 
 class MapDrawer {
 
@@ -26,20 +29,22 @@ class MapDrawer {
      * Gets an appropriate map sprite
      * @param mapStyle desired map style
      */
-    fun getMapSprite(mapStyle: MapStyle) = async {
-        var mapSprite = mapSpriteCache[mapStyle]
-        if (mapSprite == null) {
-            val url = URL(String.format(MAP_SPRITE_URL,
-                    PreferencesManager.getStaticContentUrl(), mapStyle.path))
-            val urlConnection = url.openConnection()
-            urlConnection.doInput = true
-            urlConnection.connect()
-            mapSprite = BitmapFactory.decodeStream(urlConnection.getInputStream())
-            mapSpriteCache[mapStyle] = mapSprite
+    suspend fun getMapSprite(context: Context, mapStyle: MapStyle): Bitmap = suspendCoroutine {
+        val url = Uri.parse(String.format(MAP_SPRITE_URL,
+                PreferencesManager.getStaticContentUrl(), mapStyle.path))
+        Glide
+                .with(context)
+                .asBitmap()
+                .load(url)
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        it.resume(resource)
+                    }
 
-        }
-
-        return@async mapSprite
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        it.resumeWithException(RuntimeException("bitmap not loaded"))
+                    }
+                })
     }
 
     /**
@@ -85,18 +90,20 @@ class MapDrawer {
                         j * MAP_TILE_SIZE / currentSizeDenominator, i * MAP_TILE_SIZE / currentSizeDenominator,
                         (j + 1) * MAP_TILE_SIZE / currentSizeDenominator, (i + 1) * MAP_TILE_SIZE / currentSizeDenominator)
                 for (tile in row[j]) {
+                    val spriteTile = getSpriteTile(tile[0], tile[1])
                     val rotation = tile[1]
                     if (rotation == 0) {
                         val src = Rect(
-                                i, j,
-                                i + tile.size, j + tile.size)
+                                spriteTile.x, spriteTile.y,
+                                spriteTile.x + spriteTile.size, spriteTile.y + spriteTile
+                                .size)
                         canvas.drawBitmap(sprite, src, dst, null)
                     } else {
                         val rotationMatrix = Matrix()
                         rotationMatrix.setRotate(rotation.toFloat())
                         val rotatingTileBitmap = Bitmap.createBitmap(
                                 sprite,
-                                i, j,
+                                spriteTile.x, spriteTile.y,
                                 MAP_TILE_SIZE, MAP_TILE_SIZE,
                                 rotationMatrix, true)
                         canvas.drawBitmap(rotatingTileBitmap, tileRect, dst, null)
@@ -194,12 +201,6 @@ class MapDrawer {
         return SpriteTileInfo(MAP_SPRITE_OFFSET_X[spriteId], MAP_SPRITE_OFFSET_Y[spriteId], rotation, MAP_TILE_SIZE)
     }
 
-    fun cleanup() {
-        for (mapStyle in MapStyle.values()) {
-            mapSpriteCache.remove(mapStyle)
-        }
-    }
-
     companion object {
 
         private const val MAP_SPRITE_URL = "http:%s%s"
@@ -215,8 +216,6 @@ class MapDrawer {
 
         private val MAP_SPRITE_OFFSET_X = intArrayOf(0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 0, 64, 128, 192, 256, 128, 96, 32, 0, 32, 96, 128, 160, 0, 64, 0, 32, 64, 96, 160, 224, 352, 320, 288, 192, 256, 192, 224, 256, 288, 192, 224, 64, 352, 0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 0, 32, 64, 96, 128, 160, 192, 224, 96, 32, 160, 64, 128, 0, 0, 32, 0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 0, 32, 64, 96, 128, 160, 192, 224, 256, 288)
         private val MAP_SPRITE_OFFSET_Y = intArrayOf(256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 64, 64, 64, 64, 0, 0, 0, 0, 0, 0, 32, 32, 32, 32, 64, 0, 0, 0, 0, 0, 0, 32, 32, 32, 32, 64, 64, 64, 32, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 224, 224, 224, 224, 224, 224, 224, 224, 96, 96, 96, 96, 96, 96, 288, 288, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160)
-
-        private val mapSpriteCache = HashMap<MapStyle, Bitmap>(MapStyle.values().size)
 
         var currentSizeDenominator = 1
             private set
