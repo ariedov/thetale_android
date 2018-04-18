@@ -58,11 +58,10 @@ class MapDrawer {
             val size = (region.width * MAP_TILE_SIZE / currentSizeDenominator *
                     (region.height * MAP_TILE_SIZE / currentSizeDenominator) * 4).toLong()
             if (size < TheTaleApplication.freeMemory * 0.9) {
-                val bitmapConfig: Bitmap.Config
-                if (currentSizeDenominator > 1) {
-                    bitmapConfig = Bitmap.Config.RGB_565
+                val bitmapConfig: Bitmap.Config = if (currentSizeDenominator > 1) {
+                    Bitmap.Config.RGB_565
                 } else {
-                    bitmapConfig = Bitmap.Config.ARGB_8888
+                    Bitmap.Config.ARGB_8888
                 }
 
                 return Bitmap.createBitmap(region.width * MAP_TILE_SIZE / currentSizeDenominator,
