@@ -76,32 +76,30 @@ class MapDrawer {
     fun drawBaseLayer(canvas: Canvas, region: Region, sprite: Bitmap) {
         val tileRect = Rect(0, 0, MAP_TILE_SIZE, MAP_TILE_SIZE)
         val drawInfo = region.drawInfo
-        if (drawInfo != null) {
-            val rowsCount = drawInfo.size
-            for (i in 0 until rowsCount) {
-                val row = drawInfo[i]
-                val cellsCount = row.size
-                for (j in 0 until cellsCount) {
-                    val dst = Rect(
-                            j * MAP_TILE_SIZE / currentSizeDenominator, i * MAP_TILE_SIZE / currentSizeDenominator,
-                            (j + 1) * MAP_TILE_SIZE / currentSizeDenominator, (i + 1) * MAP_TILE_SIZE / currentSizeDenominator)
-                    for (tile in row[j]) {
-                        val rotation = tile[1]
-                        if (rotation == 0) {
-                            val src = Rect(
-                                    i, j,
-                                    i + tile.size, j + tile.size)
-                            canvas.drawBitmap(sprite, src, dst, null)
-                        } else {
-                            val rotationMatrix = Matrix()
-                            rotationMatrix.setRotate(rotation.toFloat())
-                            val rotatingTileBitmap = Bitmap.createBitmap(
-                                    sprite,
-                                    i, j,
-                                    MAP_TILE_SIZE, MAP_TILE_SIZE,
-                                    rotationMatrix, true)
-                            canvas.drawBitmap(rotatingTileBitmap, tileRect, dst, null)
-                        }
+        val rowsCount = drawInfo.size
+        for (i in 0 until rowsCount) {
+            val row = drawInfo[i]
+            val cellsCount = row.size
+            for (j in 0 until cellsCount) {
+                val dst = Rect(
+                        j * MAP_TILE_SIZE / currentSizeDenominator, i * MAP_TILE_SIZE / currentSizeDenominator,
+                        (j + 1) * MAP_TILE_SIZE / currentSizeDenominator, (i + 1) * MAP_TILE_SIZE / currentSizeDenominator)
+                for (tile in row[j]) {
+                    val rotation = tile[1]
+                    if (rotation == 0) {
+                        val src = Rect(
+                                i, j,
+                                i + tile.size, j + tile.size)
+                        canvas.drawBitmap(sprite, src, dst, null)
+                    } else {
+                        val rotationMatrix = Matrix()
+                        rotationMatrix.setRotate(rotation.toFloat())
+                        val rotatingTileBitmap = Bitmap.createBitmap(
+                                sprite,
+                                i, j,
+                                MAP_TILE_SIZE, MAP_TILE_SIZE,
+                                rotationMatrix, true)
+                        canvas.drawBitmap(rotatingTileBitmap, tileRect, dst, null)
                     }
                 }
             }

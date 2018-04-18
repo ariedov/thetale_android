@@ -10,7 +10,7 @@ data class Region(
         @SerializedName("map_version") val mapVersion: String,
         val width: Int,
         val height: Int,
-        val drawInfo: List<List<List<List<Int>>>>?,
+        @SerializedName("draw_info") val drawInfo: List<List<List<List<Int>>>>,
         val places: Map<Int, Place>,
         val roads: Map<Int, Road>)
 
