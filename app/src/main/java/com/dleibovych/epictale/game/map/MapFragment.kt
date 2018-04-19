@@ -20,7 +20,6 @@ import com.dleibovych.epictale.fragment.MapTileCouncilFragment
 import com.dleibovych.epictale.fragment.MapTileDescriptionFragment
 import com.dleibovych.epictale.fragment.MapTileParamsFragment
 import com.dleibovych.epictale.fragment.MapTileTerrainFragment
-import com.dleibovych.epictale.fragment.WrapperFragment
 import com.github.chrisbanes.photoview.PhotoView
 import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
@@ -40,6 +39,7 @@ import com.dleibovych.epictale.util.RequestUtils
 import com.dleibovych.epictale.util.UiUtils
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import org.thetale.api.models.*
 
 import java.io.File
 import java.io.FileNotFoundException
@@ -53,11 +53,6 @@ import java.util.HashMap
 import java.util.Locale
 
 import javax.inject.Inject
-
-import org.thetale.api.models.Hero
-import org.thetale.api.models.HeroPosition
-import org.thetale.api.models.Place
-import org.thetale.api.models.Region
 
 class MapFragment : Fragment(), MapView {
 
@@ -140,6 +135,14 @@ class MapFragment : Fragment(), MapView {
         super.onStop()
 
         presenter.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (activity!!.isFinishing) {
+            presenter.dispose()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

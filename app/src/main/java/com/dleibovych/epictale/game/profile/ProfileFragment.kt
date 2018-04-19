@@ -1,8 +1,8 @@
-package com.dleibovych.epictale.fragment
+package com.dleibovych.epictale.game.profile
 
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -11,29 +11,20 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 
-import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.TheTaleApplication
-import com.dleibovych.epictale.api.ApiResponseCallback
-import com.dleibovych.epictale.api.request.AccountInfoRequest
-import com.dleibovych.epictale.api.response.AccountInfoResponse
-import com.dleibovych.epictale.util.PreferencesManager
-import com.dleibovych.epictale.util.UiUtils
+import com.dleibovych.epictale.game.di.GameComponentProvider
 
-import java.net.CookieManager
 import java.util.Comparator
 
 import javax.inject.Inject
 
-import okhttp3.OkHttpClient
+import org.thetale.api.models.AccountInfo
 
-class ProfileFragment : WrapperFragment() {
+class ProfileFragment : Fragment(), ProfileView {
 
-    @Inject lateinit var client: OkHttpClient
-    @Inject lateinit var manager: CookieManager
+    @Inject lateinit var presenter: ProfilePresenter
 
     private var rootView: View? = null
 
@@ -52,10 +43,11 @@ class ProfileFragment : WrapperFragment() {
     private var isTablePlacesHistoryCollapsed: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        (activity!!.application as TheTaleApplication)
-                .getApplicationComponent()
-                .inject(this)
+        (activity!!.application as GameComponentProvider)
+                .provideGameComponent()
+                ?.inject(this)
 
+        presenter.view = this
 
         rootView = inflater.inflate(R.layout.fragment_profile, container, false)
 
@@ -70,59 +62,39 @@ class ProfileFragment : WrapperFragment() {
         tablePlacesHistory = rootView!!.findViewById(R.id.profile_container_places_history)
         tablePlacesHistorySwitcher = rootView!!.findViewById(R.id.profile_container_places_history_switcher)
 
-        return wrapView(layoutInflater, rootView)
+        return rootView
     }
 
-    override fun refresh(isGlobal: Boolean) {
-        super.refresh(isGlobal)
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-        if (isGlobal) {
-            isTablePlacesHistoryCollapsed = true
-            isNarrowMode = true
-        }
+        presenter.view = null
+    }
 
-        val watchingAccountId = PreferencesManager.getWatchingAccountId()
-        val accountId = if (watchingAccountId == 0) PreferencesManager.getAccountId() else watchingAccountId
-        AccountInfoRequest(client, manager, accountId).execute(object : ApiResponseCallback<AccountInfoResponse> {
-            override fun processResponse(response: AccountInfoResponse) {
-                if (!isAdded) {
-                    return
-                }
+    override fun showAccountInfo(info: AccountInfo) {
+        textName!!.text = Html.fromHtml(getString(R.string.find_player_info_short, info.name))
+        textAffectGame!!.text = getString(if (info.permissions.canAffectGame) R.string.game_affect_true else R.string.game_affect_false)
+        textMight!!.text = Math.floor(info.might).toInt().toString()
+        textAchievementPoints!!.text = info.achievements.toString()
+        textCollectionItemsCount!!.text = info.collections.toString()
+        textReferralsCount!!.text = info.referrals.toString()
 
-                if (isGlobal) {
-                    tableRatings!!.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            if (tableRatings!!.width > 0) {
-                                val textRect = Rect()
-                                textRatingsDescription!!.paint.getTextBounds("M", 0, 1, textRect)
-                                isNarrowMode = tableRatings!!.width.toDouble() / textRect.width() < NARROWNESS_MULTIPLIER_THRESHOLD
+        fillRatings(info)
+        fillPlacesHistory(info)
+    }
 
-                                UiUtils.removeGlobalLayoutListener(tableRatings!!, this)
-                                if (!isNarrowMode) {
-                                    fillRatings(response)
-                                }
-                            }
-                        }
-                    })
-                }
+    override fun onStart() {
+        super.onStart()
+        presenter.start()
+    }
 
-                textName!!.text = Html.fromHtml(getString(R.string.find_player_info_short, response.name))
-                textAffectGame!!.text = getString(if (response.canAffectGame) R.string.game_affect_true else R.string.game_affect_false)
-                textMight!!.text = Math.floor(response.might).toInt().toString()
-                textAchievementPoints!!.text = response.achievementPoints.toString()
-                textCollectionItemsCount!!.text = response.collectionItemsCount.toString()
-                textReferralsCount!!.text = response.referralsCount.toString()
+    override fun onStop() {
+        super.onStop()
+        presenter.stop()
+    }
 
-                fillRatings(response)
-                fillPlacesHistory(response)
-
-                setMode(DataViewMode.DATA)
-            }
-
-            override fun processError(response: AccountInfoResponse) {
-                setError(response.errorMessage)
-            }
-        })
+    override fun showError() {
+//        setError(response.errorMessage)
     }
 
     private fun getTableRow(text1: CharSequence, text2: CharSequence?, text3: CharSequence): View {
@@ -133,7 +105,7 @@ class ProfileFragment : WrapperFragment() {
         return row
     }
 
-    private fun fillRatings(accountInfoResponse: AccountInfoResponse) {
+    private fun fillRatings(info: AccountInfo) {
         tableRatings!!.removeAllViews()
 
         val captionRatingValue: Spannable?
@@ -149,9 +121,8 @@ class ProfileFragment : WrapperFragment() {
         captionRatingPlace.setSpan(StyleSpan(Typeface.BOLD), 0, captionRatingPlace.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         tableRatings!!.addView(getTableRow(captionRatingName, captionRatingValue, captionRatingPlace))
 
-        for ((key, ratingItemInfo) in accountInfoResponse.ratings) {
+        for ((_, ratingItemInfo) in info.ratings) {
             layoutInflater!!.inflate(R.layout.item_profile_table_delimiter, tableRatings, true)
-            val value = key.getValue(ratingItemInfo.value)
             val place: String
             if (isNarrowMode) {
                 place = if (ratingItemInfo.value == 0.0)
@@ -164,11 +135,11 @@ class ProfileFragment : WrapperFragment() {
                 else
                     getString(R.string.profile_rating_item_place, ratingItemInfo.place)
             }
-            tableRatings!!.addView(getTableRow(ratingItemInfo.name, value, place))
+            tableRatings!!.addView(getTableRow(ratingItemInfo.name, ratingItemInfo.name, place))
         }
     }
 
-    private fun fillPlacesHistory(accountInfoResponse: AccountInfoResponse) {
+    private fun fillPlacesHistory(accountInfo: AccountInfo) {
         tablePlacesHistory!!.removeAllViews()
 
         val captionPlacesHistoryName = SpannableString(getString(R.string.profile_places_history_caption_name))
@@ -179,29 +150,29 @@ class ProfileFragment : WrapperFragment() {
         captionPlacesHistoryPlace.setSpan(StyleSpan(Typeface.BOLD), 0, captionPlacesHistoryPlace.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         tablePlacesHistory!!.addView(getTableRow(captionPlacesHistoryPlace, captionPlacesHistoryName, captionPlacesHistoryValue))
 
-        val size = accountInfoResponse.placesHistory.size
+        val size = accountInfo.places.size
         if (size > 0) {
-            accountInfoResponse.placesHistory.sortWith(Comparator { lhs, rhs ->
-                if (lhs.helpCount == rhs.helpCount) {
-                    lhs.name.compareTo(rhs.name, ignoreCase = true)
+            accountInfo.places.sortedWith(Comparator { lhs, rhs ->
+                if (lhs.count == rhs.count) {
+                    lhs.place.name.compareTo(rhs.place.name, ignoreCase = true)
                 } else {
-                    rhs.helpCount - lhs.helpCount
+                    (rhs.count - lhs.count).toInt()
                 }
             })
-            var lastCount = accountInfoResponse.placesHistory[0].helpCount
+            var lastCount = accountInfo.places[0].count
             for (i in 0 until size) {
-                val accountPlaceHistoryInfo = accountInfoResponse.placesHistory[i]
+                val accountPlaceHistoryInfo = accountInfo.places[i]
                 if (isTablePlacesHistoryCollapsed) {
-                    if (i >= PLACES_HISTORY_COUNT_POLITICS && accountPlaceHistoryInfo.helpCount < lastCount) {
+                    if (i >= PLACES_HISTORY_COUNT_POLITICS && accountPlaceHistoryInfo.count < lastCount) {
                         break
                     } else {
-                        lastCount = accountPlaceHistoryInfo.helpCount
+                        lastCount = accountPlaceHistoryInfo.count
                     }
                 }
 
                 layoutInflater!!.inflate(R.layout.item_profile_table_delimiter, tablePlacesHistory, true)
                 tablePlacesHistory!!.addView(getTableRow((i + 1).toString(),
-                        accountPlaceHistoryInfo.name, accountPlaceHistoryInfo.helpCount.toString()))
+                        accountPlaceHistoryInfo.place.name, accountPlaceHistoryInfo.count.toString()))
             }
         }
 
@@ -211,7 +182,15 @@ class ProfileFragment : WrapperFragment() {
             R.string.profile_places_history_collapse)
         tablePlacesHistorySwitcher!!.setOnClickListener { v ->
             isTablePlacesHistoryCollapsed = !isTablePlacesHistoryCollapsed
-            fillPlacesHistory(accountInfoResponse)
+            fillPlacesHistory(accountInfo)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (activity!!.isFinishing) {
+            presenter.dispose()
         }
     }
 
