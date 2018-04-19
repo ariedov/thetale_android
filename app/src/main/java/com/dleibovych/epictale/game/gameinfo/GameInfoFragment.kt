@@ -1,8 +1,6 @@
 package com.dleibovych.epictale.game.gameinfo
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -136,20 +134,22 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
     }
 
     override fun showGameInfo(info: GameInfo) {
+        val account = info.account!!
+
         if (lastKnownHealth == 0) {
-            lastKnownHealth = Math.round((450.0 + 50.0 * info.account.hero.base.level) / 4.0).toInt()
+            lastKnownHealth = Math.round((450.0 + 50.0 * account.hero.base.level) / 4.0).toInt()
         }
 
-        heroInfo.bind(info.account.hero.base)
-        stats.bind(info.account)
-        bindCompanion(info.account.hero.companion)
+        heroInfo.bind(account.hero.base)
+        stats.bind(account)
+        bindCompanion(account.hero.companion)
 
-        val action = info.account.hero.action
+        val action = account.hero.action
         progressAction!!.max = 1000
         progressAction!!.progress = (1000 * action.percents).toInt()
         textAction!!.text = GameInfoUtils.getActionString(activity, action)
 
-        val journal = info.account.hero.messages
+        val journal = account.hero.messages
         val journalSize = journal.size
         journalContainer!!.removeAllViews()
         for (i in journalSize - 1 downTo 0) {
@@ -197,19 +197,19 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
 
             HeroAction.IDLE.code -> setProgressActionInfo(getActionTimeString(Math.ceil(
                     (1 - action.percents)
-                            * Math.pow(0.75, GameInfoUtils.getArtifactEffectCount(info.account.hero, ArtifactEffect.ACTIVENESS).toDouble())
-                            * info.account.hero.base.level.toDouble()).toLong()))
+                            * Math.pow(0.75, GameInfoUtils.getArtifactEffectCount(account.hero, ArtifactEffect.ACTIVENESS).toDouble())
+                            * account.hero.base.level.toDouble()).toLong()))
 
             HeroAction.RESURRECTION.code -> setProgressActionInfo(getActionTimeString(Math.ceil(
                     (1 - action.percents)
-                            * 3.0 * Math.pow(0.75, GameInfoUtils.getArtifactEffectCount(info.account.hero, ArtifactEffect.ACTIVENESS).toDouble())
-                            * info.account.hero.base.level.toDouble()).toLong()))
+                            * 3.0 * Math.pow(0.75, GameInfoUtils.getArtifactEffectCount(account.hero, ArtifactEffect.ACTIVENESS).toDouble())
+                            * account.hero.base.level.toDouble()).toLong()))
 
             HeroAction.REST.code -> InfoPrerequisiteRequest(client, manager, {
                 val turnDelta = PreferencesManager.getTurnDelta()
                 var timeRest = Math.round(
-                        (info.account.hero.base.maxHealth - info.account.hero.base.health) / (// amount of health restored each turn
-                                info.account.hero.base.maxHealth / 30.0 * Math.pow(2.0, GameInfoUtils.getArtifactEffectCount(info.account.hero, ArtifactEffect.ENDURANCE).toDouble())) * turnDelta)
+                        (account.hero.base.maxHealth - account.hero.base.health) / (// amount of health restored each turn
+                                account.hero.base.maxHealth / 30.0 * Math.pow(2.0, GameInfoUtils.getArtifactEffectCount(account.hero, ArtifactEffect.ENDURANCE).toDouble())) * turnDelta)
                 timeRest = Math.round(timeRest.toDouble() / turnDelta) * turnDelta
                 setProgressActionInfo(getActionTimeApproximateString(if (timeRest < turnDelta) turnDelta.toLong() else timeRest))
             }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
@@ -221,11 +221,11 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
             else -> setProgressActionInfo(null)
         }
 
-        if (info.account.isOwn) {
+        if (account.isOwn) {
             actionHelp!!.visibility = View.VISIBLE
             actionHelp!!.isEnabled = false
             InfoPrerequisiteRequest(client, manager, {
-                actionHelp!!.isEnabled = info.account.energy!! > 0
+                actionHelp!!.isEnabled = account.energy!! > 0
             }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
                 override fun processError(response: InfoResponse) {
                     actionHelp!!.setErrorText(response.errorMessage)

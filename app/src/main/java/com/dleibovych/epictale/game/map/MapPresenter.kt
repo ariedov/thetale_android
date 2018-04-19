@@ -17,10 +17,10 @@ class MapPresenter(private val gameInfoProvider: GameInfoProvider,
     fun loadMap() {
         mapJob = launch(UI) {
             try {
-                val gameInfo = gameInfoProvider.loadInfo().await()
+                val gameInfo = gameInfoProvider.getInfo().await()
                 val mapVersion = mapVersionRegex.matchEntire(gameInfo.mapVersion)!!.groupValues[1]
                 val map = mapProvider.getMap(mapVersion.toInt()).await()
-                view?.drawMap(map.region, gameInfo.account.hero)
+                view?.drawMap(map.region, gameInfo.account!!.hero)
             } catch (e: Exception) {
                 view?.showError(e)
             }

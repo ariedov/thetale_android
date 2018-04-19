@@ -7,8 +7,8 @@ data class GameInfo(
         val turn: Turn,
         @SerializedName("game_state") val gameState: Int, // converts to enumeration
         @SerializedName("map_version") val mapVersion: String,
-        val account: AccountInfo,
-        val enemy: AccountInfo
+        val account: AccountInfo?,
+        val enemy: AccountInfo?
 )
 
 data class Turn(
