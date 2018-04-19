@@ -1,58 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-       tools:layout_width="match_parent"
-       tools:layout_height="match_parent"
-       tools:orientation="vertical"
-       tools:parentTag="android.widget.LinearLayout">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_height="match_parent"
+    tools:layout_width="match_parent"
+    tools:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/raceGender"
-                style="?android:attr/textAppearanceMedium"
+                android:id="@+id/level"
+                style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/game_additional_info"/>
+                android:background="@color/game_info_level_background"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textColor="@color/game_info_level_text"
+                tools:text="25"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/level"
-                    style="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/game_info_level_background"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:textColor="@color/game_info_level_text"/>
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
 
                 <TextView
                     android:id="@+id/name"
                     style="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black"
+                    tools:text="Suren"/>
 
+                <TextView
+                    android:id="@+id/raceGender"
+                    style="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/game_additional_info"
+                    tools:text="ork-male"/>
             </LinearLayout>
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/levelUp"
-            style="?android:attr/textAppearanceLarge"
+            style="?android:attr/textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -62,11 +64,11 @@
             android:background="@drawable/game_lvlup_background"
             android:includeFontPadding="false"
             android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
             android:paddingTop="4dp"
             android:text="@string/game_lvlup"
-            tools:ignore="RelativeOverlap"/>
+            tools:ignore="RelativeOverlap" />
 
     </RelativeLayout>
 
@@ -77,14 +79,13 @@
         android:layout_marginTop="16dp"
         android:stretchColumns="1">
 
-        <TableRow
-            android:gravity="center_vertical">
+        <TableRow android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="@dimen/game_info_icon_size"
                 android:layout_height="@dimen/game_info_icon_size"
                 android:contentDescription="@string/game_info_health"
-                android:src="@drawable/ic_health"/>
+                android:src="@drawable/ic_health" />
 
             <ProgressBar
                 android:id="@+id/healthProgress"
@@ -93,7 +94,7 @@
                 android:layout_height="@dimen/game_info_bar_height"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
-                android:progressDrawable="@drawable/game_info_health"/>
+                android:progressDrawable="@drawable/game_info_health" />
 
             <TextView
                 android:id="@+id/healthText"
@@ -102,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:includeFontPadding="false"
-                android:textColor="@color/common_text"/>
+                android:textColor="@color/common_text" />
 
         </TableRow>
 
@@ -114,7 +115,7 @@
                 android:layout_width="@dimen/game_info_icon_size"
                 android:layout_height="@dimen/game_info_icon_size"
                 android:contentDescription="@string/game_info_experience"
-                android:src="@drawable/ic_experience"/>
+                android:src="@drawable/ic_experience" />
 
             <ProgressBar
                 android:id="@+id/experienceProgress"
@@ -123,7 +124,7 @@
                 android:layout_height="@dimen/game_info_bar_height"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
-                android:progressDrawable="@drawable/game_info_experience"/>
+                android:progressDrawable="@drawable/game_info_experience" />
 
             <TextView
                 android:id="@+id/experienceText"
@@ -132,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:includeFontPadding="false"
-                android:textColor="@color/common_text"/>
+                android:textColor="@color/common_text" />
 
         </TableRow>
 
