@@ -97,8 +97,8 @@ class ProfileFragment : Fragment(), ProfileView {
 //        setError(response.errorMessage)
     }
 
-    private fun getTableRow(text1: CharSequence, text2: CharSequence?, text3: CharSequence): View {
-        val row = layoutInflater!!.inflate(R.layout.item_profile_table, null)
+    private fun getTableRow(parent: ViewGroup, text1: CharSequence, text2: CharSequence?, text3: CharSequence): View {
+        val row = layoutInflater!!.inflate(R.layout.item_profile_table, parent, false)
         (row.findViewById<View>(R.id.item_profile_table_text_1) as TextView).text = text1
         (row.findViewById<View>(R.id.item_profile_table_text_2) as TextView).text = text2
         (row.findViewById<View>(R.id.item_profile_table_text_3) as TextView).text = text3
@@ -119,7 +119,7 @@ class ProfileFragment : Fragment(), ProfileView {
         captionRatingName.setSpan(StyleSpan(Typeface.BOLD), 0, captionRatingName.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val captionRatingPlace = SpannableString(getString(R.string.profile_rating_caption_place))
         captionRatingPlace.setSpan(StyleSpan(Typeface.BOLD), 0, captionRatingPlace.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tableRatings!!.addView(getTableRow(captionRatingName, captionRatingValue, captionRatingPlace))
+        tableRatings!!.addView(getTableRow(tableRatings!!, captionRatingName, captionRatingValue, captionRatingPlace))
 
         for ((_, ratingItemInfo) in info.ratings) {
             layoutInflater!!.inflate(R.layout.item_profile_table_delimiter, tableRatings, true)
@@ -135,7 +135,7 @@ class ProfileFragment : Fragment(), ProfileView {
                 else
                     getString(R.string.profile_rating_item_place, ratingItemInfo.place)
             }
-            tableRatings!!.addView(getTableRow(ratingItemInfo.name, ratingItemInfo.name, place))
+            tableRatings!!.addView(getTableRow(tableRatings!!, ratingItemInfo.name, ratingItemInfo.name, place))
         }
     }
 
@@ -148,7 +148,7 @@ class ProfileFragment : Fragment(), ProfileView {
         captionPlacesHistoryValue.setSpan(StyleSpan(Typeface.BOLD), 0, captionPlacesHistoryValue.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val captionPlacesHistoryPlace = SpannableString(getString(R.string.profile_places_history_caption_place))
         captionPlacesHistoryPlace.setSpan(StyleSpan(Typeface.BOLD), 0, captionPlacesHistoryPlace.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tablePlacesHistory!!.addView(getTableRow(captionPlacesHistoryPlace, captionPlacesHistoryName, captionPlacesHistoryValue))
+        tablePlacesHistory!!.addView(getTableRow(tablePlacesHistory!!, captionPlacesHistoryPlace, captionPlacesHistoryName, captionPlacesHistoryValue))
 
         val size = accountInfo.places.size
         if (size > 0) {
@@ -171,7 +171,7 @@ class ProfileFragment : Fragment(), ProfileView {
                 }
 
                 layoutInflater!!.inflate(R.layout.item_profile_table_delimiter, tablePlacesHistory, true)
-                tablePlacesHistory!!.addView(getTableRow((i + 1).toString(),
+                tablePlacesHistory!!.addView(getTableRow(tablePlacesHistory!!, (i + 1).toString(),
                         accountPlaceHistoryInfo.place.name, accountPlaceHistoryInfo.count.toString()))
             }
         }
