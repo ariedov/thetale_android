@@ -6,7 +6,6 @@ import com.dleibovych.epictale.fragment.ChatFragment;
 import com.dleibovych.epictale.fragment.FindPlayerFragment;
 import com.dleibovych.epictale.game.GameFragment;
 import com.dleibovych.epictale.game.map.MapFragment;
-import com.dleibovych.epictale.fragment.SettingsFragment;
 
 /**
 * @author Hamster
@@ -20,7 +19,6 @@ public enum DrawerItem {
     CHAT(R.id.drawer_item_chat, R.string.drawer_title_chat, ChatFragment.class, R.menu.main),
     SITE(R.id.drawer_item_site),
     FIND_PLAYER(R.id.drawer_item_find_player, R.string.drawer_title_find_player, FindPlayerFragment.class, R.menu.empty),
-    SETTINGS(R.id.drawer_item_settings, R.string.drawer_title_settings, SettingsFragment.class, R.menu.empty),
     LOGOUT(R.id.drawer_item_logout),
     ABOUT(R.id.drawer_item_about),
     ;
@@ -31,7 +29,7 @@ public enum DrawerItem {
     private final String fragmentTag;
     private final int menuResId;
 
-    private DrawerItem(final int viewResId, final int titleResId, final Class<? extends Fragment> fragmentClass, final int menuResId) {
+    DrawerItem(final int viewResId, final int titleResId, final Class<? extends Fragment> fragmentClass, final int menuResId) {
         this.viewResId = viewResId;
         this.titleResId = titleResId;
         this.fragmentClass = fragmentClass;
@@ -39,7 +37,7 @@ public enum DrawerItem {
         this.menuResId = menuResId;
     }
 
-    private DrawerItem(final int viewResId) {
+    DrawerItem(final int viewResId) {
         this.viewResId = viewResId;
         this.titleResId = 0;
         this.fragmentClass = null;
