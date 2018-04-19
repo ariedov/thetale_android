@@ -3,8 +3,8 @@ package com.dleibovych.epictale.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.CardRarity;
-import com.dleibovych.epictale.api.dictionary.CardType;
+import org.thetale.api.enumerations.CardRarity;
+import org.thetale.api.enumerations.CardType;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -26,7 +26,7 @@ public class CardInfo implements Comparable<CardInfo>, Parcelable {
         id = json.getInt("uid");
         type = ObjectUtils.getEnumForCode(CardType.class, json.getInt("type"));
         rarity = ObjectUtils.getEnumForCode(CardRarity.class, json.getInt("rarity"));
-        name = json.getString("name");
+        name = json.getString("effectName");
         isTradable = json.getBoolean("auction");
     }
 

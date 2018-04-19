@@ -22,10 +22,10 @@ import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest;
-import com.dleibovych.epictale.api.dictionary.Action;
-import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
-import com.dleibovych.epictale.api.dictionary.ArtifactType;
-import com.dleibovych.epictale.api.dictionary.EquipmentType;
+import org.thetale.api.enumerations.Action;
+import org.thetale.api.enumerations.ArtifactEffect;
+import org.thetale.api.enumerations.ArtifactType;
+import org.thetale.api.enumerations.EquipmentType;
 import com.dleibovych.epictale.api.model.ArtifactInfo;
 import com.dleibovych.epictale.api.request.AbilityUseRequest;
 import com.dleibovych.epictale.api.request.GameInfoRequest;
@@ -33,7 +33,6 @@ import com.dleibovych.epictale.api.response.CommonResponse;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.api.response.InfoResponse;
 import com.dleibovych.epictale.util.DialogUtils;
-import com.dleibovych.epictale.util.GameInfoUtils;
 import com.dleibovych.epictale.util.ObjectUtils;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.RequestUtils;
@@ -132,7 +131,7 @@ public class EquipmentFragment extends WrapperFragment {
                 } else {
                     final Map<ArtifactEffect, Integer> effects = ObjectUtils.getItemsCountList(
                             equipmentEffectsList,
-                            (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+                            (lhs, rhs) -> lhs.getEffectName().compareTo(rhs.getEffectName()));
                     final SpannableStringBuilder effectsStringBuilder = new SpannableStringBuilder();
                     boolean first = true;
                     for (final Map.Entry<ArtifactEffect, Integer> entry : effects.entrySet()) {
@@ -142,7 +141,7 @@ public class EquipmentFragment extends WrapperFragment {
                             effectsStringBuilder.append("\n");
                         }
                         final ArtifactEffect effect = entry.getKey();
-                        effectsStringBuilder.append(UiUtils.getInfoItem(effect.getName(), effect.getDescription()));
+                        effectsStringBuilder.append(UiUtils.getInfoItem(effect.getEffectName(), effect.getDescription()));
                         if (entry.getValue() != 1) {
                             effectsStringBuilder.append(getString(R.string.common_item_count, entry.getValue()));
                         }

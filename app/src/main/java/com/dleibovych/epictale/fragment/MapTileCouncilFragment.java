@@ -62,11 +62,11 @@ public class MapTileCouncilFragment extends TabbedDialogTabFragment {
             stringBuilder
                     .append(name)
                     .append(", ")
-                    .append(councilMember.gender.getName())
+                    .append(councilMember.gender.getGenderName())
                     .append("-")
-                    .append(councilMember.race.getName())
+                    .append(councilMember.race.getRaceName())
                     .append(", ")
-                    .append(councilMember.profession.getName())
+                    .append(councilMember.profession.getProfessionName())
                     .append("-")
                     .append(councilMember.proficiencyLevel.getCode())
                     .append("\n");

@@ -22,7 +22,7 @@ import java.util.Map;
 public class ObjectUtils {
 
     private static final String METHOD_GET_CODE = "getCode";
-    private static final String METHOD_GET_NAME = "getName";
+    private static final String METHOD_GET_NAME = "getEffectName";
 
     private static final Map<Class<?>, Map<?, ?>> codeToEnumCache = new HashMap<>();
     private static final Map<Class<?>, Map<?, ?>> nameToEnumCache = new HashMap<>();

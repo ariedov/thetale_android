@@ -8,8 +8,8 @@ import android.util.Pair;
 
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
-import com.dleibovych.epictale.api.dictionary.Action;
-import com.dleibovych.epictale.api.dictionary.MapStyle;
+import org.thetale.api.enumerations.Action;
+import org.thetale.api.enumerations.MapStyle;
 import com.dleibovych.epictale.game.GameFragment;
 
 import net.grandcentrix.tray.TrayPreferences;
@@ -770,7 +770,7 @@ public class PreferencesManager
     {
       final JSONObject historyItem = new JSONObject();
       historyItem.put("id", id);
-      historyItem.put("name", name);
+      historyItem.put("effectName", name);
 
       history.put(historyItem);
     } catch (JSONException ignored)
@@ -817,7 +817,7 @@ public class PreferencesManager
       try
       {
         final JSONObject historyItem = history.getJSONObject(i);
-        result.add(Pair.create(historyItem.getInt("id"), historyItem.getString("name")));
+        result.add(Pair.create(historyItem.getInt("id"), historyItem.getString("effectName")));
       } catch (JSONException ignored)
       {
         // do nothing

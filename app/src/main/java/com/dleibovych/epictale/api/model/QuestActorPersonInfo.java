@@ -3,9 +3,9 @@ package com.dleibovych.epictale.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.Gender;
-import com.dleibovych.epictale.api.dictionary.Profession;
-import com.dleibovych.epictale.api.dictionary.Race;
+import org.thetale.api.enumerations.Gender;
+import org.thetale.api.enumerations.Profession;
+import org.thetale.api.enumerations.Race;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class QuestActorPersonInfo implements Parcelable {
 
     public QuestActorPersonInfo(final JSONObject json) throws JSONException {
         id = json.getInt("id");
-        name = json.getString("name");
+        name = json.getString("effectName");
         race = ObjectUtils.getEnumForCode(Race.class, json.getInt("race"));
         gender = ObjectUtils.getEnumForCode(Gender.class, json.getInt("gender"));
         profession = ObjectUtils.getEnumForCode(Profession.class, json.getInt("profession"));

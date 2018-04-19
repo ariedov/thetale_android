@@ -55,8 +55,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             style="?android:attr/textAppearanceLarge"
-                            android:layout_marginLeft="8dp"
-                            android:textColor="@color/common_link"/>
+                            android:layout_marginStart="8dp"
+                            android:textColor="@android:color/black"/>
 
                     </LinearLayout>
 

@@ -10,7 +10,7 @@ import android.graphics.RectF
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
-import com.dleibovych.epictale.api.dictionary.MapCellWindSpeed
+import org.thetale.api.enumerations.MapCellWindSpeed
 import com.dleibovych.epictale.api.model.MapCellTerrainInfo
 import org.thetale.api.models.Region
 

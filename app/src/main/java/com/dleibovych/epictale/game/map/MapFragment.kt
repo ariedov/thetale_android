@@ -27,8 +27,8 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.game.MainActivity
 import com.dleibovych.epictale.api.CommonResponseCallback
 import com.dleibovych.epictale.api.HttpMethod
-import com.dleibovych.epictale.api.dictionary.MapCellType
-import com.dleibovych.epictale.api.dictionary.MapStyle
+import org.thetale.api.enumerations.MapCellType
+import org.thetale.api.enumerations.MapStyle
 import com.dleibovych.epictale.api.request.MapCellRequest
 import com.dleibovych.epictale.api.request.MapTerrainRequest
 import com.dleibovych.epictale.api.response.MapCellResponse
@@ -242,7 +242,7 @@ class MapFragment : WrapperFragment(), MapView {
         menuMapModification = UiUtils.getMenuItem(activity, R.id.action_map_modification)
         updateMenuMapModificationVisibility()
 
-        updateMenuItemTitle(R.id.action_map_style, getString(R.string.map_style, PreferencesManager.getMapStyle().getName()))
+        updateMenuItemTitle(R.id.action_map_style, getString(R.string.map_style, PreferencesManager.getMapStyle().styleName))
         updateMenuItemTitle(R.id.action_map_modification, getString(R.string.map_modification, mapModification!!.name))
     }
 
@@ -375,7 +375,7 @@ class MapFragment : WrapperFragment(), MapView {
         mapView!!.setImageBitmap(null)
 
         val mapStyle = PreferencesManager.getMapStyle()
-        updateMenuItemTitle(R.id.action_map_style, getString(R.string.map_style, mapStyle.getName()))
+        updateMenuItemTitle(R.id.action_map_style, getString(R.string.map_style, mapStyle.styleName))
 
         updateMenuItemTitle(R.id.action_map_modification, getString(R.string.map_modification, mapModification!!.name))
 

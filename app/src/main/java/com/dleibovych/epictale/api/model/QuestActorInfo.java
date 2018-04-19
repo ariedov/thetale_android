@@ -3,7 +3,7 @@ package com.dleibovych.epictale.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.QuestActorType;
+import org.thetale.api.enumerations.QuestActorType;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -23,7 +23,7 @@ public class QuestActorInfo implements Parcelable {
     public final QuestActorSpendingInfo spendingInfo;
 
     public QuestActorInfo(final JSONObject json) throws JSONException {
-        name = json.getString("name");
+        name = json.getString("effectName");
         type = ObjectUtils.getEnumForCode(QuestActorType.class, json.getInt("type"));
         switch(type) {
             case PLACE:

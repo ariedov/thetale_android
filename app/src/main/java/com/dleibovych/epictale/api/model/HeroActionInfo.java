@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.HeroAction;
+import org.thetale.api.enumerations.HeroAction;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;

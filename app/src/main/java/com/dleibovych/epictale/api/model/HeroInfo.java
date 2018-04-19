@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.EquipmentType;
-import com.dleibovych.epictale.api.dictionary.Habit;
+import org.thetale.api.enumerations.EquipmentType;
+import org.thetale.api.enumerations.Habit;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONArray;
@@ -101,7 +101,7 @@ public class HeroInfo {
         habits = new HashMap<>(Habit.values().length);
         final JSONObject habitsJson = json.getJSONObject("habits");
         for(final Habit habit : Habit.values()) {
-            habits.put(habit, ObjectUtils.getModelFromJson(HabitInfo.class, habitsJson.getJSONObject(habit.getName())));
+            habits.put(habit, ObjectUtils.getModelFromJson(HabitInfo.class, habitsJson.getJSONObject(habit.getHabitName())));
         }
 
         final JSONArray questsJson = json.getJSONObject("quests").getJSONArray("quests");

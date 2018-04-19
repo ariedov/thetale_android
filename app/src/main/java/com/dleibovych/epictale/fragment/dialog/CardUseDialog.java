@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
-import com.dleibovych.epictale.api.dictionary.CardTargetType;
+import org.thetale.api.enumerations.CardTargetType;
 import com.dleibovych.epictale.api.model.CardInfo;
 import com.dleibovych.epictale.api.model.CouncilMemberInfo;
 import com.dleibovych.epictale.api.model.PlaceInfo;

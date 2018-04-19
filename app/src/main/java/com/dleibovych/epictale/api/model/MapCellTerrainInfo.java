@@ -1,11 +1,11 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.MapCellDangerLevel;
-import com.dleibovych.epictale.api.dictionary.MapCellHumidity;
-import com.dleibovych.epictale.api.dictionary.MapCellTemperature;
-import com.dleibovych.epictale.api.dictionary.MapCellTerrain;
-import com.dleibovych.epictale.api.dictionary.MapCellWindDirection;
-import com.dleibovych.epictale.api.dictionary.MapCellWindSpeed;
+import org.thetale.api.enumerations.MapCellDangerLevel;
+import org.thetale.api.enumerations.MapCellHumidity;
+import org.thetale.api.enumerations.MapCellTemperature;
+import org.thetale.api.enumerations.MapCellTerrain;
+import org.thetale.api.enumerations.MapCellWindDirection;
+import org.thetale.api.enumerations.MapCellWindSpeed;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -12,7 +12,7 @@ import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
-import com.dleibovych.epictale.api.dictionary.Action;
+import org.thetale.api.enumerations.Action;
 import com.dleibovych.epictale.api.model.DiaryEntry;
 import com.dleibovych.epictale.api.request.AbilityUseRequest;
 import com.dleibovych.epictale.api.request.GameInfoRequest;

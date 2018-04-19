@@ -1,9 +1,9 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.Archetype;
-import com.dleibovych.epictale.api.dictionary.MapCellTerrain;
-import com.dleibovych.epictale.api.dictionary.MonsterType;
-import com.dleibovych.epictale.api.dictionary.Skill;
+import org.thetale.api.enumerations.Archetype;
+import org.thetale.api.enumerations.MapCellTerrain;
+import org.thetale.api.enumerations.MonsterType;
+import org.thetale.api.enumerations.Skill;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import java.util.ArrayList;

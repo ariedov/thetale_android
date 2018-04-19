@@ -20,7 +20,7 @@ import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
-import com.dleibovych.epictale.api.dictionary.CardRarity;
+import org.thetale.api.enumerations.CardRarity;
 import com.dleibovych.epictale.api.model.CardInfo;
 import com.dleibovych.epictale.api.request.CombineCardsRequest;
 import com.dleibovych.epictale.api.request.GameInfoRequest;

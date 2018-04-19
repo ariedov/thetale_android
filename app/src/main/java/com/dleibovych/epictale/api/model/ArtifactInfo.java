@@ -3,9 +3,9 @@ package com.dleibovych.epictale.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
-import com.dleibovych.epictale.api.dictionary.ArtifactRarity;
-import com.dleibovych.epictale.api.dictionary.ArtifactType;
+import org.thetale.api.enumerations.ArtifactEffect;
+import org.thetale.api.enumerations.ArtifactRarity;
+import org.thetale.api.enumerations.ArtifactType;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -31,7 +31,7 @@ public class ArtifactInfo implements Parcelable {
     public final boolean isEquippable;
 
     public ArtifactInfo(final JSONObject json) throws JSONException {
-        name = json.getString("name");
+        name = json.getString("effectName");
         type = ObjectUtils.getEnumForCode(ArtifactType.class, json.getInt("type"));
         if(type == ArtifactType.JUNK) {
             powerPhysical = 0;

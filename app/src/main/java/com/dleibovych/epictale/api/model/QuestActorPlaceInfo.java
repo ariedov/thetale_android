@@ -17,7 +17,7 @@ public class QuestActorPlaceInfo implements Parcelable {
 
     public QuestActorPlaceInfo(final JSONObject json) throws JSONException {
         id = json.getInt("id");
-        name = json.getString("name");
+        name = json.getString("effectName");
     }
 
     // Parcelable stuff

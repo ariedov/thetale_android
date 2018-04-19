@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.Gender;
-import com.dleibovych.epictale.api.dictionary.Race;
+import org.thetale.api.enumerations.Gender;
+import org.thetale.api.enumerations.Race;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -37,7 +37,7 @@ public class HeroBasicInfo {
     public final int bagItemsCount;
 
     public HeroBasicInfo(final JSONObject json) throws JSONException {
-        name = json.getString("name");
+        name = json.getString("effectName");
         race = ObjectUtils.getEnumForCode(Race.class, json.getInt("race"));
         gender = ObjectUtils.getEnumForCode(Gender.class, json.getInt("gender"));
         destinyPoints = json.getInt("destiny_points");

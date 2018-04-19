@@ -1,8 +1,6 @@
 package com.dleibovych.epictale.service.autohelper;
 
-import com.dleibovych.epictale.api.dictionary.HeroAction;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
-import com.dleibovych.epictale.util.PreferencesManager;
 
 /**
  * @author Hamster

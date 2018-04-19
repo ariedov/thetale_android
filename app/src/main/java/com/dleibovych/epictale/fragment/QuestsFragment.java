@@ -20,8 +20,7 @@ import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
-import com.dleibovych.epictale.api.CommonResponseCallback;
-import com.dleibovych.epictale.api.dictionary.QuestType;
+import org.thetale.api.enumerations.QuestType;
 import com.dleibovych.epictale.api.model.QuestActorInfo;
 import com.dleibovych.epictale.api.model.QuestChoiceInfo;
 import com.dleibovych.epictale.api.model.QuestStepInfo;
@@ -213,13 +212,13 @@ public class QuestsFragment extends WrapperFragment {
                     }
                 }
 
-                // add town name to quest person actors
+                // add town effectName to quest person actors
                 if(actorNames.size() > 0) {
 //                    new MapRequest(response.mapVersion).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
 //                        @Override
 //                        public void processResponse(MapResponse response) {
 //                            for (final Map.Entry<TextView, Integer> actorNameEntry : actorNames.entrySet()) {
-//                                final Spannable placeText = new SpannableString(String.format(" (%s)", response.places.get(actorNameEntry.getValue()).name));
+//                                final Spannable placeText = new SpannableString(String.format(" (%s)", response.places.get(actorNameEntry.getValue()).effectName));
 //                                placeText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.game_additional_info)),
 //                                        0, placeText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //

@@ -3,7 +3,7 @@ package com.dleibovych.epictale.api.request;
 import com.dleibovych.epictale.api.AbstractApiRequest;
 import com.dleibovych.epictale.api.ApiResponseCallback;
 import com.dleibovych.epictale.api.HttpMethod;
-import com.dleibovych.epictale.api.dictionary.ThirdPartyAuthState;
+import org.thetale.api.enumerations.ThirdPartyAuthState;
 import com.dleibovych.epictale.api.response.ThirdPartyAuthStateResponse;
 import com.dleibovych.epictale.util.PreferencesManager;
 

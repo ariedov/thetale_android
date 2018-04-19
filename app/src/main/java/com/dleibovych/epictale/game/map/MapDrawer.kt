@@ -14,7 +14,7 @@ import com.bumptech.glide.request.transition.Transition
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
-import com.dleibovych.epictale.api.dictionary.MapStyle
+import org.thetale.api.enumerations.MapStyle
 import com.dleibovych.epictale.api.model.SpriteTileInfo
 import com.dleibovych.epictale.api.response.MapTerrainResponse
 import com.dleibovych.epictale.util.PreferencesManager

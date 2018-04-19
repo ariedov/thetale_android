@@ -3,10 +3,10 @@ package com.dleibovych.epictale.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.Gender;
-import com.dleibovych.epictale.api.dictionary.Profession;
-import com.dleibovych.epictale.api.dictionary.ProficiencyLevel;
-import com.dleibovych.epictale.api.dictionary.Race;
+import org.thetale.api.enumerations.Gender;
+import org.thetale.api.enumerations.Profession;
+import org.thetale.api.enumerations.ProficiencyLevel;
+import org.thetale.api.enumerations.Race;
 
 /**
  * @author Hamster

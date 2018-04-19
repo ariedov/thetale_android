@@ -3,7 +3,7 @@ package com.dleibovych.epictale.api.cache.prerequisite;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.dleibovych.epictale.api.dictionary.Action;
+import org.thetale.api.enumerations.Action;
 import com.dleibovych.epictale.api.request.InfoRequest;
 import com.dleibovych.epictale.api.response.InfoResponse;
 import com.dleibovych.epictale.util.PreferencesManager;

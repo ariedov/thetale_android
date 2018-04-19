@@ -171,7 +171,7 @@
     <string name="map_style">Карта: %s</string>
     <string name="map_style_caption">Карта</string>
 
-    <!--<plurals name="map_council_member_friends">-->
+    <!--<plurals effectName="map_council_member_friends">-->
         <!--<item quantity="one">%d соратник</item>-->
         <!--<item quantity="few">%d соратника</item>-->
         <!--<item quantity="many">%d соратников</item>-->
@@ -179,7 +179,7 @@
     <string name="map_council_member_friends_one">%d соратник</string>
     <string name="map_council_member_friends_few">%d соратника</string>
     <string name="map_council_member_friends_many">%d соратников</string>
-    <!--<plurals name="map_council_member_enemies">-->
+    <!--<plurals effectName="map_council_member_enemies">-->
         <!--<item quantity="one">%d противник</item>-->
         <!--<item quantity="few">%d противника</item>-->
         <!--<item quantity="many">%d противников</item>-->
@@ -195,7 +195,7 @@
     <string name="notification_new_messages">Новых сообщений: %d</string>
     <string name="notification_quest_choice">Доступен выбор в квесте</string>
 
-    <!--<plurals name="notification_lines">-->
+    <!--<plurals effectName="notification_lines">-->
         <!--<item quantity="one">%d событие</item>-->
         <!--<item quantity="few">%d события</item>-->
         <!--<item quantity="many">%d событий</item>-->

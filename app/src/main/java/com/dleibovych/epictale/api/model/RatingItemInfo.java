@@ -14,7 +14,7 @@ public class RatingItemInfo {
     public final double value;
 
     public RatingItemInfo(final JSONObject json) throws JSONException {
-        name = json.getString("name");
+        name = json.getString("effectName");
         place = json.getInt("place");
         value = json.getDouble("value");
     }

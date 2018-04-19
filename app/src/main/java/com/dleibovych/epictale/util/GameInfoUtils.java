@@ -2,8 +2,7 @@ package com.dleibovych.epictale.util;
 
 import android.content.Context;
 
-import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
+import org.thetale.api.enumerations.ArtifactEffect;
 import com.dleibovych.epictale.api.model.EnergyInfo;
 import com.dleibovych.epictale.api.model.HeroBasicInfo;
 import com.dleibovych.epictale.api.model.QuestStepInfo;

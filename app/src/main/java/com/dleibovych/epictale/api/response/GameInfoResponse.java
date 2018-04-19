@@ -1,8 +1,8 @@
 package com.dleibovych.epictale.api.response;
 
 import com.dleibovych.epictale.api.AbstractApiResponse;
-import com.dleibovych.epictale.api.dictionary.GameState;
-import com.dleibovych.epictale.api.dictionary.HeroMode;
+import org.thetale.api.enumerations.GameState;
+import org.thetale.api.enumerations.HeroMode;
 import com.dleibovych.epictale.api.model.AccountInfo;
 import com.dleibovych.epictale.api.model.TurnInfo;
 import com.dleibovych.epictale.util.ObjectUtils;

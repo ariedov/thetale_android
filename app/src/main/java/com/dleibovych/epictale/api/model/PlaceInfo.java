@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.PlaceSpecialization;
+import org.thetale.api.enumerations.PlaceSpecialization;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -22,7 +22,7 @@ public class PlaceInfo {
 
     public PlaceInfo(final JSONObject json) throws JSONException {
         id = json.getInt("id");
-        name = json.getString("name");
+        name = json.getString("effectName");
         x = json.getJSONObject("position").getInt("x");
         y = json.getJSONObject("position").getInt("y");
         size = json.getInt("size");

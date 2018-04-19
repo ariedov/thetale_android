@@ -18,7 +18,7 @@ import com.dleibovych.epictale.DataViewMode;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.api.ApiResponseCallback;
-import com.dleibovych.epictale.api.dictionary.RatingItem;
+import org.thetale.api.enumerations.RatingItem;
 import com.dleibovych.epictale.api.model.AccountPlaceHistoryInfo;
 import com.dleibovych.epictale.api.model.RatingItemInfo;
 import com.dleibovych.epictale.api.request.AccountInfoRequest;

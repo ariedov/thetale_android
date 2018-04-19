@@ -14,11 +14,8 @@ import android.view.ViewGroup;
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
 import com.dleibovych.epictale.game.MainActivity;
-import com.dleibovych.epictale.api.CommonResponseCallback;
-import com.dleibovych.epictale.api.cache.prerequisite.GameInfoPrerequisiteRequest;
 import com.dleibovych.epictale.api.model.QuestActorInfo;
 import com.dleibovych.epictale.util.PreferencesManager;
-import com.dleibovych.epictale.util.RequestUtils;
 import com.dleibovych.epictale.util.UiUtils;
 
 import java.net.CookieManager;
@@ -65,11 +62,11 @@ public class QuestActorDialog extends BaseDialog {
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_name),
                         UiUtils.getInfoItem(getString(R.string.quest_actor_name), questActorInfo.personInfo.name));
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_race),
-                        UiUtils.getInfoItem(getString(R.string.quest_actor_race), questActorInfo.personInfo.race.getName()));
+                        UiUtils.getInfoItem(getString(R.string.quest_actor_race), questActorInfo.personInfo.race.getRaceName()));
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_gender),
-                        UiUtils.getInfoItem(getString(R.string.quest_actor_gender), questActorInfo.personInfo.gender.getName()));
+                        UiUtils.getInfoItem(getString(R.string.quest_actor_gender), questActorInfo.personInfo.gender.getGenderName()));
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_profession),
-                        UiUtils.getInfoItem(getString(R.string.quest_actor_profession), questActorInfo.personInfo.profession.getName()));
+                        UiUtils.getInfoItem(getString(R.string.quest_actor_profession), questActorInfo.personInfo.profession.getProfessionName()));
                 UiUtils.setText(view.findViewById(R.id.dialog_quest_actor_person_mastery),
                         UiUtils.getInfoItem(getString(R.string.quest_actor_mastery), questActorInfo.personInfo.mastery));
 //                new GameInfoPrerequisiteRequest(client, manager, () -> new MapRequest(PreferencesManager.getMapVersion()).execute(RequestUtils.wrapCallback(new CommonResponseCallback<MapResponse, String>() {
@@ -78,7 +75,7 @@ public class QuestActorDialog extends BaseDialog {
 //                        setPlaceLink(
 //                                view.findViewById(R.id.dialog_quest_actor_person_place),
 //                                getString(R.string.quest_actor_place),
-//                                response.places.get(questActorInfo.personInfo.placeId).name,
+//                                response.places.get(questActorInfo.personInfo.placeId).effectName,
 //                                questActorInfo.personInfo.placeId);
 //                    }
 //
@@ -120,7 +117,7 @@ public class QuestActorDialog extends BaseDialog {
                 break;
         }
 
-        return wrapView(inflater, view, questActorInfo.type.getName());
+        return wrapView(inflater, view, questActorInfo.type.getTypeName());
     }
 
     private void setPlaceLink(final View view, final CharSequence caption, final CharSequence info, final int placeId) {

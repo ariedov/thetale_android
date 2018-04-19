@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.api.response;
 
 import com.dleibovych.epictale.api.AbstractApiResponse;
-import com.dleibovych.epictale.api.dictionary.RatingItem;
+import org.thetale.api.enumerations.RatingItem;
 import com.dleibovych.epictale.api.model.AccountPlaceHistoryInfo;
 import com.dleibovych.epictale.api.model.RatingItemInfo;
 import com.dleibovych.epictale.util.ObjectUtils;
@@ -42,7 +42,7 @@ public class AccountInfoResponse extends AbstractApiResponse {
     protected void parseData(JSONObject data) throws JSONException {
         accountId = data.getInt("id");
         isRegistered = data.getBoolean("registered");
-        name = data.getString("name");
+        name = data.getString("effectName");
         heroId = data.getInt("hero_id");
         might = data.getDouble("might");
         achievementPoints = data.getInt("achievements");

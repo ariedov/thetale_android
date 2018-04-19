@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.RoadDirection;
+import org.thetale.api.enumerations.RoadDirection;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;

@@ -1,7 +1,7 @@
 package com.dleibovych.epictale.api.response;
 
 import com.dleibovych.epictale.api.AbstractApiResponse;
-import com.dleibovych.epictale.api.dictionary.ThirdPartyAuthState;
+import org.thetale.api.enumerations.ThirdPartyAuthState;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;

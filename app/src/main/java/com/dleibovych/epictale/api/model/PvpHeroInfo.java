@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.PvpAbility;
+import org.thetale.api.enumerations.PvpAbility;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -3,7 +3,7 @@ package com.dleibovych.epictale.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.Race;
+import org.thetale.api.enumerations.Race;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;
@@ -26,7 +26,7 @@ public class MapPlaceInfo implements Parcelable {
         id = json.getInt("id");
         size = json.getInt("size");
         race = ObjectUtils.getEnumForCode(Race.class, json.getInt("race"));
-        name = json.getString("name");
+        name = json.getString("effectName");
         x = json.getJSONObject("pos").getInt("x");
         y = json.getJSONObject("pos").getInt("y");
     }

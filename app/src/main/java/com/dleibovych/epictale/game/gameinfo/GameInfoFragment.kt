@@ -20,10 +20,10 @@ import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest
-import com.dleibovych.epictale.api.dictionary.Action
-import com.dleibovych.epictale.api.dictionary.ArtifactEffect
-import com.dleibovych.epictale.api.dictionary.Habit
-import com.dleibovych.epictale.api.dictionary.HeroAction
+import org.thetale.api.enumerations.Action
+import org.thetale.api.enumerations.ArtifactEffect
+import org.thetale.api.enumerations.Habit
+import org.thetale.api.enumerations.HeroAction
 import com.dleibovych.epictale.api.request.AbilityUseRequest
 import com.dleibovych.epictale.api.response.CommonResponse
 import com.dleibovych.epictale.api.response.InfoResponse
@@ -47,7 +47,6 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 import okhttp3.OkHttpClient
-import org.thetale.api.di.ApiModule
 import org.thetale.api.models.CompanionInfo
 import org.thetale.api.models.GameInfo
 
@@ -251,11 +250,11 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         additionalInfoStringBuilder.append("\n")
         additionalInfoStringBuilder.append(UiUtils.getInfoItem(
                 getString(R.string.game_additional_info_honor),
-                        info.account.hero.habits[Habit.HONOR.name]?.verbose))
+                        info.account.hero.habits[Habit.HONOR.habitName]?.verbose))
                 .append("\n")
         additionalInfoStringBuilder.append(UiUtils.getInfoItem(
                 getString(R.string.game_additional_info_peacefulness),
-                        info.account.hero.habits[Habit.PEACEFULNESS.name]?.verbose))
+                        info.account.hero.habits[Habit.PEACEFULNESS.habitName]?.verbose))
                 .append("\n")
         additionalInfoStringBuilder.append("\n")
         additionalInfoStringBuilder.append(UiUtils.getInfoItem(
@@ -269,11 +268,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         additionalInfoStringBuilder.append(UiUtils.getInfoItem(
                 getString(R.string.game_additional_info_initiative),
                 info.account.hero.secondary.initiative.toString()))
-        textName!!.setOnClickListener {
-            DialogUtils.showMessageDialog(childFragmentManager,
-                    getString(R.string.game_additional_info),
-                    additionalInfoStringBuilder)
-        }
 
         progressHealth!!.max = info.account.hero.base.maxHealth
         progressHealth!!.progress = info.account.hero.base.health

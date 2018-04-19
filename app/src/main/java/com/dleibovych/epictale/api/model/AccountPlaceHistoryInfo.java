@@ -15,7 +15,7 @@ public class AccountPlaceHistoryInfo {
 
     public AccountPlaceHistoryInfo(final JSONObject json) throws JSONException {
         placeId = json.getJSONObject("place").getInt("id");
-        name = json.getJSONObject("place").getString("name");
+        name = json.getJSONObject("place").getString("effectName");
         helpCount = json.getInt("count");
     }
 

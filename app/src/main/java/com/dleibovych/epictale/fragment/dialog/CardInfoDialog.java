@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.api.dictionary.CardRarity;
+import org.thetale.api.enumerations.CardRarity;
 import com.dleibovych.epictale.api.model.CardInfo;
 
 /**

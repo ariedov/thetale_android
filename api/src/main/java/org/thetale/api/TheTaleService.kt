@@ -44,4 +44,6 @@ interface TheTaleService {
     fun mapRegion(
             @Query("turn") turn: Int,
             @Query("api_version") apiVersion: String = "0.1"): Call<Response<MapRegion>>
+
+    
 }

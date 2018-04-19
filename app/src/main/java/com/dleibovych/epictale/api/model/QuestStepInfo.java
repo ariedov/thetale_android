@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.QuestType;
+import org.thetale.api.enumerations.QuestType;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONArray;
@@ -29,7 +29,7 @@ public class QuestStepInfo {
     public QuestStepInfo(final JSONObject json) throws JSONException {
         type = ObjectUtils.getEnumForCode(QuestType.class, json.getString("type"));
         id = json.getString("uid");
-        name = json.getString("name");
+        name = json.getString("effectName");
         heroAction = json.getString("action");
         currentChoice = ObjectUtils.getOptionalString(json, "choice");
         experience = json.getInt("experience");
@@ -48,7 +48,7 @@ public class QuestStepInfo {
         actors = new ArrayList<>(actorsCount);
         for(int i = 0; i < actorsCount; i++) {
             actors.add(ObjectUtils.getModelFromJson(QuestActorInfo.class,
-                    ObjectUtils.getObjectFromArray(actorsJson.getJSONArray(i), new String[]{"name", "type", "info"})));
+                    ObjectUtils.getObjectFromArray(actorsJson.getJSONArray(i), new String[]{"effectName", "type", "info"})));
         }
     }
 

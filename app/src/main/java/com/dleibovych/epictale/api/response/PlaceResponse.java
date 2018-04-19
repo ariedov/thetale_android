@@ -36,7 +36,7 @@ public class PlaceResponse extends AbstractApiResponse {
     @Override
     protected void parseData(JSONObject data) throws JSONException {
         id = data.getInt("id");
-        name = data.getString("name");
+        name = data.getString("effectName");
         description = data.getString("description");
         x = data.getJSONObject("position").getInt("x");
         y = data.getJSONObject("position").getInt("y");

@@ -5,10 +5,8 @@ import android.content.Context;
 
 import com.dleibovych.epictale.R;
 import com.dleibovych.epictale.TheTaleApplication;
-import com.dleibovych.epictale.api.dictionary.HeroMode;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 import com.dleibovych.epictale.game.GameFragment;
-import com.dleibovych.epictale.util.GameInfoUtils;
 import com.dleibovych.epictale.util.PreferencesManager;
 import com.dleibovych.epictale.util.UiUtils;
 import com.dleibovych.epictale.util.onscreen.OnscreenPart;

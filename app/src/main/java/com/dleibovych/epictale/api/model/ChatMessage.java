@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.ChatMilestone;
+import org.thetale.api.enumerations.ChatMilestone;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 import org.json.JSONException;

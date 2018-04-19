@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.util.mock;
 
-import com.dleibovych.epictale.api.dictionary.QuestType;
+import org.thetale.api.enumerations.QuestType;
 import com.dleibovych.epictale.api.response.GameInfoResponse;
 
 import org.json.JSONArray;

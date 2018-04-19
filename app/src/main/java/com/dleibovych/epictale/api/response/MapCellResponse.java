@@ -3,11 +3,11 @@ package com.dleibovych.epictale.api.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dleibovych.epictale.api.dictionary.Gender;
-import com.dleibovych.epictale.api.dictionary.MapCellType;
-import com.dleibovych.epictale.api.dictionary.Profession;
-import com.dleibovych.epictale.api.dictionary.ProficiencyLevel;
-import com.dleibovych.epictale.api.dictionary.Race;
+import org.thetale.api.enumerations.Gender;
+import org.thetale.api.enumerations.MapCellType;
+import org.thetale.api.enumerations.Profession;
+import org.thetale.api.enumerations.ProficiencyLevel;
+import org.thetale.api.enumerations.Race;
 import com.dleibovych.epictale.api.model.MapCouncilMemberInfo;
 
 import org.json.JSONException;
@@ -80,13 +80,13 @@ public class MapCellResponse implements Parcelable {
                 Race race = null;
                 ProficiencyLevel proficiencyLevel = null;
                 for(final Gender genderItem : Gender.values()) {
-                    if(description.contains(genderItem.getName())) {
+                    if(description.contains(genderItem.getGenderName())) {
                         gender = genderItem;
                         break;
                     }
                 }
                 for(final Race raceItem : Race.values()) {
-                    if(description.contains(raceItem.getName())) {
+                    if(description.contains(raceItem.getRaceName())) {
                         race = raceItem;
                         break;
                     }
@@ -101,7 +101,7 @@ public class MapCellResponse implements Parcelable {
                 final String professionString = rows.get(0).children().get(0).attr("title");
                 Profession profession = null;
                 for(final Profession professionItem : Profession.values()) {
-                    if(professionString.equals(professionItem.getName())) {
+                    if(professionString.equals(professionItem.getProfessionName())) {
                         profession = professionItem;
                         break;
                     }

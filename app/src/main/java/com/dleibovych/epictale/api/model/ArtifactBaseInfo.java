@@ -1,8 +1,8 @@
 package com.dleibovych.epictale.api.model;
 
-import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
-import com.dleibovych.epictale.api.dictionary.ArtifactOrientation;
-import com.dleibovych.epictale.api.dictionary.ArtifactType;
+import org.thetale.api.enumerations.ArtifactEffect;
+import org.thetale.api.enumerations.ArtifactOrientation;
+import org.thetale.api.enumerations.ArtifactType;
 import com.dleibovych.epictale.util.ObjectUtils;
 
 /**

@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dleibovych.epictale.R;
-import com.dleibovych.epictale.api.dictionary.ArtifactEffect;
-import com.dleibovych.epictale.api.dictionary.ArtifactType;
+import org.thetale.api.enumerations.ArtifactEffect;
+import org.thetale.api.enumerations.ArtifactType;
 import com.dleibovych.epictale.api.model.ArtifactInfo;
 import com.dleibovych.epictale.util.UiUtils;
 
@@ -43,14 +43,14 @@ public class ArtifactDialog extends BaseDialog {
         final ArtifactInfo artifactInfo = getArguments().getParcelable(PARAM_ARTIFACT_INFO);
 
         final Spannable artifactType = new SpannableString(artifactInfo.type == ArtifactType.JUNK ?
-                artifactInfo.type.getName() : artifactInfo.rarity.getName());
+                artifactInfo.type.getTypeName() : artifactInfo.rarity.getRarityName());
         artifactType.setSpan(new ForegroundColorSpan(getResources().getColor(artifactInfo.rarity.getColorResId())),
                 0, artifactType.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         addLine(inflater, artifactInfoContainer, artifactType);
 
         if(artifactInfo.type != ArtifactType.JUNK) {
             addLine(inflater, artifactInfoContainer,
-                    UiUtils.getInfoItem(getString(R.string.artifact_equipment_type), artifactInfo.type.getName()));
+                    UiUtils.getInfoItem(getString(R.string.artifact_equipment_type), artifactInfo.type.getTypeName()));
             addLine(inflater, artifactInfoContainer,
                     UiUtils.getInfoItem(getString(R.string.artifact_power_physical), String.valueOf(artifactInfo.powerPhysical)));
             addLine(inflater, artifactInfoContainer,
