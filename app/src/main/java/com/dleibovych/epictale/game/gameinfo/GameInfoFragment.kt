@@ -51,13 +51,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
     @Inject lateinit var manager: CookieManager
     @Inject lateinit var presenter: GameInfoPresenter
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val refreshRunnable = object : Runnable {
-        override fun run() {
-            refresh(false)
-            handler.postDelayed(this, REFRESH_TIMEOUT_MILLIS)
-        }
-    }
 
     private var rootView: View? = null
 
@@ -92,6 +85,7 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
     override fun onStart() {
         super.onStart()
 
+        presenter.loadGameInfo()
         presenter.start()
     }
 
@@ -116,14 +110,18 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
                 }
             }, this@GameInfoFragment))
         }
-
-        handler.postDelayed(refreshRunnable, REFRESH_TIMEOUT_MILLIS)
     }
 
     override fun onPause() {
         super.onPause()
+    }
 
-        handler.removeCallbacks(refreshRunnable)
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (activity!!.isFinishing) {
+            presenter.dispose()
+        }
     }
 
     override fun refresh(isGlobal: Boolean) {
@@ -135,7 +133,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
             lastKnownHealth = 0
         }
 
-        presenter.loadGameInfo()
     }
 
     override fun showGameInfo(info: GameInfo) {

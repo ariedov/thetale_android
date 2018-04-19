@@ -16,22 +16,16 @@ import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
 import kotlinx.android.synthetic.main.activity_main.*
-import org.thetale.api.models.GameInfo
 import org.thetale.auth.LoginActivity
 
 import javax.inject.Inject
 
-
-class MainActivity : AppCompatActivity(),
-        GameNavigation,
-        GameView {
+class MainActivity : AppCompatActivity(), GameNavigation {
 
     @Inject
     lateinit var navigationProvider: GameNavigationProvider
-    @Inject
-    lateinit var presenter: GamePresenter
 
-    lateinit var componentProvider: GameComponentProvider
+    private lateinit var componentProvider: GameComponentProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -99,15 +93,8 @@ class MainActivity : AppCompatActivity(),
 
         navigationProvider.navigation = null
         if (isFinishing) {
-            presenter.dispose()
             componentProvider.cleanGameComponent()
         }
-    }
-
-    override fun setGameInfo(info: GameInfo) {
-    }
-
-    override fun showError() {
     }
 
     override fun showLogin() {
@@ -119,8 +106,6 @@ class MainActivity : AppCompatActivity(),
 
         const val KEY_GAME_TAB_INDEX = "KEY_GAME_TAB_INDEX"
         const val KEY_SHOULD_RESET_WATCHING_ACCOUNT = "KEY_SHOULD_RESET_WATCHING_ACCOUNT"
-
-        private const val KEY_DRAWER_TAB_INDEX = "KEY_DRAWER_TAB_INDEX"
     }
 
 }

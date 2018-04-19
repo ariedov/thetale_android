@@ -1,6 +1,7 @@
 package com.dleibovych.epictale.game.gameinfo.di
 
 import com.dleibovych.epictale.game.data.GameInfoProvider
+import com.dleibovych.epictale.game.data.GameInfoScheduler
 import com.dleibovych.epictale.game.di.GameScope
 import com.dleibovych.epictale.game.gameinfo.GameInfoPresenter
 import dagger.Module
@@ -11,5 +12,7 @@ class GameInfoModule {
 
     @GameScope
     @Provides
-    fun gameInfoPresenter(provider: GameInfoProvider) = GameInfoPresenter(provider)
+    fun gameInfoPresenter(
+            provider: GameInfoProvider,
+            scheduler: GameInfoScheduler) = GameInfoPresenter(provider, scheduler)
 }

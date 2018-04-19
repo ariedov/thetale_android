@@ -45,5 +45,8 @@ interface TheTaleService {
             @Query("turn") turn: Int,
             @Query("api_version") apiVersion: String = "0.1"): Call<Response<MapRegion>>
 
-    
+    @POST("/game/abilities/{ability}/api/use")
+    fun useAbility(@Url ability: String,
+                   @Query("api_version") apiVersion: String = "1.0"): Call<Response<Empty>>
+
 }
