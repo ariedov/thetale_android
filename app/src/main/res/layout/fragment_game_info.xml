@@ -13,9 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:padding="8dp"
-            android:background="@drawable/block_background"
+            android:padding="16dp"
             android:orientation="vertical">
 
             <com.dleibovych.epictale.game.gameinfo.views.HeroInfoView
