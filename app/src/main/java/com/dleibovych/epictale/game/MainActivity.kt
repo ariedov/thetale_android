@@ -11,6 +11,7 @@ import com.dleibovych.epictale.api.cache.RequestCacheManager
 import com.dleibovych.epictale.game.map.MapFragment
 import com.dleibovych.epictale.fragment.ProfileFragment
 import com.dleibovych.epictale.game.di.GameComponentProvider
+import com.dleibovych.epictale.game.gameinfo.GameInfoFragment
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
@@ -45,14 +46,14 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.container, GameFragment.create())
+                    .replace(R.id.container, GameInfoFragment.create())
                     .commit()
         }
 
         bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.game -> {
-                    showFragment(GameFragment.create())
+                    showFragment(GameInfoFragment.create())
                     true
                 }
                 R.id.map -> {

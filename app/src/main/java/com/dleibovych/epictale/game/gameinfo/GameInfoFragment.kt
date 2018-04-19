@@ -30,15 +30,14 @@ import com.dleibovych.epictale.api.response.InfoResponse
 import com.dleibovych.epictale.fragment.WrapperFragment
 import com.dleibovych.epictale.fragment.dialog.TabbedDialog
 import com.dleibovych.epictale.game.di.GameComponentProvider
-import com.dleibovych.epictale.util.DialogUtils
 import com.dleibovych.epictale.util.GameInfoUtils
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.RequestUtils
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.UiUtils
-import com.dleibovych.epictale.util.WebsiteUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
 import com.dleibovych.epictale.widget.RequestActionView
+import kotlinx.android.synthetic.main.fragment_game_info.*
 
 import java.net.CookieManager
 import java.util.Date
@@ -66,31 +65,14 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
 
     private var rootView: View? = null
 
-    private var textRaceGender: TextView? = null
-    private var textLevel: TextView? = null
-    private var textName: TextView? = null
-    private var textLevelUp: View? = null
-
-    private var progressHealth: ProgressBar? = null
-    private var textHealth: TextView? = null
-    private var progressExperience: ProgressBar? = null
-    private var textExperience: TextView? = null
     private var blockEnergy: View? = null
     private var textEnergy: TextView? = null
-
     private var textPowerPhysical: TextView? = null
     private var textPowerMagical: TextView? = null
     private var textMoney: TextView? = null
     private var textMight: TextView? = null
 
     private var companionAbsentText: View? = null
-    private var companionContainer: View? = null
-    private var companionCoherence: TextView? = null
-    private var companionName: TextView? = null
-    private var progressCompanionHealth: ProgressBar? = null
-    private var textCompanionHealth: TextView? = null
-    private var progressCompanionExperience: ProgressBar? = null
-    private var textCompanionExperience: TextView? = null
 
     private var progressAction: ProgressBar? = null
     private var progressActionInfo: TextView? = null
@@ -110,15 +92,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
 
         rootView = inflater.inflate(R.layout.fragment_game_info, container, false)
 
-        textRaceGender = rootView!!.findViewById(R.id.game_info_race_gender)
-        textLevel = rootView!!.findViewById(R.id.game_info_level)
-        textName = rootView!!.findViewById(R.id.game_info_name)
-        textLevelUp = rootView!!.findViewById(R.id.game_info_lvlup)
-
-        progressHealth = rootView!!.findViewById(R.id.game_info_health_progress)
-        textHealth = rootView!!.findViewById(R.id.game_info_health_text)
-        progressExperience = rootView!!.findViewById(R.id.game_info_experience_progress)
-        textExperience = rootView!!.findViewById(R.id.game_info_experience_text)
         blockEnergy = rootView!!.findViewById(R.id.game_info_energy)
         textEnergy = rootView!!.findViewById(R.id.game_info_energy_text)
 
@@ -128,13 +101,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         textMight = rootView!!.findViewById(R.id.game_info_might)
 
         companionAbsentText = rootView!!.findViewById(R.id.game_info_companion_absent)
-        companionContainer = rootView!!.findViewById(R.id.game_info_companion_container)
-        companionCoherence = rootView!!.findViewById(R.id.game_info_companion_coherence)
-        companionName = rootView!!.findViewById(R.id.game_info_companion_name)
-        progressCompanionHealth = rootView!!.findViewById(R.id.game_info_companion_health_progress)
-        textCompanionHealth = rootView!!.findViewById(R.id.game_info_companion_health_text)
-        progressCompanionExperience = rootView!!.findViewById(R.id.game_info_companion_experience_progress)
-        textCompanionExperience = rootView!!.findViewById(R.id.game_info_companion_experience_text)
 
         progressAction = rootView!!.findViewById(R.id.game_info_action_progress)
         progressActionInfo = rootView!!.findViewById(R.id.game_info_action_progress_info)
@@ -200,33 +166,15 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
             lastKnownHealth = Math.round((450.0 + 50.0 * info.account.hero.base.level) / 4.0).toInt()
         }
 
-        textRaceGender!!.text = String.format("%s-%s",
-                info.account.hero.base.race.toString(),
-                info.account.hero.base.gender.toString())
-        textLevel!!.text = info.account.hero.base.level.toString()
-        textName!!.text = info.account.hero.base.name
-        if (info.account.hero.base.destinyPoints > 0) {
-            textLevelUp!!.setOnClickListener { v ->
-                if (info.account.isOwn) {
-                    DialogUtils.showConfirmationDialog(
-                            childFragmentManager,
-                            getString(R.string.game_lvlup_dialog_title),
-                            getString(R.string.game_lvlup_dialog_message, info.account.hero.base.destinyPoints),
-                            getString(R.string.drawer_title_site), {
-                        startActivity(UiUtils.getOpenLinkIntent(String.format(
-                                WebsiteUtils.URL_PROFILE_HERO, info.account.hero.id)))
-                    }, null, null, null)
-                } else {
-                    DialogUtils.showMessageDialog(
-                            childFragmentManager,
-                            getString(R.string.game_lvlup_dialog_title),
-                            getString(R.string.game_lvlup_dialog_message_foreign,
-                                    info.account.hero.base.destinyPoints))
-                }
-            }
-            textLevelUp!!.visibility = View.VISIBLE
+        heroInfo.bind(info.account.hero.base)
+        val companion = info.account.hero.companion
+        if (companion != null) {
+            companionAbsentText!!.visibility = View.GONE
+            companionInfo.visibility = View.VISIBLE
+            companionInfo.bind(companion)
         } else {
-            textLevelUp!!.visibility = View.GONE
+            companionAbsentText!!.visibility = View.VISIBLE
+            companionInfo.visibility = View.GONE
         }
 
         val additionalInfoStringBuilder = SpannableStringBuilder()
@@ -269,18 +217,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
                 getString(R.string.game_additional_info_initiative),
                 info.account.hero.secondary.initiative.toString()))
 
-        progressHealth!!.max = info.account.hero.base.maxHealth
-        progressHealth!!.progress = info.account.hero.base.health
-        textHealth!!.text = String.format("%d/%d",
-                info.account.hero.base.health,
-                info.account.hero.base.maxHealth)
-
-        progressExperience!!.max = info.account.hero.base.experienceToLevel
-        progressExperience!!.progress = info.account.hero.base.experience
-        textExperience!!.text = String.format("%d/%d",
-                info.account.hero.base.experience,
-                info.account.hero.base.experienceToLevel)
-
         blockEnergy!!.visibility = if (info.account.isOwn) View.VISIBLE else View.GONE
         if (info.account.isOwn) {
             val energy = info.account.energy
@@ -296,34 +232,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         val mightInfo = info.account.hero.might
         textMight!!.text = mightInfo.value.toString()
 //        textMight!!.setOnClickListener { DialogUtils.showMightDialog(fragmentManager, mightInfo) }
-
-        val companion = info.account.hero.companion
-        if (companion == null) {
-            companionContainer!!.visibility = View.GONE
-            companionAbsentText!!.visibility = View.VISIBLE
-        } else {
-            companionAbsentText!!.visibility = View.GONE
-            companionContainer!!.visibility = View.VISIBLE
-
-            companionName!!.text = companion.name
-            companionCoherence!!.text = companion.coherence.toString()
-
-            progressCompanionHealth!!.max = companion.maxHealth
-            progressCompanionHealth!!.progress = companion.health
-            textCompanionHealth!!.text = String.format("%d/%d",
-                    companion.health, companion.maxHealth)
-
-            progressCompanionExperience!!.max = companion.experienceToLevel
-            progressCompanionExperience!!.progress = companion.experience
-            textCompanionExperience!!.text = String.format("%d/%d",
-                    companion.experience, companion.experienceToLevel)
-
-            companionName!!.setTextColor(resources.getColor(R.color.common_link))
-            companionName!!.setOnClickListener { v ->
-                DialogUtils.showTabbedDialog(childFragmentManager,
-                        companion.name, CompanionTabsAdapter(companion, companion.coherence))
-            }
-        }
 
         val action = info.account.hero.action
         progressAction!!.max = 1000

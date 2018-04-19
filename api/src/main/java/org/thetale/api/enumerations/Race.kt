@@ -6,6 +6,12 @@ enum class Race constructor(val code: Int, val raceName: String, val namePlural:
     ELF(1, "эльф", "эльфы"),
     ORC(2, "орк", "орки"),
     GOBLIN(3, "гоблин", "гоблины"),
-    DWARF(4, "дварф", "дварфы")
+    DWARF(4, "дварф", "дварфы");
 
+    companion object {
+
+        fun findByCode(code: Int): Race = Race.values().first {
+            it.code == code
+        }
+    }
 }

@@ -103,6 +103,13 @@ enum class CompanionSpecies constructor(val code: Int, val speciesName: String, 
     WHITE_BATTLE_HORSE(97, "Белый боевой конь", CompanionRarity.EPIC, CompanionType.ALIVE, Archetype.WARRIOR, CompanionDedication.HEROIC, 700, getFeaturesMap(0, CompanionFeature.HONEST, 0, CompanionFeature.AGGRESSIVE, 0, CompanionFeature.EATER, 0, CompanionFeature.TROTTER, 20, CompanionFeature.PACK, 40, CompanionFeature.FIGHTER, 60, CompanionFeature.BODYGUARD, 80, CompanionFeature.RAM), "Обладание белой боевой лошадью всегда считалось особым шиком. Персонажи легенд и баллад спасают девиц из башен сумасшедших колдунов верхом именно на таких, огромного роста, белоснежных конях с роскошными, ухоженными, заплетёнными в косы гривами и длинными, развивающимися на ветру хвостами. Настоящий герой не постоит за ценой, чтобы приобрести такого спутника: верного, сильного, выносливого и… прекрасного."),
     ETHEREAL_AGUIA(91, "Бестелесная агуйя", CompanionRarity.LEGENDARY, CompanionType.UNCOMMON, Archetype.MAGE, CompanionDedication.BRAVE, 300, getFeaturesMap(0, CompanionFeature.HONEST, 0, CompanionFeature.AGGRESSIVE, 0, CompanionFeature.ENERGETIC, 0, CompanionFeature.FLYER, 25, CompanionFeature.HAWKEYE, 50, CompanionFeature.FIGHTER, 75, CompanionFeature.SPIRIT_CONTACT), "Бестелесная агуйя – очень интересный и желанный помощник. Это живучее создание обладает сильным характером и отличается благородством. Волшебная птица умна: она постарается предупредить об опасности, чтобы избежать ненужного столкновения. Но если бой разгорелся, агуйя всегда бросится на защиту своего хозяина в самую гущу схватки. Плохо одно – бестелесная агуйя встречается очень редко."),
     EXPERIENCED_MERCENARY(88, "Опытный воин-наёмник", CompanionRarity.EPIC, CompanionType.ALIVE, Archetype.WARRIOR, CompanionDedication.VALIANT, 600, getFeaturesMap(0, CompanionFeature.AGGRESSIVE, 0, CompanionFeature.GOON, 0, CompanionFeature.GLUTTONOUS, 0, CompanionFeature.FIGHTER, 0, CompanionFeature.DEXTEROUS, 25, CompanionFeature.PACK, 50, CompanionFeature.DRUNKARD, 75, CompanionFeature.RAM), "Ветераны многих боёв, знатоки пандорских трактов, опытные бойцы – всё это можно сказать не только о героях-бродягах. Наёмные воины, солдаты удачи, тоже могут рассказать немало об опасностях и смерти. Они за плату охраняют караваны, патрулируют окрестности городов, а порой сопровождают героев. Конечно, наёмники уступают последним во многом, но не в храбрости.");
+
+    companion object {
+
+        fun findByCode(code: Int) = CompanionSpecies.values().first {
+            it.code == code
+        }
+    }
 }
 
 private fun getFeaturesMap(vararg features: Any): Map<CompanionFeature, Int> {
