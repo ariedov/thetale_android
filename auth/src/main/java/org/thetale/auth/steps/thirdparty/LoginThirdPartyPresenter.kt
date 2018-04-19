@@ -6,8 +6,8 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.URL
-import org.thetale.api.call
 import org.thetale.api.models.isAcceptedAuth
+import org.thetale.api.readDataOrThrow
 import org.thetale.core.PresenterState
 
 class LoginThirdPartyPresenter(private val service: TheTaleService,
@@ -28,7 +28,7 @@ class LoginThirdPartyPresenter(private val service: TheTaleService,
         thirdPartyLinkJob = launch(UI) {
             state.apply { view.showProgress() }
 
-            val thirdPartLink = service.login(appName, appInfo, appDescription).call()
+            val thirdPartLink = service.login(appName, appInfo, appDescription).readDataOrThrow()!!
             link = thirdPartLink.authorizationPage
             state.apply {
                 view.openThirdPartyLink("$URL$link")
@@ -50,7 +50,7 @@ class LoginThirdPartyPresenter(private val service: TheTaleService,
     fun checkAuthorisation() {
         thirdPartyStatusJob = launch(UI) {
             state.apply { view.showProgress() }
-            val state = service.authorizationState().call()
+            val state = service.authorizationState().readDataOrThrow()!!
             if (state.isAcceptedAuth()) {
                 navigationProvider.navigation?.openApp()
             } else {

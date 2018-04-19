@@ -24,9 +24,7 @@ import com.dleibovych.epictale.fragment.WrapperFragment
 import com.github.chrisbanes.photoview.PhotoView
 import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.game.MainActivity
 import com.dleibovych.epictale.api.CommonResponseCallback
-import com.dleibovych.epictale.api.HttpMethod
 import org.thetale.api.enumerations.MapCellType
 import org.thetale.api.enumerations.MapStyle
 import com.dleibovych.epictale.api.request.MapCellRequest
@@ -48,7 +46,6 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.net.CookieManager
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Date
@@ -57,21 +54,12 @@ import java.util.Locale
 
 import javax.inject.Inject
 
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Response
 import org.thetale.api.models.Hero
 import org.thetale.api.models.HeroPosition
 import org.thetale.api.models.Place
 import org.thetale.api.models.Region
 
-class MapFragment : WrapperFragment(), MapView {
-
-    @Inject
-    lateinit var client: OkHttpClient
-    @Inject
-    lateinit var manager: CookieManager
+class MapFragment : Fragment(), MapView {
 
     @Inject
     lateinit var presenter: MapPresenter
@@ -83,7 +71,6 @@ class MapFragment : WrapperFragment(), MapView {
     private var mapView: PhotoView? = null
     private var menuOptions: MenuItem? = null
     private var menuMapModification: MenuItem? = null
-    private var findPlayerContainer: View? = null
 
     private var mapZoom: Float = 0.toFloat()
     private var mapShiftX: Float = 0.toFloat()
@@ -140,10 +127,19 @@ class MapFragment : WrapperFragment(), MapView {
             shouldMoveToHero = true
         }
 
-        findPlayerContainer = rootView!!.findViewById(R.id.map_find_player)
-        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer!!, this, this, activity as MainActivity?)
+        return rootView
+    }
 
-        return wrapView(layoutInflater, rootView)
+    override fun onStart() {
+        super.onStart()
+
+        presenter.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        presenter.stop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -161,22 +157,6 @@ class MapFragment : WrapperFragment(), MapView {
         }
     }
 
-    private fun updateMenuMapModificationVisibility() {
-        client.newCall(HttpMethod.GET.getHttpRequest(
-                MapTerrainRequest.URL_BASE, null, null).request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-
-            }
-
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                if (menuMapModification != null) {
-                    menuMapModification!!.isVisible = true
-                }
-            }
-        })
-    }
-
     override fun drawMap(region: Region, hero: Hero) {
         launch(UI) {
             val sprite = drawer.getMapSprite(getContext()!!, MapStyle.STANDARD)
@@ -185,17 +165,6 @@ class MapFragment : WrapperFragment(), MapView {
             val canvas = Canvas(map)
 
             val actionMapModification = UiUtils.getMenuItem(activity, R.id.action_map_modification)
-            if (actionMapModification != null) {
-                if (MapDrawer.currentSizeDenominator == 1) {
-                    updateMenuMapModificationVisibility()
-                } else {
-                    //                                            if(!UiUtils.getMainActivity(MapFragment.this).isPaused()) {
-                    //                                                DialogUtils.showMessageDialog(getChildFragmentManager(),
-                    //                                                        getString(R.string.common_dialog_attention_title),
-                    //                                                        getString(R.string.map_decreased_quality));
-                    //                                            }
-                }
-            }
 
             if (mapModification === MapModification.None) {
                 drawer.drawBaseLayer(canvas, region, sprite)
@@ -219,7 +188,7 @@ class MapFragment : WrapperFragment(), MapView {
                     }
 
                     override fun processError(error: String) {
-                        setError(getString(R.string.map_error))
+//                        setError(getString(R.string.map_error))
                         mapModification = MapModification.None
                     }
                 }, this@MapFragment))
@@ -228,7 +197,7 @@ class MapFragment : WrapperFragment(), MapView {
     }
 
     override fun showError(t: Throwable) {
-        setError(getString(R.string.map_error))
+//        setError(getString(R.string.map_error))
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
@@ -240,7 +209,6 @@ class MapFragment : WrapperFragment(), MapView {
         }
 
         menuMapModification = UiUtils.getMenuItem(activity, R.id.action_map_modification)
-        updateMenuMapModificationVisibility()
 
         updateMenuItemTitle(R.id.action_map_style, getString(R.string.map_style, PreferencesManager.getMapStyle().styleName))
         updateMenuItemTitle(R.id.action_map_modification, getString(R.string.map_modification, mapModification!!.name))
@@ -252,7 +220,6 @@ class MapFragment : WrapperFragment(), MapView {
                 DialogUtils.showChoiceDialog(fragmentManager, getString(R.string.map_style_caption),
                         ObjectUtils.getNamesForEnum(MapStyle::class.java)) { position ->
                     PreferencesManager.setMapStyle(MapStyle.values()[position])
-                    refresh(true)
                 }
                 return true
             }
@@ -263,7 +230,6 @@ class MapFragment : WrapperFragment(), MapView {
                 for (i in 0 until count) {
                     choices[i] = places!![i].name
                 }
-
 //                DialogUtils.showChoiceDialog(fragmentManager, getString(R.string.map_find_place), choices) { position ->
 //                    val placeInfo = places!![position]
 //                    moveToTile(placeInfo.x, placeInfo.y, mapView!!.maximumScale)
@@ -352,42 +318,6 @@ class MapFragment : WrapperFragment(), MapView {
         //                    getString(R.string.common_dialog_attention_title),
         //                    TextUtils.isEmpty(error) ? getString(R.string.map_save_error_short) : getString(R.string.map_save_error, error));
         //        }
-    }
-
-    override fun refresh(isGlobal: Boolean) {
-        super.refresh(isGlobal)
-        shouldShowMenuOptions = false
-
-        UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer!!, this, this, activity as MainActivity?)
-
-        if (menuOptions != null) {
-            menuOptions!!.isVisible = false
-        }
-
-        if (!isMapInitialPosition) {
-            mapZoom = getMapZoom()
-
-            val mapShift = mapShift
-            mapShiftX = mapShift.x
-            mapShiftY = mapShift.y
-        }
-
-        mapView!!.setImageBitmap(null)
-
-        val mapStyle = PreferencesManager.getMapStyle()
-        updateMenuItemTitle(R.id.action_map_style, getString(R.string.map_style, mapStyle.styleName))
-
-        updateMenuItemTitle(R.id.action_map_modification, getString(R.string.map_modification, mapModification!!.name))
-
-        presenter.loadMap()
-    }
-
-    override fun onOnscreen() {
-        super.onOnscreen()
-
-        if (findPlayerContainer != null) {
-            UiUtils.setupFindPlayerContainer(client, manager, findPlayerContainer!!, this, this, activity as MainActivity?)
-        }
     }
 
     private fun moveToTile(tileX: Int, tileY: Int, scale: Float) {
@@ -492,7 +422,7 @@ class MapFragment : WrapperFragment(), MapView {
                             dialog?.dismiss() ?: handler.post(this)
                         }
                     })
-                    setError(getString(R.string.map_error))
+//                    setError(getString(R.string.map_error))
                 }
             }, this@MapFragment))
         }
@@ -507,8 +437,6 @@ class MapFragment : WrapperFragment(), MapView {
         if (menuOptions != null) {
             menuOptions!!.isVisible = true
         }
-
-        setMode(DataViewMode.DATA)
     }
 
     private inner class TileTabsAdapter(private val cellInfo: MapCellResponse) : TabbedDialog.TabbedDialogTabsAdapter() {

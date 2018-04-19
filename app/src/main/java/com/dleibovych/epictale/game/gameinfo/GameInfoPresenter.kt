@@ -6,11 +6,15 @@ import com.dleibovych.epictale.game.data.GameInfoScheduler
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import org.thetale.api.TheTaleService
+import org.thetale.api.enumerations.Action
 import org.thetale.api.models.GameInfo
 import org.thetale.core.PresenterState
 
-class GameInfoPresenter(private val provider: GameInfoProvider,
-                        private val gameInfoScheduler: GameInfoScheduler) {
+class GameInfoPresenter(
+        private val service: TheTaleService,
+        private val provider: GameInfoProvider,
+        private val gameInfoScheduler: GameInfoScheduler) {
 
     private val state = PresenterState { loadGameInfo() }
     private var infoJob: Job? = null
@@ -27,9 +31,6 @@ class GameInfoPresenter(private val provider: GameInfoProvider,
 
     fun start() {
         state.start()
-
-        loadGameInfo()
-        gameInfoScheduler.addListener(listener)
     }
 
     fun stop() {
@@ -37,10 +38,26 @@ class GameInfoPresenter(private val provider: GameInfoProvider,
 
         gameInfoScheduler.removeListener(listener)
     }
-    fun loadGameInfo() {
+
+    fun useAbility(action: Action) {
+        abilityJob = launch(UI) {
+            try {
+                view?.showAbilityProgress()
+                service.useAbility(action.code).join()
+                gameInfoScheduler.scheduleImmediate()
+            } catch (e: Exception) {
+                view?.showAbilityError()
+            }
+        }
+
+
+    }
+
+    private fun loadGameInfo() {
         infoJob = launch(UI) {
             try {
                 val info = provider.getInfo().await()
+                gameInfoScheduler.addListener(listener)
                 state.apply { view?.showGameInfo(info) }
             } catch (e: Exception) {
                 state.apply { view?.showError() }
@@ -50,5 +67,6 @@ class GameInfoPresenter(private val provider: GameInfoProvider,
 
     fun dispose() {
         infoJob?.cancel()
+        abilityJob?.cancel()
     }
 }

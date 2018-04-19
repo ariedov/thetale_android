@@ -21,7 +21,7 @@ import okhttp3.OkHttpClient;
 public class TakeCardRequest extends AbstractApiRequest<TakeCardResponse> {
 
     public TakeCardRequest(OkHttpClient client, CookieManager manager) {
-        super(client, manager, HttpMethod.POST, "game/cards/api/call", "1.0", true);
+        super(client, manager, HttpMethod.POST, "game/cards/api/readDataOrThrow", "1.0", true);
     }
 
     public void execute(final ApiResponseCallback<TakeCardResponse> callback) {

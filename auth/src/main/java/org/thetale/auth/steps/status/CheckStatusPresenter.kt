@@ -5,7 +5,7 @@ import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
-import org.thetale.api.call
+import org.thetale.api.readDataOrThrow
 import org.thetale.core.PresenterState
 
 class CheckStatusPresenter(private val service: TheTaleService,
@@ -37,7 +37,7 @@ class CheckStatusPresenter(private val service: TheTaleService,
             try {
                 state.apply { view?.showLoading() }
 
-                val info = service.info().call()
+                val info = service.info().readDataOrThrow()!!
                 if (info.accountId == null) {
                     navigationProvider.navigation?.showCredentials()
                 } else {

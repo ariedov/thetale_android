@@ -6,5 +6,9 @@ interface GameInfoView {
 
     fun showGameInfo(info: GameInfo)
 
+    fun showAbilityProgress()
+
+    fun showAbilityError()
+
     fun showError()
 }

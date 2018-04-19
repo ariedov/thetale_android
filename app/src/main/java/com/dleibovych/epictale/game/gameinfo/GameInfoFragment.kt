@@ -10,45 +10,28 @@ import android.view.ViewTreeObserver
 import android.widget.ProgressBar
 import android.widget.TextView
 
-import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.TheTaleApplication
-import com.dleibovych.epictale.api.ApiResponseCallback
-import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest
-import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest
 import org.thetale.api.enumerations.Action
 import org.thetale.api.enumerations.ArtifactEffect
 import org.thetale.api.enumerations.HeroAction
-import com.dleibovych.epictale.api.request.AbilityUseRequest
-import com.dleibovych.epictale.api.response.CommonResponse
-import com.dleibovych.epictale.api.response.InfoResponse
-import com.dleibovych.epictale.fragment.WrapperFragment
 import com.dleibovych.epictale.fragment.dialog.TabbedDialog
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.GameInfoUtils
 import com.dleibovych.epictale.util.PreferencesManager
-import com.dleibovych.epictale.util.RequestUtils
-import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.UiUtils
-import com.dleibovych.epictale.util.onscreen.OnscreenPart
 import com.dleibovych.epictale.widget.RequestActionView
 import kotlinx.android.synthetic.main.fragment_game_info.*
 
-import java.net.CookieManager
 import java.util.regex.Pattern
 
 import javax.inject.Inject
 
-import okhttp3.OkHttpClient
 import org.thetale.api.models.CompanionInfo
 import org.thetale.api.models.GameInfo
 
-class GameInfoFragment : WrapperFragment(), GameInfoView {
+class GameInfoFragment : Fragment(), GameInfoView {
 
-    @Inject lateinit var client: OkHttpClient
-    @Inject lateinit var manager: CookieManager
     @Inject lateinit var presenter: GameInfoPresenter
-
 
     private var rootView: View? = null
 
@@ -77,13 +60,18 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
 
         journalContainer = rootView!!.findViewById(R.id.journal_container)
 
-        return wrapView(layoutInflater, rootView)
+        return rootView
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.view = null
     }
 
     override fun onStart() {
         super.onStart()
 
-        presenter.loadGameInfo()
         presenter.start()
     }
 
@@ -96,22 +84,7 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
     override fun onResume() {
         super.onResume()
 
-        actionHelp!!.setActionClickListener {
-            AbilityUseRequest(client, manager, Action.HELP).execute(0, RequestUtils.wrapCallback(object : ApiResponseCallback<CommonResponse> {
-                override fun processResponse(response: CommonResponse) {
-                    actionHelp!!.setMode(RequestActionView.Mode.ACTION)
-                    refresh(false)
-                }
-
-                override fun processError(response: CommonResponse) {
-                    actionHelp!!.setErrorText(response.errorMessage)
-                }
-            }, this@GameInfoFragment))
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
+        actionHelp!!.setActionClickListener { presenter.useAbility(Action.HELP) }
     }
 
     override fun onDestroy() {
@@ -120,17 +93,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         if (activity!!.isFinishing) {
             presenter.dispose()
         }
-    }
-
-    override fun refresh(isGlobal: Boolean) {
-        super.refresh(isGlobal)
-
-        if (isGlobal) {
-            lastJournalTimestamp = 0.toDouble()
-            lastFightProgress = 0.0
-            lastKnownHealth = 0
-        }
-
     }
 
     override fun showGameInfo(info: GameInfo) {
@@ -205,38 +167,27 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
                             * 3.0 * Math.pow(0.75, GameInfoUtils.getArtifactEffectCount(account.hero, ArtifactEffect.ACTIVENESS).toDouble())
                             * account.hero.base.level.toDouble()).toLong()))
 
-            HeroAction.REST.code -> InfoPrerequisiteRequest(client, manager, {
+            HeroAction.REST.code -> {
                 val turnDelta = PreferencesManager.getTurnDelta()
                 var timeRest = Math.round(
                         (account.hero.base.maxHealth - account.hero.base.health) / (// amount of health restored each turn
                                 account.hero.base.maxHealth / 30.0 * Math.pow(2.0, GameInfoUtils.getArtifactEffectCount(account.hero, ArtifactEffect.ENDURANCE).toDouble())) * turnDelta)
                 timeRest = Math.round(timeRest.toDouble() / turnDelta) * turnDelta
                 setProgressActionInfo(getActionTimeApproximateString(if (timeRest < turnDelta) turnDelta.toLong() else timeRest))
-            }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
-                override fun processError(response: InfoResponse) {
-                    setProgressActionInfo(null)
-                }
-            }, this@GameInfoFragment).execute()
+            }
 
             else -> setProgressActionInfo(null)
         }
 
         if (account.isOwn) {
             actionHelp!!.visibility = View.VISIBLE
-            actionHelp!!.isEnabled = false
-            InfoPrerequisiteRequest(client, manager, {
-                actionHelp!!.isEnabled = account.energy!! > 0
-            }, object : PrerequisiteRequest.ErrorCallback<InfoResponse>() {
-                override fun processError(response: InfoResponse) {
-                    actionHelp!!.setErrorText(response.errorMessage)
-                    actionHelp!!.setMode(RequestActionView.Mode.ERROR)
-                }
-            }, this@GameInfoFragment).execute()
+            actionHelp!!.isEnabled = account.energy != null && account.energy!! > 0
+            actionHelp!!.setMode(RequestActionView.Mode.ACTION)
         } else {
             actionHelp!!.visibility = View.GONE
         }
 
-        setMode(DataViewMode.DATA)
+//        setMode(DataViewMode.DATA)
     }
 
     private fun bindCompanion(companion: CompanionInfo?) {
@@ -251,7 +202,15 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
     }
 
     override fun showError() {
-        setError(getString(R.string.common_error))
+//        setError(getString(R.string.common_error))
+    }
+
+    override fun showAbilityProgress() {
+        actionHelp!!.setMode(RequestActionView.Mode.LOADING)
+    }
+
+    override fun showAbilityError() {
+        actionHelp!!.setErrorText(getString(R.string.common_error))
     }
 
     private fun setProgressActionInfo(info: CharSequence?) {
@@ -302,20 +261,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         }
     }
 
-    override fun onOffscreen() {
-        super.onOffscreen()
-        TheTaleApplication.onscreenStateWatcher?.onscreenStateChange(OnscreenPart.GAME_INFO, false)
-
-        TextToSpeechUtils.pause()
-    }
-
-    override fun onOnscreen() {
-        super.onOnscreen()
-        TheTaleApplication.onscreenStateWatcher?.onscreenStateChange(OnscreenPart.GAME_INFO, true)
-
-        TheTaleApplication.notificationManager?.clearNotifications()
-    }
-
     private inner class CompanionTabsAdapter internal constructor(private val companion: CompanionInfo, private val coherence: Int) : TabbedDialog.TabbedDialogTabsAdapter() {
 
         override fun getCount(): Int {
@@ -349,8 +294,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
     }
 
     companion object {
-
-        private val REFRESH_TIMEOUT_MILLIS: Long = 10000 // 10 s
 
         fun create() = GameInfoFragment()
     }

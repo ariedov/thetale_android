@@ -2,7 +2,7 @@ package com.dleibovych.epictale.game.data
 
 import kotlinx.coroutines.experimental.async
 import org.thetale.api.TheTaleService
-import org.thetale.api.call
+import org.thetale.api.readDataOrThrow
 import org.thetale.api.models.GameInfo
 
 // TODO: enable caching
@@ -12,7 +12,7 @@ class GameInfoProvider(private val service: TheTaleService,
     private var info: GameInfo? = null
 
     fun loadInfo() = async {
-        val newInfo = service.gameInfo(/*turnsCache.concatIds()*/).call()
+        val newInfo = service.gameInfo(/*turnsCache.concatIds()*/).readDataOrThrow()!!
         info = if (info != null) mergeInfo(info!!, newInfo) else newInfo
 
         turnsCache.saveTurn(info!!.turn)

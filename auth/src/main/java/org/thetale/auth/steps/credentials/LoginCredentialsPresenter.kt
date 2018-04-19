@@ -6,7 +6,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.core.PresenterState
 import org.thetale.api.TheTaleService
-import org.thetale.api.call
+import org.thetale.api.readDataOrThrow
 import org.thetale.api.error.ResponseException
 
 class LoginCredentialsPresenter(private val service: TheTaleService,
@@ -29,7 +29,7 @@ class LoginCredentialsPresenter(private val service: TheTaleService,
         loginJob = launch(UI) {
             try {
                 state.apply { view?.showProgress() }
-                service.login(email, password).call()
+                service.login(email, password).readDataOrThrow()
 
                 navigationProvider.navigation?.openApp()
 

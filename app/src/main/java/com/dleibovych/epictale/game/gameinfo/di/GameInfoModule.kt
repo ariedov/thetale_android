@@ -6,6 +6,7 @@ import com.dleibovych.epictale.game.di.GameScope
 import com.dleibovych.epictale.game.gameinfo.GameInfoPresenter
 import dagger.Module
 import dagger.Provides
+import org.thetale.api.TheTaleService
 
 @Module
 class GameInfoModule {
@@ -13,6 +14,7 @@ class GameInfoModule {
     @GameScope
     @Provides
     fun gameInfoPresenter(
+            service: TheTaleService,
             provider: GameInfoProvider,
-            scheduler: GameInfoScheduler) = GameInfoPresenter(provider, scheduler)
+            scheduler: GameInfoScheduler) = GameInfoPresenter(service, provider, scheduler)
 }

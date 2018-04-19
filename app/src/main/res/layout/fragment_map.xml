@@ -13,17 +13,4 @@
         android:scaleType="center"
         android:contentDescription="@string/drawer_title_map"
         tools:src="@tools:sample/backgrounds/scenic"/>
-
-    <LinearLayout
-        android:id="@+id/map_find_player"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <View style="@style/Delimiter"/>
-
-        <include layout="@layout/widget_find_player_helper"/>
-
-    </LinearLayout>
-
 </LinearLayout>

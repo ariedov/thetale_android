@@ -13,6 +13,14 @@ class GameInfoScheduler(private val gameInfoProvider: GameInfoProvider) {
     private val listeners = mutableListOf<GameInfoListener>()
     private var scheduleJob: Job? = null
 
+    fun scheduleImmediate() {
+        launch(UI) {
+            scheduleJob?.cancel()
+            loadInfo()
+            scheduleJob = startScheduling()
+        }
+    }
+
     fun addListener(listener: GameInfoListener) {
         listeners.add(listener)
 
@@ -33,9 +41,13 @@ class GameInfoScheduler(private val gameInfoProvider: GameInfoProvider) {
     private fun startScheduling() = launch(UI) {
         while (this.isActive) {
             delay(REFRESH_DELAY)
-            val info = gameInfoProvider.loadInfo().await()
-            listeners.forEach { it.onGameInfoChanged(info) }
+            loadInfo()
         }
+    }
+
+    private suspend fun loadInfo() {
+        val info = gameInfoProvider.loadInfo().await()
+        listeners.forEach { it.onGameInfoChanged(info) }
     }
 }
 

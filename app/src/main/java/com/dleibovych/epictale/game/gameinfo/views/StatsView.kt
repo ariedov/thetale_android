@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.widget.TableLayout
 import com.dleibovych.epictale.R
 import kotlinx.android.synthetic.main.layout_hero_stats.view.*
-import org.thetale.api.models.AccountInfo
+import org.thetale.api.models.HeroAccountInfo
 
 class StatsView @kotlin.jvm.JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null
@@ -18,7 +18,7 @@ class StatsView @kotlin.jvm.JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.layout_hero_stats, this)
     }
 
-    fun bind(account: AccountInfo) {
+    fun bind(account: HeroAccountInfo) {
 
         val hero = account.hero
 
