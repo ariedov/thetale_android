@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:layout_height="match_parent"
+       tools:layout_width="match_parent"
+       tools:orientation="vertical"
+       tools:parentTag="android.widget.TableLayout"
+       tools:stretchColumns="*">
+
+    <TableRow>
+
+        <!-- physical power -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/game_info_icon_size"
+                android:layout_height="@dimen/game_info_icon_size"
+                android:src="@drawable/ic_power_physical"/>
+
+            <TextView
+                android:id="@+id/physicalPower"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/common_text"/>
+
+        </LinearLayout>
+
+        <!-- money -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/game_info_icon_size"
+                android:layout_height="@dimen/game_info_icon_size"
+                android:src="@drawable/ic_money"/>
+
+            <TextView
+                android:id="@+id/money"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/common_text"/>
+
+        </LinearLayout>
+
+        <!-- energy -->
+        <LinearLayout
+            android:id="@+id/energyHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/game_info_icon_size"
+                android:layout_height="@dimen/game_info_icon_size"
+                android:contentDescription="@string/game_info_energy"
+                android:src="@drawable/ic_energy"/>
+
+            <TextView
+                android:id="@+id/energy"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/common_text"/>
+
+        </LinearLayout>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_marginTop="8dp">
+
+        <!-- magical power -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/game_info_icon_size"
+                android:layout_height="@dimen/game_info_icon_size"
+                android:src="@drawable/ic_power_magical"/>
+
+            <TextView
+                android:id="@+id/magicalPower"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/common_text"/>
+
+        </LinearLayout>
+
+        <!-- might -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/game_info_icon_size"
+                android:layout_height="@dimen/game_info_icon_size"
+                android:src="@drawable/ic_might"/>
+
+            <TextView
+                android:id="@+id/might"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/common_text"/>
+
+        </LinearLayout>
+
+    </TableRow>
+</merge>

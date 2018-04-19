@@ -1,14 +1,12 @@
 package com.dleibovych.epictale.game.gameinfo.views
 
 import android.content.Context
-import android.support.v4.widget.TextViewCompat
 import android.util.AttributeSet
+import android.support.v4.widget.TextViewCompat
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import com.dleibovych.epictale.R
 import kotlinx.android.synthetic.main.layout_account_info.view.*
-import org.thetale.api.enumerations.CompanionSpecies
 import org.thetale.api.enumerations.Gender
 import org.thetale.api.enumerations.Race
 import org.thetale.api.models.Base

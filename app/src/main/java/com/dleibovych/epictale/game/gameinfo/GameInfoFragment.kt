@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.Fragment
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +20,6 @@ import com.dleibovych.epictale.api.cache.prerequisite.InfoPrerequisiteRequest
 import com.dleibovych.epictale.api.cache.prerequisite.PrerequisiteRequest
 import org.thetale.api.enumerations.Action
 import org.thetale.api.enumerations.ArtifactEffect
-import org.thetale.api.enumerations.Habit
 import org.thetale.api.enumerations.HeroAction
 import com.dleibovych.epictale.api.request.AbilityUseRequest
 import com.dleibovych.epictale.api.response.CommonResponse
@@ -40,7 +37,6 @@ import com.dleibovych.epictale.widget.RequestActionView
 import kotlinx.android.synthetic.main.fragment_game_info.*
 
 import java.net.CookieManager
-import java.util.Date
 import java.util.regex.Pattern
 
 import javax.inject.Inject
@@ -65,15 +61,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
 
     private var rootView: View? = null
 
-    private var blockEnergy: View? = null
-    private var textEnergy: TextView? = null
-    private var textPowerPhysical: TextView? = null
-    private var textPowerMagical: TextView? = null
-    private var textMoney: TextView? = null
-    private var textMight: TextView? = null
-
-    private var companionAbsentText: View? = null
-
     private var progressAction: ProgressBar? = null
     private var progressActionInfo: TextView? = null
     private var textAction: TextView? = null
@@ -91,16 +78,6 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         presenter.view = this
 
         rootView = inflater.inflate(R.layout.fragment_game_info, container, false)
-
-        blockEnergy = rootView!!.findViewById(R.id.game_info_energy)
-        textEnergy = rootView!!.findViewById(R.id.game_info_energy_text)
-
-        textPowerPhysical = rootView!!.findViewById(R.id.game_info_power_physical)
-        textPowerMagical = rootView!!.findViewById(R.id.game_info_power_magical)
-        textMoney = rootView!!.findViewById(R.id.game_info_money)
-        textMight = rootView!!.findViewById(R.id.game_info_might)
-
-        companionAbsentText = rootView!!.findViewById(R.id.game_info_companion_absent)
 
         progressAction = rootView!!.findViewById(R.id.game_info_action_progress)
         progressActionInfo = rootView!!.findViewById(R.id.game_info_action_progress_info)
@@ -167,71 +144,8 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         }
 
         heroInfo.bind(info.account.hero.base)
-        val companion = info.account.hero.companion
-        if (companion != null) {
-            companionAbsentText!!.visibility = View.GONE
-            companionInfo.visibility = View.VISIBLE
-            companionInfo.bind(companion)
-        } else {
-            companionAbsentText!!.visibility = View.VISIBLE
-            companionInfo.visibility = View.GONE
-        }
-
-        val additionalInfoStringBuilder = SpannableStringBuilder()
-        val lastVisit = Date(info.account.lastVisit * 1000)
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_account_id),
-                info.account.id.toString()))
-                .append("\n")
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_last_visit),
-                String.format("%s %s",
-                        DateFormat.getDateFormat(TheTaleApplication.context).format(lastVisit),
-                        DateFormat.getTimeFormat(TheTaleApplication.context).format(lastVisit))))
-                .append("\n")
-        if (info.account.isOwn) {
-            additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                    getString(R.string.game_additional_info_new_messages),
-                    info.account.newMessages.toString()))
-                    .append("\n")
-        }
-        additionalInfoStringBuilder.append("\n")
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_honor),
-                        info.account.hero.habits[Habit.HONOR.habitName]?.verbose))
-                .append("\n")
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_peacefulness),
-                        info.account.hero.habits[Habit.PEACEFULNESS.habitName]?.verbose))
-                .append("\n")
-        additionalInfoStringBuilder.append("\n")
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_destiny_points),
-                info.account.hero.base.destinyPoints.toString()))
-                .append("\n")
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_move_speed),
-                info.account.hero.secondary.moveSpeed.toString()))
-                .append("\n")
-        additionalInfoStringBuilder.append(UiUtils.getInfoItem(
-                getString(R.string.game_additional_info_initiative),
-                info.account.hero.secondary.initiative.toString()))
-
-        blockEnergy!!.visibility = if (info.account.isOwn) View.VISIBLE else View.GONE
-        if (info.account.isOwn) {
-            val energy = info.account.energy
-            if (energy != null) {
-                textEnergy!!.text = energy.toString()
-            }
-        }
-
-        textPowerPhysical!!.text = info.account.hero.secondary.power[0].toString()
-        textPowerMagical!!.text = info.account.hero.secondary.power[1].toString()
-        textMoney!!.text = info.account.hero.base.money.toString()
-
-        val mightInfo = info.account.hero.might
-        textMight!!.text = mightInfo.value.toString()
-//        textMight!!.setOnClickListener { DialogUtils.showMightDialog(fragmentManager, mightInfo) }
+        stats.bind(info.account)
+        bindCompanion(info.account.hero.companion)
 
         val action = info.account.hero.action
         progressAction!!.max = 1000
@@ -326,6 +240,17 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
         }
 
         setMode(DataViewMode.DATA)
+    }
+
+    private fun bindCompanion(companion: CompanionInfo?) {
+        if (companion != null) {
+            companionAbsent.visibility = View.GONE
+            companionInfo.visibility = View.VISIBLE
+            companionInfo.bind(companion)
+        } else {
+            companionAbsent.visibility = View.VISIBLE
+            companionInfo.visibility = View.GONE
+        }
     }
 
     override fun showError() {
@@ -430,7 +355,7 @@ class GameInfoFragment : WrapperFragment(), GameInfoView {
 
         private val REFRESH_TIMEOUT_MILLIS: Long = 10000 // 10 s
 
-        public fun create() = GameInfoFragment()
+        fun create() = GameInfoFragment()
     }
 
 }

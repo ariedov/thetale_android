@@ -23,143 +23,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <!-- power, money, might -->
-            <TableLayout
+            <com.dleibovych.epictale.game.gameinfo.views.StatsView
+                android:id="@+id/stats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:stretchColumns="*">
-
-                <TableRow>
-
-                    <!-- physical power -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="@dimen/game_info_icon_size"
-                            android:layout_height="@dimen/game_info_icon_size"
-                            android:src="@drawable/ic_power_physical"/>
-
-                        <TextView
-                            android:id="@+id/game_info_power_physical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:includeFontPadding="false"
-                            style="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/common_text"/>
-
-                    </LinearLayout>
-
-                    <!-- money -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="@dimen/game_info_icon_size"
-                            android:layout_height="@dimen/game_info_icon_size"
-                            android:src="@drawable/ic_money"/>
-
-                        <TextView
-                            android:id="@+id/game_info_money"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:includeFontPadding="false"
-                            style="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/common_text"/>
-
-                    </LinearLayout>
-
-                    <!-- energy -->
-                    <LinearLayout
-                        android:id="@+id/game_info_energy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="@dimen/game_info_icon_size"
-                            android:layout_height="@dimen/game_info_icon_size"
-                            android:src="@drawable/ic_energy"
-                            android:contentDescription="@string/game_info_energy"/>
-
-                        <TextView
-                            android:id="@+id/game_info_energy_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:includeFontPadding="false"
-                            style="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/common_text"/>
-
-                    </LinearLayout>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginTop="8dp">
-
-                    <!-- magical power -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="@dimen/game_info_icon_size"
-                            android:layout_height="@dimen/game_info_icon_size"
-                            android:src="@drawable/ic_power_magical"/>
-
-                        <TextView
-                            android:id="@+id/game_info_power_magical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:includeFontPadding="false"
-                            style="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/common_text"/>
-
-                    </LinearLayout>
-
-                    <!-- might -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="@dimen/game_info_icon_size"
-                            android:layout_height="@dimen/game_info_icon_size"
-                            android:src="@drawable/ic_might"/>
-
-                        <TextView
-                            android:id="@+id/game_info_might"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:includeFontPadding="false"
-                            style="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/common_text"/>
-
-                    </LinearLayout>
-
-                </TableRow>
-
-            </TableLayout>
+                android:layout_marginTop="16dp"/>
 
             <TextView
-                android:id="@+id/game_info_companion_absent"
+                android:id="@+id/companionAbsent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -170,7 +41,8 @@
             <com.dleibovych.epictale.game.gameinfo.views.CompanionInfoView
                 android:id="@+id/companionInfo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
 
         </LinearLayout>
 
