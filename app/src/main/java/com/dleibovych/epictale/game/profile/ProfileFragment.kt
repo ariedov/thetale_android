@@ -135,7 +135,7 @@ class ProfileFragment : Fragment(), ProfileView {
                 else
                     getString(R.string.profile_rating_item_place, ratingItemInfo.place)
             }
-            tableRatings!!.addView(getTableRow(tableRatings!!, ratingItemInfo.name, ratingItemInfo.name, place))
+            tableRatings!!.addView(getTableRow(tableRatings!!, ratingItemInfo.name, ratingItemInfo.place.toString(), place))
         }
     }
 

@@ -150,8 +150,8 @@
                 android:id="@+id/profile_container_ratings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="0"
-                android:shrinkColumns="0"/>
+                android:stretchColumns="*"
+                android:shrinkColumns="*"/>
 
         </LinearLayout>
 

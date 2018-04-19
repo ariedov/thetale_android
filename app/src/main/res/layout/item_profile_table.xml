@@ -7,18 +7,21 @@
     <TextView
         android:id="@+id/item_profile_table_text_1"
         style="?android:attr/textAppearanceMedium"
+        android:maxLines="1"
         android:textColor="@color/common_text"/>
 
     <TextView
         android:id="@+id/item_profile_table_text_2"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         style="?android:attr/textAppearanceMedium"
+        android:maxLines="1"
         android:textColor="@color/common_text"/>
 
     <TextView
         android:id="@+id/item_profile_table_text_3"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         style="?android:attr/textAppearanceMedium"
+        android:maxLines="1"
         android:textColor="@color/common_text"/>
 
 </TableRow>
