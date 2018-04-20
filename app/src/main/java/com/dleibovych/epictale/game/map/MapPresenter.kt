@@ -24,9 +24,14 @@ class MapPresenter(private val gameInfoProvider: GameInfoProvider,
         state.stop()
     }
 
+    fun retry() {
+        state.apply { loadMap() }
+    }
+
     private fun loadMap() {
         mapJob = launch(UI) {
             try {
+                state.apply { view?.showLoading() }
                 val gameInfo = gameInfoProvider.getInfo().await()
                 val mapVersion = mapVersionRegex.matchEntire(gameInfo.mapVersion)!!.groupValues[1]
                 val map = mapProvider.getMap(mapVersion.toInt()).await()!!
@@ -40,4 +45,5 @@ class MapPresenter(private val gameInfoProvider: GameInfoProvider,
     fun dispose() {
         mapJob?.cancel()
     }
+
 }

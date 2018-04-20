@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:visibility="visible" />
 
-    <org.thetale.auth.views.LoginErrorView
+    <org.thetale.core.views.ErrorView
         android:id="@+id/error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

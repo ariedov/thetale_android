@@ -31,7 +31,8 @@ import org.thetale.api.models.GameInfo
 
 class GameInfoFragment : Fragment(), GameInfoView {
 
-    @Inject lateinit var presenter: GameInfoPresenter
+    @Inject
+    lateinit var presenter: GameInfoPresenter
 
     private var rootView: View? = null
 
@@ -61,6 +62,13 @@ class GameInfoFragment : Fragment(), GameInfoView {
         journalContainer = rootView!!.findViewById(R.id.journal_container)
 
         return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        error.onRetryClick(View.OnClickListener { presenter.retry() })
+
     }
 
     override fun onDestroyView() {
@@ -95,7 +103,17 @@ class GameInfoFragment : Fragment(), GameInfoView {
         }
     }
 
+    override fun showProgress() {
+        progress.visibility = View.VISIBLE
+        error.visibility = View.GONE
+        content.visibility = View.GONE
+    }
+
     override fun showGameInfo(info: GameInfo) {
+        progress.visibility = View.GONE
+        error.visibility = View.GONE
+        content.visibility = View.VISIBLE
+
         val account = info.account!!
 
         if (lastKnownHealth == 0) {
@@ -202,7 +220,11 @@ class GameInfoFragment : Fragment(), GameInfoView {
     }
 
     override fun showError() {
-//        setError(getString(R.string.common_error))
+        progress.visibility = View.GONE
+        content.visibility = View.GONE
+        error.visibility = View.VISIBLE
+
+        error.setErrorText(getString(R.string.common_error))
     }
 
     override fun showAbilityProgress() {

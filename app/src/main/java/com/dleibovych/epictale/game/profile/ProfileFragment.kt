@@ -15,6 +15,7 @@ import android.widget.TextView
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.game.di.GameComponentProvider
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 import java.util.Comparator
 
@@ -65,13 +66,30 @@ class ProfileFragment : Fragment(), ProfileView {
         return rootView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        error.onRetryClick(View.OnClickListener { presenter.retry() })
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
 
         presenter.view = null
     }
 
+    override fun showProgress() {
+        progress.visibility = View.VISIBLE
+        error.visibility = View.GONE
+        content.visibility = View.GONE
+    }
+
     override fun showAccountInfo(info: AccountInfo) {
+        progress.visibility = View.GONE
+        error.visibility = View.GONE
+        content.visibility = View.VISIBLE
+
+
         textName!!.text = Html.fromHtml(getString(R.string.find_player_info_short, info.name))
         textAffectGame!!.text = getString(if (info.permissions.canAffectGame) R.string.game_affect_true else R.string.game_affect_false)
         textMight!!.text = Math.floor(info.might).toInt().toString()
@@ -94,7 +112,11 @@ class ProfileFragment : Fragment(), ProfileView {
     }
 
     override fun showError() {
-//        setError(response.errorMessage)
+        error.visibility = View.VISIBLE
+        progress.visibility = View.GONE
+        content.visibility = View.GONE
+
+        error.setErrorText(getString(R.string.common_error))
     }
 
     private fun getTableRow(parent: ViewGroup, text1: CharSequence, text2: CharSequence?, text3: CharSequence): View {

@@ -36,6 +36,10 @@ class ProfilePresenter(private val service: TheTaleService,
         }
     }
 
+    fun retry() {
+        state.apply { loadProfileInfo() }
+    }
+
     fun dispose() {
         profileJob?.cancel()
     }

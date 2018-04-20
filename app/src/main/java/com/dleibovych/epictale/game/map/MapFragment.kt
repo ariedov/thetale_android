@@ -37,6 +37,7 @@ import com.dleibovych.epictale.util.ObjectUtils
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.RequestUtils
 import com.dleibovych.epictale.util.UiUtils
+import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.models.*
@@ -125,6 +126,12 @@ class MapFragment : Fragment(), MapView {
         return rootView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        error.onRetryClick(View.OnClickListener { presenter.retry() })
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -160,7 +167,17 @@ class MapFragment : Fragment(), MapView {
         }
     }
 
+    override fun showLoading() {
+        progress.visibility = View.VISIBLE
+        error.visibility = View.GONE
+        mapView!!.visibility = View.GONE
+    }
+
     override fun drawMap(region: Region, hero: Hero) {
+        mapView!!.visibility = View.VISIBLE
+        error.visibility = View.GONE
+        progress.visibility = View.GONE
+
         launch(UI) {
             val sprite = drawer.getMapSprite(getContext()!!, MapStyle.STANDARD)
 
@@ -200,7 +217,11 @@ class MapFragment : Fragment(), MapView {
     }
 
     override fun showError(t: Throwable) {
-//        setError(getString(R.string.map_error))
+        error.visibility = View.VISIBLE
+        progress.visibility = View.GONE
+        mapView!!.visibility = View.GONE
+
+        error.setErrorText(getString(R.string.map_error))
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {

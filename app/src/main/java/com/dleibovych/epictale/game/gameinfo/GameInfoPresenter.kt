@@ -53,9 +53,14 @@ class GameInfoPresenter(
 
     }
 
+    fun retry() {
+        state.apply { loadGameInfo() }
+    }
+
     private fun loadGameInfo() {
         infoJob = launch(UI) {
             try {
+                state.apply { view?.showProgress() }
                 val info = provider.getInfo().await()
                 gameInfoScheduler.addListener(listener)
                 state.apply { view?.showGameInfo(info) }
