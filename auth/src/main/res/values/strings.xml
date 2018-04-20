@@ -1,5 +1,4 @@
 <resources>
-    <string name="action_retry">Повторить попытку</string>
     <string name="try_again">Попробовать еще разок</string>
     <string name="common_error">Произошла неизвестная ошибка. Попробуйте еще раз.</string>
 

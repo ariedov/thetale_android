@@ -417,38 +417,38 @@ class MapFragment : Fragment(), MapView {
             val tileX = Math.floor((x * width.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
             val tileY = Math.floor((y * height.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
 
-            DialogUtils.showTabbedDialog(childFragmentManager, getString(R.string.drawer_title_map), null)
+//            DialogUtils.showTabbedDialog(childFragmentManager, getString(R.string.drawer_title_map), null)
 
-            MapCellRequest().execute(tileX, tileY, RequestUtils.wrapCallback(object : CommonResponseCallback<MapCellResponse, String> {
-                override fun processResponse(response: MapCellResponse) {
-                    // request may be completed before fragment is instantiated, we'll wait for it
-                    val handler = Handler()
-                    handler.post(object : Runnable {
-                        override fun run() {
-                            val dialog = childFragmentManager.findFragmentByTag(DialogUtils.DIALOG_TABBED_TAG) as TabbedDialog
-                            if (dialog == null) {
-                                handler.post(this)
-                            } else {
-                                dialog.setCaption(response.title
-                                        ?: getString(R.string.map_tile_caption, tileX, tileY))
-                                dialog.setTabsAdapter(TileTabsAdapter(response))
-                                dialog.setMode(DataViewMode.DATA)
-                            }
-                        }
-                    })
-                }
-
-                override fun processError(error: String) {
-                    val handler = Handler()
-                    handler.post(object : Runnable {
-                        override fun run() {
-                            val dialog = childFragmentManager.findFragmentByTag(DialogUtils.DIALOG_TABBED_TAG) as TabbedDialog
-                            dialog?.dismiss() ?: handler.post(this)
-                        }
-                    })
-//                    setError(getString(R.string.map_error))
-                }
-            }, this@MapFragment))
+//            MapCellRequest().execute(tileX, tileY, RequestUtils.wrapCallback(object : CommonResponseCallback<MapCellResponse, String> {
+//                override fun processResponse(response: MapCellResponse) {
+//                    // request may be completed before fragment is instantiated, we'll wait for it
+//                    val handler = Handler()
+//                    handler.post(object : Runnable {
+//                        override fun run() {
+//                            val dialog = childFragmentManager.findFragmentByTag(DialogUtils.DIALOG_TABBED_TAG) as TabbedDialog
+//                            if (dialog == null) {
+//                                handler.post(this)
+//                            } else {
+//                                dialog.setCaption(response.title
+//                                        ?: getString(R.string.map_tile_caption, tileX, tileY))
+//                                dialog.setTabsAdapter(TileTabsAdapter(response))
+//                                dialog.setMode(DataViewMode.DATA)
+//                            }
+//                        }
+//                    })
+//                }
+//
+//                override fun processError(error: String) {
+//                    val handler = Handler()
+//                    handler.post(object : Runnable {
+//                        override fun run() {
+//                            val dialog = childFragmentManager.findFragmentByTag(DialogUtils.DIALOG_TABBED_TAG) as TabbedDialog
+//                            dialog?.dismiss() ?: handler.post(this)
+//                        }
+//                    })
+////                    setError(getString(R.string.map_error))
+//                }
+//            }, this@MapFragment))
         }
 
         places = ArrayList(region.places.size)

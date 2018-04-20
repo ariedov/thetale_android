@@ -27,6 +27,7 @@ class ProfilePresenter(private val service: TheTaleService,
     private fun loadProfileInfo() {
         profileJob = launch(UI) {
             try {
+                state.apply { view?.showProgress() }
                 val gameInfo = gameInfoProvider.getInfo().await()
                 val accountInfo = service.getAccount(gameInfo.account!!.id).readDataOrThrow()!!
                 state.apply { view?.showAccountInfo(accountInfo) }
