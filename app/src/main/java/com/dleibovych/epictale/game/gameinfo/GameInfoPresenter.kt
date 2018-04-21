@@ -31,6 +31,8 @@ class GameInfoPresenter(
 
     fun start() {
         state.start()
+
+        gameInfoScheduler.addListener(listener)
     }
 
     fun stop() {
@@ -49,8 +51,6 @@ class GameInfoPresenter(
                 view?.showAbilityError()
             }
         }
-
-
     }
 
     fun retry() {
@@ -62,7 +62,6 @@ class GameInfoPresenter(
             try {
                 state.apply { view?.showProgress() }
                 val info = provider.getInfo().await()
-                gameInfoScheduler.addListener(listener)
                 state.apply { view?.showGameInfo(info) }
             } catch (e: Exception) {
                 state.apply { view?.showError() }
