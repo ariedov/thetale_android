@@ -26,28 +26,6 @@ import kotlin.coroutines.experimental.suspendCoroutine
 class MapDrawer {
 
     /**
-     * Gets an appropriate map sprite
-     * @param mapStyle desired map style
-     */
-    suspend fun getMapSprite(context: Context, mapStyle: MapStyle): Bitmap = suspendCoroutine {
-        val url = Uri.parse(String.format(MAP_SPRITE_URL,
-                PreferencesManager.getStaticContentUrl(), mapStyle.path))
-        Glide
-                .with(context)
-                .asBitmap()
-                .load(url)
-                .into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        it.resume(resource)
-                    }
-
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        it.resumeWithException(RuntimeException("bitmap not loaded"))
-                    }
-                })
-    }
-
-    /**
      * Returns a bitmap to draw a map on
      * @param mapInfo map information
      * @return empty bitmap of necessary size
@@ -201,8 +179,6 @@ class MapDrawer {
     }
 
     companion object {
-
-        private const val MAP_SPRITE_URL = "http:%s%s"
         const val MAP_TILE_SIZE = 32
         private const val HERO_SPRITE_SHIFT_Y = -12
 

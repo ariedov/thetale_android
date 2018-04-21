@@ -60,6 +60,8 @@ class MapFragment : Fragment(), MapView {
     @Inject
     lateinit var presenter: MapPresenter
     @Inject
+    lateinit var mapSpriteProvider: MapSpriteProvider
+    @Inject
     lateinit var drawer: MapDrawer
 
     private var rootView: View? = null
@@ -179,39 +181,43 @@ class MapFragment : Fragment(), MapView {
         progress.visibility = View.GONE
 
         launch(UI) {
-            val sprite = drawer.getMapSprite(getContext()!!, MapStyle.STANDARD)
+            try {
+                val sprite = mapSpriteProvider.getMapSprite(getContext()!!, MapStyle.STANDARD).await()
 
-            val map = drawer.getMapBitmap(region)
-            val canvas = Canvas(map)
+                val map = drawer.getMapBitmap(region)
+                val canvas = Canvas(map)
 
-            val actionMapModification = UiUtils.getMenuItem(activity, R.id.action_map_modification)
+                val actionMapModification = UiUtils.getMenuItem(activity, R.id.action_map_modification)
 
-            if (mapModification === MapModification.None) {
-                drawer.drawBaseLayer(canvas, region, sprite)
-                drawer.drawPlaceNamesLayer(canvas, region)
-                drawer.drawHeroLayer(canvas, hero, sprite)
-                setMap(map, region, hero.position)
-            } else {
-                MapTerrainRequest().execute(RequestUtils.wrapCallback(object : CommonResponseCallback<MapTerrainResponse, String> {
-                    override fun processResponse(mapTerrainResponse: MapTerrainResponse) {
-                        when (mapModification) {
-                            MapModification.Wind -> drawer.drawModificationLayer(canvas, region, mapTerrainResponse, mapModification!!)
+                if (mapModification === MapModification.None) {
+                    drawer.drawBaseLayer(canvas, region, sprite)
+                    drawer.drawPlaceNamesLayer(canvas, region)
+                    drawer.drawHeroLayer(canvas, hero, sprite)
+                    setMap(map, region, hero.position)
+                } else {
+                    MapTerrainRequest().execute(RequestUtils.wrapCallback(object : CommonResponseCallback<MapTerrainResponse, String> {
+                        override fun processResponse(mapTerrainResponse: MapTerrainResponse) {
+                            when (mapModification) {
+                                MapModification.Wind -> drawer.drawModificationLayer(canvas, region, mapTerrainResponse, mapModification!!)
 
-                            MapModification.Influence -> {
-                                drawer.drawBaseLayer(canvas, region, sprite)
-                                drawer.drawModificationLayer(canvas, region, mapTerrainResponse, mapModification!!)
-                                drawer.drawPlaceNamesLayer(canvas, region)
-                                drawer.drawHeroLayer(canvas, hero, sprite)
+                                MapModification.Influence -> {
+                                    drawer.drawBaseLayer(canvas, region, sprite)
+                                    drawer.drawModificationLayer(canvas, region, mapTerrainResponse, mapModification!!)
+                                    drawer.drawPlaceNamesLayer(canvas, region)
+                                    drawer.drawHeroLayer(canvas, hero, sprite)
+                                }
                             }
+                            setMap(map, region, hero.position)
                         }
-                        setMap(map, region, hero.position)
-                    }
 
-                    override fun processError(error: String) {
+                        override fun processError(error: String) {
 //                        setError(getString(R.string.map_error))
-                        mapModification = MapModification.None
-                    }
-                }, this@MapFragment))
+                            mapModification = MapModification.None
+                        }
+                    }, this@MapFragment))
+                }
+            } catch (e: Exception) {
+                showError(e)
             }
         }
     }

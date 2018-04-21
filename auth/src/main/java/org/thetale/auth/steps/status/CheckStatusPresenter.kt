@@ -1,5 +1,6 @@
 package org.thetale.auth.steps.status
 
+import android.preference.PreferenceManager
 import org.thetale.auth.LoginNavigationProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -36,7 +37,6 @@ class CheckStatusPresenter(private val service: TheTaleService,
         appInfoJob = launch(UI) {
             try {
                 state.apply { view?.showLoading() }
-
                 val info = service.info().readDataOrThrow()!!
                 if (info.accountId == null) {
                     navigationProvider.navigation?.showCredentials()
