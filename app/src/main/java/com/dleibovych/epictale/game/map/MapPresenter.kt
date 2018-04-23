@@ -1,13 +1,20 @@
 package com.dleibovych.epictale.game.map
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import com.dleibovych.epictale.game.data.GameInfoProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import org.thetale.api.enumerations.MapStyle
+import org.thetale.api.models.Hero
+import org.thetale.api.models.Region
 import org.thetale.core.PresenterState
 
 class MapPresenter(private val gameInfoProvider: GameInfoProvider,
-                   private val mapProvider: MapProvider) {
+                   private val mapProvider: MapProvider,
+                   private val mapSpriteProvider: MapSpriteProvider,
+                   private val mapDrawer: MapDrawer) {
 
     private val mapVersionRegex = Regex("(\\d+)-(\\d+).(\\d+)")
 
@@ -33,13 +40,27 @@ class MapPresenter(private val gameInfoProvider: GameInfoProvider,
             try {
                 state.apply { view?.showLoading() }
                 val gameInfo = gameInfoProvider.getInfo().await()
+                val hero = gameInfo.account!!.hero
                 val mapVersion = mapVersionRegex.matchEntire(gameInfo.mapVersion)!!.groupValues[1]
                 val map = mapProvider.getMap(mapVersion.toInt()).await()!!
-                state.apply { view?.drawMap(map.region, gameInfo.account!!.hero) }
+                val region = map.region
+
+                val mapBitmap = createMapBitmap(region, hero)
+                state.apply { view?.drawMap(mapBitmap, map.region, hero.position) }
             } catch (e: Exception) {
                 state.apply { view?.showError(e) }
             }
         }
+    }
+
+    private suspend fun createMapBitmap(region: Region, hero: Hero): Bitmap {
+        val sprite = mapSpriteProvider.getMapSprite(MapStyle.STANDARD).await()
+        val mapBitmap = mapDrawer.getMapBitmap(region)
+        val canvas = Canvas(mapBitmap)
+        mapDrawer.drawBaseLayer(canvas, region, sprite)
+        mapDrawer.drawPlaceNamesLayer(canvas, region)
+        mapDrawer.drawHeroLayer(canvas, hero, sprite)
+        return mapBitmap
     }
 
     fun dispose() {

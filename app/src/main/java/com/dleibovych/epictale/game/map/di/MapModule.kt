@@ -8,6 +8,7 @@ import com.dleibovych.epictale.game.map.MapProvider
 import com.dleibovych.epictale.game.map.MapSpriteProvider
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import org.thetale.api.TheTaleService
 
 @Module
@@ -19,13 +20,17 @@ class MapModule {
 
     @GameScope
     @Provides
-    fun mapPresenter(gameInfoProvider: GameInfoProvider, mapProvider: MapProvider) = MapPresenter(gameInfoProvider, mapProvider)
-
-    @GameScope
-    @Provides
-    fun mapSpriteProvider(service: TheTaleService) = MapSpriteProvider(service)
+    fun mapSpriteProvider(client: OkHttpClient, service: TheTaleService) = MapSpriteProvider(client, service)
 
     @GameScope
     @Provides
     fun mapDrawer() = MapDrawer()
+
+    @GameScope
+    @Provides
+    fun mapPresenter(gameInfoProvider: GameInfoProvider,
+                     mapProvider: MapProvider,
+                     mapSpriteProvider: MapSpriteProvider,
+                     mapDrawer: MapDrawer)
+            = MapPresenter(gameInfoProvider, mapProvider, mapSpriteProvider, mapDrawer)
 }

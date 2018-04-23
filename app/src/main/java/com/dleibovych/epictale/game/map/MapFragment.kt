@@ -1,13 +1,8 @@
 package com.dleibovych.epictale.game.map
 
-import android.app.ProgressDialog
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.PointF
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -21,37 +16,21 @@ import com.dleibovych.epictale.fragment.MapTileDescriptionFragment
 import com.dleibovych.epictale.fragment.MapTileParamsFragment
 import com.dleibovych.epictale.fragment.MapTileTerrainFragment
 import com.github.chrisbanes.photoview.PhotoView
-import com.dleibovych.epictale.DataViewMode
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.api.CommonResponseCallback
 import org.thetale.api.enumerations.MapCellType
 import org.thetale.api.enumerations.MapStyle
-import com.dleibovych.epictale.api.request.MapCellRequest
-import com.dleibovych.epictale.api.request.MapTerrainRequest
 import com.dleibovych.epictale.api.response.MapCellResponse
-import com.dleibovych.epictale.api.response.MapTerrainResponse
 import com.dleibovych.epictale.fragment.dialog.TabbedDialog
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.DialogUtils
 import com.dleibovych.epictale.util.ObjectUtils
 import com.dleibovych.epictale.util.PreferencesManager
-import com.dleibovych.epictale.util.RequestUtils
 import com.dleibovych.epictale.util.UiUtils
 import kotlinx.android.synthetic.main.fragment_map.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import org.thetale.api.models.*
 
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
-import java.text.SimpleDateFormat
 import java.util.ArrayList
-import java.util.Date
 import java.util.HashMap
-import java.util.Locale
 
 import javax.inject.Inject
 
@@ -59,10 +38,6 @@ class MapFragment : Fragment(), MapView {
 
     @Inject
     lateinit var presenter: MapPresenter
-    @Inject
-    lateinit var mapSpriteProvider: MapSpriteProvider
-    @Inject
-    lateinit var drawer: MapDrawer
 
     private var rootView: View? = null
 
@@ -78,8 +53,8 @@ class MapFragment : Fragment(), MapView {
     private var shouldShowMenuOptions = true
 
     private var places: MutableList<Place>? = null
-    private var mapModification: MapModification? = null
 
+    private val mapModification: MapModification = MapModification.None
     private val mapShift: PointF
         get() {
             val currentRect = mapView!!.displayRect
@@ -93,13 +68,6 @@ class MapFragment : Fragment(), MapView {
 
             return PointF(currentRect.left - centeredRectLeft, currentRect.top - centeredRectTop)
         }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-
-        mapModification = MapModification.None
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         (activity!!.application as GameComponentProvider)
@@ -116,12 +84,10 @@ class MapFragment : Fragment(), MapView {
             mapZoom = savedInstanceState.getFloat(KEY_MAP_ZOOM, 1.0f)
             mapShiftX = savedInstanceState.getFloat(KEY_MAP_SHIFT_X, 0.0f)
             mapShiftY = savedInstanceState.getFloat(KEY_MAP_SHIFT_Y, 0.0f)
-            mapModification = MapModification.None
         } else {
             mapZoom = 1.0f
             mapShiftX = 0.0f
             mapShiftY = 0.0f
-            mapModification = MapModification.None
             shouldMoveToHero = true
         }
 
@@ -175,51 +141,12 @@ class MapFragment : Fragment(), MapView {
         mapView!!.visibility = View.GONE
     }
 
-    override fun drawMap(region: Region, hero: Hero) {
+    override fun drawMap(map: Bitmap, region: Region, heroPosition: HeroPosition) {
         mapView!!.visibility = View.VISIBLE
         error.visibility = View.GONE
         progress.visibility = View.GONE
 
-        launch(UI) {
-            try {
-                val sprite = mapSpriteProvider.getMapSprite(getContext()!!, MapStyle.STANDARD).await()
-
-                val map = drawer.getMapBitmap(region)
-                val canvas = Canvas(map)
-
-                val actionMapModification = UiUtils.getMenuItem(activity, R.id.action_map_modification)
-
-                if (mapModification === MapModification.None) {
-                    drawer.drawBaseLayer(canvas, region, sprite)
-                    drawer.drawPlaceNamesLayer(canvas, region)
-                    drawer.drawHeroLayer(canvas, hero, sprite)
-                    setMap(map, region, hero.position)
-                } else {
-                    MapTerrainRequest().execute(RequestUtils.wrapCallback(object : CommonResponseCallback<MapTerrainResponse, String> {
-                        override fun processResponse(mapTerrainResponse: MapTerrainResponse) {
-                            when (mapModification) {
-                                MapModification.Wind -> drawer.drawModificationLayer(canvas, region, mapTerrainResponse, mapModification!!)
-
-                                MapModification.Influence -> {
-                                    drawer.drawBaseLayer(canvas, region, sprite)
-                                    drawer.drawModificationLayer(canvas, region, mapTerrainResponse, mapModification!!)
-                                    drawer.drawPlaceNamesLayer(canvas, region)
-                                    drawer.drawHeroLayer(canvas, hero, sprite)
-                                }
-                            }
-                            setMap(map, region, hero.position)
-                        }
-
-                        override fun processError(error: String) {
-//                        setError(getString(R.string.map_error))
-                            mapModification = MapModification.None
-                        }
-                    }, this@MapFragment))
-                }
-            } catch (e: Exception) {
-                showError(e)
-            }
-        }
+        setMap(map, region, heroPosition)
     }
 
     override fun showError(t: Throwable) {
@@ -284,57 +211,57 @@ class MapFragment : Fragment(), MapView {
             }
 
             R.id.action_map_save -> {
-                val progressDialog = ProgressDialog.show(activity,
-                        getString(R.string.map_save), getString(R.string.map_save_progress), true, false)
-                Thread(Runnable {
-                    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                    path.mkdirs()
-
-                    val filenameBase = String.format("the-tale_map_%s",
-                            SimpleDateFormat("yyyyMMddHHmmss", Locale.US).format(Date()))
-                    var file: File
-                    var counter = 0
-                    do {
-                        val filename = if (counter == 0)
-                            "$filenameBase.png"
-                        else
-                            String.format("%s_%d.png", filenameBase, counter)
-                        file = File(path, filename)
-                        counter++
-                    } while (file.exists())
-
-                    var output: OutputStream? = null
-                    try {
-                        output = FileOutputStream(file)
-                        (mapView!!.drawable as BitmapDrawable).bitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
-                    } catch (e: FileNotFoundException) {
-                        showMapSaveError(e.localizedMessage)
-                    }
-
-                    if (output != null) {
-                        var success = false
-                        try {
-                            output.close()
-                            success = true
-                        } catch (e: IOException) {
-                            showMapSaveError(e.localizedMessage)
-                        }
-
-                        //                            if(success && !UiUtils.getMainActivity(MapFragment.this).isPaused()) {
-                        //                                DialogUtils.showConfirmationDialog(getChildFragmentManager(),
-                        //                                        getString(R.string.map_save), getString(R.string.map_save_message, fileMap.getPath()),
-                        //                                        null, null,
-                        //                                        getString(R.string.map_save_open), () -> {
-                        //                                            final Intent intent = new Intent();
-                        //                                            intent.setAction(Intent.ACTION_VIEW);
-                        //                                            intent.setDataAndType(Uri.fromFile(fileMap), "image/png");
-                        //                                            startActivity(intent);
-                        //                                        }, null);
-                        //                            }
-                    }
-
-                    activity!!.runOnUiThread { progressDialog.dismiss() }
-                }).start()
+//                val progressDialog = ProgressDialog.show(activity,
+//                        getString(R.string.map_save), getString(R.string.map_save_progress), true, false)
+//                Thread(Runnable {
+//                    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+//                    path.mkdirs()
+//
+//                    val filenameBase = String.format("the-tale_map_%s",
+//                            SimpleDateFormat("yyyyMMddHHmmss", Locale.US).format(Date()))
+//                    var file: File
+//                    var counter = 0
+//                    do {
+//                        val filename = if (counter == 0)
+//                            "$filenameBase.png"
+//                        else
+//                            String.format("%s_%d.png", filenameBase, counter)
+//                        file = File(path, filename)
+//                        counter++
+//                    } while (file.exists())
+//
+//                    var output: OutputStream? = null
+//                    try {
+//                        output = FileOutputStream(file)
+//                        (mapView!!.drawable as BitmapDrawable).bitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
+//                    } catch (e: FileNotFoundException) {
+//                        showMapSaveError(e.localizedMessage)
+//                    }
+//
+//                    if (output != null) {
+//                        var success = false
+//                        try {
+//                            output.close()
+//                            success = true
+//                        } catch (e: IOException) {
+//                            showMapSaveError(e.localizedMessage)
+//                        }
+//
+//                        //                            if(success && !UiUtils.getMainActivity(MapFragment.this).isPaused()) {
+//                        //                                DialogUtils.showConfirmationDialog(getChildFragmentManager(),
+//                        //                                        getString(R.string.map_save), getString(R.string.map_save_message, fileMap.getPath()),
+//                        //                                        null, null,
+//                        //                                        getString(R.string.map_save_open), () -> {
+//                        //                                            final Intent intent = new Intent();
+//                        //                                            intent.setAction(Intent.ACTION_VIEW);
+//                        //                                            intent.setDataAndType(Uri.fromFile(fileMap), "image/png");
+//                        //                                            startActivity(intent);
+//                        //                                        }, null);
+//                        //                            }
+//                    }
+//
+//                    activity!!.runOnUiThread { progressDialog.dismiss() }
+//                }).start()
                 return true
             }
 
@@ -420,8 +347,8 @@ class MapFragment : Fragment(), MapView {
         })
 
         mapView!!.setOnPhotoTapListener { view, x, y ->
-            val tileX = Math.floor((x * width.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
-            val tileY = Math.floor((y * height.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
+//            val tileX = Math.floor((x * width.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
+//            val tileY = Math.floor((y * height.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
 
 //            DialogUtils.showTabbedDialog(childFragmentManager, getString(R.string.drawer_title_map), null)
 
