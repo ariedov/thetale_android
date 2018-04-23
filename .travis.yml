@@ -27,7 +27,6 @@ android:
     - addon-google_apis-google-27
 
 before_deploy:
-    - git tag -d latest
     # Set up git user name and tag this commit
     - git config --local user.name "TRAVIS-CI"
     - git config --local user.email "ariedov@gmail.com"
