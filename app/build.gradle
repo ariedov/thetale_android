@@ -60,8 +60,8 @@ dependencies {
     // latest versions of libraries as of 11.02.2018
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.google.firebase:firebase-core:12.0.1'
-    implementation 'com.google.firebase:firebase-messaging:12.0.1'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-messaging:15.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.9.1'
@@ -92,7 +92,7 @@ dependencies {
 android.applicationVariants.all { variant ->
     variant.getOutputs().all { output ->
         if (outputFileName != null && output.outputFileName.endsWith('.apk')) {
-            outputFileName = "${variant.name}-${variant.versionName}.apk"
+            outputFileName = "${variant.name}.apk"
         }
     }
 }
