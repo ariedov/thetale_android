@@ -1,38 +1,27 @@
 language: android
-
 before_script:
-   - mkdir -p "$ANDROID_HOME/licenses"
-   - cp .android-licenses/* "$ANDROID_HOME/licenses/"
-
+- mkdir -p "$ANDROID_HOME/licenses"
+- cp .android-licenses/* "$ANDROID_HOME/licenses/"
 script:
-  - ./gradlew build
-
+- "./gradlew build"
 android:
   components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
-    - tools
-    - platform-tools
-    - tools
-
-    # The BuildTools version used by your project
-    - build-tools-27.0.3
-
-    # The SDK version used to compile your project
-    - android-27
-
-    # Additional components
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-27
-
+  - tools
+  - platform-tools
+  - tools
+  - build-tools-27.0.3
+  - android-27
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - addon-google_apis-google-27
 before_deploy:
-    # Set up git user name and tag this commit
     - git config --local user.name "TRAVIS-CI"
     - git config --local user.email "ariedov@gmail.com"
     - git tag "latest"
 deploy:
-    provider: releases
-    api-key: GITHUB_API_KEY
-    file: "app/build/outputs/apk/release/release.apk"
-    skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: Q+3J73/ghw0uc/g2yDfnrdu9gMeuWeaQW16pK8fcZFueHwZ5TZUSxjn+8I/29koFZjzsuq/pqIl2xyyfZ9uazW2HAk0pEoEkds8doCJ4kWSyr6IzVTix9uQdK0UrvO7drwssZjdteD7rAZXYS6BnI5BdU03kLRltQmXJJp3SXjo5pJS/7tI17h08NpT00u0MfZow7hdBOmMdTkxjgErDFkWVPdqXN7UZiygXYepnhhZakZR9vCkUab65hPtH3HY4u7A2YR/uE9Xt5WFfTqxchjHoMq7aHxjTrQB+W29bo14dVLgrCF23mx7epOeHHAag+RsoCICO9kALbM6bRQxwYzi5OkUnd58kdfI+3vUXxHoLa6XzCFiggKwfntrnsUuotwhgUxXEdOJhUpN5/GXbjnwQl877QeUuUBuhdoB6jg4PqZMeVIG3Jei1gld9PtpSQzo3pUd8j8vtMB4ZghBxVnWRBrFsPtojVpVQpnuzFiSJyjFj22FT83GUN2cqSPtyuTXdyrG3nidqSDl34pbSH52xnrJqFULn1vbr8tpxlhn2/MiNrOUZXDwgdKhJ70B+31j3gCGAwSFUV0MuHjtEVDj+xYYgybnqx8AE1c7XMGo7cMJ1SdGVBUta0JwNDGZD+ScF6QXifa5NyKQuL89kvGZ6Bu5W/hiSDPi3TRw72K0=
+  file: app/build/outputs/apk/release/release.apk
+  on:
+    repo: ariedov/TheTaleClient
