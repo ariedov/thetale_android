@@ -15,6 +15,7 @@ android:
   - extra-android-m2repository
   - addon-google_apis-google-27
 before_deploy:
+    - git tag -d latest
     - git config --local user.name "TRAVIS-CI"
     - git config --local user.email "ariedov@gmail.com"
     - git tag "latest"
@@ -23,5 +24,6 @@ deploy:
   api_key:
     secure: Q+3J73/ghw0uc/g2yDfnrdu9gMeuWeaQW16pK8fcZFueHwZ5TZUSxjn+8I/29koFZjzsuq/pqIl2xyyfZ9uazW2HAk0pEoEkds8doCJ4kWSyr6IzVTix9uQdK0UrvO7drwssZjdteD7rAZXYS6BnI5BdU03kLRltQmXJJp3SXjo5pJS/7tI17h08NpT00u0MfZow7hdBOmMdTkxjgErDFkWVPdqXN7UZiygXYepnhhZakZR9vCkUab65hPtH3HY4u7A2YR/uE9Xt5WFfTqxchjHoMq7aHxjTrQB+W29bo14dVLgrCF23mx7epOeHHAag+RsoCICO9kALbM6bRQxwYzi5OkUnd58kdfI+3vUXxHoLa6XzCFiggKwfntrnsUuotwhgUxXEdOJhUpN5/GXbjnwQl877QeUuUBuhdoB6jg4PqZMeVIG3Jei1gld9PtpSQzo3pUd8j8vtMB4ZghBxVnWRBrFsPtojVpVQpnuzFiSJyjFj22FT83GUN2cqSPtyuTXdyrG3nidqSDl34pbSH52xnrJqFULn1vbr8tpxlhn2/MiNrOUZXDwgdKhJ70B+31j3gCGAwSFUV0MuHjtEVDj+xYYgybnqx8AE1c7XMGo7cMJ1SdGVBUta0JwNDGZD+ScF6QXifa5NyKQuL89kvGZ6Bu5W/hiSDPi3TRw72K0=
   file: app/build/outputs/apk/release/release.apk
+  skip_cleanup: true
   on:
     repo: ariedov/TheTaleClient
