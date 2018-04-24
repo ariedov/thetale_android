@@ -17,7 +17,6 @@ android:
 before_deploy:
     - git config --local user.name "TRAVIS-CI"
     - git config --local user.email "ariedov@gmail.com"
-    - git tag -d latest
     - git tag latest
 deploy:
   provider: releases
