@@ -9,14 +9,12 @@ import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.enumerations.Action
 import org.thetale.api.models.GameInfo
-import org.thetale.core.PresenterState
 
 class GameInfoPresenter(
         private val service: TheTaleService,
         private val provider: GameInfoProvider,
         private val gameInfoScheduler: GameInfoScheduler) {
 
-    private val state = PresenterState { loadGameInfo() }
     private var infoJob: Job? = null
     private var abilityJob: Job? = null
 
@@ -30,14 +28,11 @@ class GameInfoPresenter(
     }
 
     fun start() {
-        state.start()
-
         gameInfoScheduler.addListener(listener)
+        loadGameInfo()
     }
 
     fun stop() {
-        state.stop()
-
         gameInfoScheduler.removeListener(listener)
     }
 
@@ -54,17 +49,17 @@ class GameInfoPresenter(
     }
 
     fun retry() {
-        state.apply { loadGameInfo() }
+        loadGameInfo()
     }
 
     private fun loadGameInfo() {
         infoJob = launch(UI) {
             try {
-                state.apply { view?.showProgress() }
-                val info = provider.getInfo().await()
-                state.apply { view?.showGameInfo(info) }
+                view?.showProgress()
+                val info = provider.loadInfo().await()
+                view?.showGameInfo(info)
             } catch (e: Exception) {
-                state.apply { view?.showError() }
+                view?.showError()
             }
         }
     }
