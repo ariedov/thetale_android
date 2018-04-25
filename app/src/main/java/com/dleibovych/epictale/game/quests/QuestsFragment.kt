@@ -25,6 +25,7 @@ import java.util.HashMap
 import javax.inject.Inject
 
 import okhttp3.OkHttpClient
+import org.thetale.api.enumerations.QuestType
 import org.thetale.api.models.GameInfo
 
 class QuestsFragment : Fragment(), QuestsView {
@@ -128,10 +129,10 @@ class QuestsFragment : Fragment(), QuestsView {
 //                    actorsContainer.addView(actorView)
 //                }
 //
-//                if (questStep.type !== QuestType.SPENDING.code && j == questStepsCount - 1) {
-//                    UiUtils.setText(questStepView.findViewById(R.id.quest_action), questStep.heroAction)
-//                    UiUtils.setText(questStepView.findViewById(R.id.quest_current_choice), questStep.currentChoice)
-//                }
+                if (questStep.type !== QuestType.SPENDING.code && j == questStepsCount - 1) {
+                    UiUtils.setText(questStepView.findViewById(R.id.quest_action), questStep.action)
+                    UiUtils.setText(questStepView.findViewById(R.id.quest_current_choice), questStep.choice)
+                }
 
 //                if (info.account!!.isOwn) {
 //                    val choicesContainer = questStepView.findViewById<View>(R.id.quest_choices_container) as ViewGroup
