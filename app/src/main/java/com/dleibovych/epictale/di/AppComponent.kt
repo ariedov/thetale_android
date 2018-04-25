@@ -5,7 +5,7 @@ import com.dleibovych.epictale.fragment.dialog.CardUseDialog
 import com.dleibovych.epictale.fragment.dialog.QuestActorDialog
 import com.dleibovych.epictale.game.GameFragment
 import com.dleibovych.epictale.game.di.GameComponent
-import com.dleibovych.epictale.game.profile.ProfileFragment
+import com.dleibovych.epictale.game.quests.QuestsFragment
 import org.thetale.auth.di.LoginComponent
 import com.dleibovych.epictale.service.WatcherService
 import com.dleibovych.epictale.service.widget.AppWidgetProvider
@@ -26,8 +26,6 @@ interface AppComponent {
     fun inject(target: DiaryFragment)
 
     fun inject(target: CardUseDialog)
-
-    fun inject(target: QuestsFragment)
 
     fun inject(target: QuestActorDialog)
 

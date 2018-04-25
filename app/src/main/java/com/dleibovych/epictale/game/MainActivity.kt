@@ -12,6 +12,7 @@ import com.dleibovych.epictale.game.map.MapFragment
 import com.dleibovych.epictale.game.profile.ProfileFragment
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.game.gameinfo.GameInfoFragment
+import com.dleibovych.epictale.game.quests.QuestsFragment
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.onscreen.OnscreenPart
@@ -52,6 +53,10 @@ class MainActivity : AppCompatActivity(), GameNavigation {
                 }
                 R.id.map -> {
                     showFragment(MapFragment())
+                    true
+                }
+                R.id.quests -> {
+                    showFragment(QuestsFragment.create())
                     true
                 }
                 R.id.profile -> {

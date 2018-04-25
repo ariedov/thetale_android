@@ -16,6 +16,7 @@ import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.fragment.*
 import com.dleibovych.epictale.game.gameinfo.GameInfoFragment
 import com.dleibovych.epictale.game.profile.ProfileFragment
+import com.dleibovych.epictale.game.quests.QuestsFragment
 import com.dleibovych.epictale.util.PreferencesManager
 import com.dleibovych.epictale.util.TextToSpeechUtils
 import com.dleibovych.epictale.util.UiUtils
