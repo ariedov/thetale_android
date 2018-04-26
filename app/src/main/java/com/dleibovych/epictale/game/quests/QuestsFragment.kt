@@ -18,7 +18,6 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.api.model.QuestActorPlaceInfo
 import com.dleibovych.epictale.api.model.QuestActorSpendingInfo
 import com.dleibovych.epictale.game.di.GameComponentProvider
-import com.dleibovych.epictale.util.UiUtils
 
 import java.util.HashMap
 
@@ -73,7 +72,6 @@ class QuestsFragment : Fragment(), QuestsView {
         actorNames.clear()
 
         val questLine = info.account!!.hero.quests.quests.last()
-        val questStepsCount = questLine.line.size
         val questStep = questLine.line.last()
         val questStepView = layoutInflater!!.inflate(R.layout.item_quest, container, false)
 
@@ -137,8 +135,6 @@ class QuestsFragment : Fragment(), QuestsView {
 
             if (info.account!!.isOwn) {
                 val choicesContainer = questStepView.findViewById<View>(R.id.quest_choices_container) as ViewGroup
-                val choiceProgress = questStepView.findViewById<View>(R.id.quest_choice_progress)
-                val choiceError = questStepView.findViewById<View>(R.id.quest_choice_error) as TextView
                 val choices = questStep.choiceAlternatives
                 if (choices != null) {
                     for (choice in choices) {

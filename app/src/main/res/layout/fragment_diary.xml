@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/diary_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/block_background"
+        android:orientation="vertical"
+        android:padding="8dp"/>
 
-        <LinearLayout
-            android:id="@+id/diary_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:padding="8dp"
-            android:orientation="vertical"
-            android:background="@drawable/block_background"/>
+    <View style="@style/Padder"/>
 
-        <View style="@style/Padder"/>
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

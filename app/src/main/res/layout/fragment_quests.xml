@@ -14,13 +14,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
-            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/block_background"
             android:orientation="vertical"
-            android:background="@drawable/block_background"/>
+            android:padding="8dp"/>
 
         <View style="@style/Padder"/>
+
+        <fragment
+            class="com.dleibovych.epictale.game.diary.DiaryFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/diary"/>
 
     </LinearLayout>
 

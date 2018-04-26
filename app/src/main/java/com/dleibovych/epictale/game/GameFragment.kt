@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
 import com.dleibovych.epictale.fragment.*
+import com.dleibovych.epictale.game.diary.DiaryFragment
 import com.dleibovych.epictale.game.gameinfo.GameInfoFragment
 import com.dleibovych.epictale.game.profile.ProfileFragment
 import com.dleibovych.epictale.game.quests.QuestsFragment

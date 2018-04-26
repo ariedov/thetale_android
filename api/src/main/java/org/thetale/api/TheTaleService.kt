@@ -54,5 +54,9 @@ interface TheTaleService {
                    @Query("api_version") apiVersion: String = "1.0"): Deferred<Response<AccountInfo>>
 
     @POST("/game/quests/api/choose/")
-    fun chooseQuestAction(@Query("option_uid") option: Int): Deferred<Response<Empty>>
+    fun chooseQuestAction(@Query("option_uid") option: Int,
+                          @Query("api_version") apiVersion: String = "1.0"): Deferred<Response<Empty>>
+
+    @GET("/game/api/diary")
+    fun diary(@Query("api_version") apiVersion: String = "1.0"): Deferred<Response<DiaryInfo>>
 }
