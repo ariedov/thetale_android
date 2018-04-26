@@ -112,7 +112,7 @@ data class Quest(
         val name: String,
         val action: String,
         val choice: String,
-        val choiceAlternatives: List<List<String>>,
+        @SerializedName("choice_alternatives") val choiceAlternatives: List<List<String>>?,
         val experience: Int,
         val power: Int,
         val actors: QuestActors // f* up

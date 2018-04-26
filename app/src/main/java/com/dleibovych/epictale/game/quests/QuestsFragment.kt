@@ -149,33 +149,28 @@ class QuestsFragment : Fragment(), QuestsView {
                     UiUtils.setText(questStepView.findViewById(R.id.quest_current_choice), questStep.choice)
                 }
 
-//                if (info.account!!.isOwn) {
-//                    val choicesContainer = questStepView.findViewById<View>(R.id.quest_choices_container) as ViewGroup
-//                    val choiceProgress = questStepView.findViewById<View>(R.id.quest_choice_progress)
-//                    val choiceError = questStepView.findViewById<View>(R.id.quest_choice_error) as TextView
-//                    for (choice in questStep.choiceAlternatives) {
-//                        val choiceView = layoutInflater!!.inflate(R.layout.item_quest_choice, choicesContainer, false)
-//
-//                        val choiceDescription = SpannableString(choice.description)
-//                        choiceDescription.setSpan(ForegroundColorSpan(resources.getColor(R.color.common_link)),
-//                                0, choice.description.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//                        val choiceTextView = choiceView.findViewById<View>(R.id.quest_choice) as TextView
-//                        choiceTextView.text = TextUtils.concat(getString(R.string.quest_choice_part), choiceDescription)
-//                        choiceTextView.setOnClickListener {
-//                            if (PreferencesManager.isConfirmationQuestChoiceEnabled()) {
-//                                DialogUtils.showConfirmationDialog(
-//                                        childFragmentManager,
-//                                        getString(R.string.game_quest_choice),
-//                                        Html.fromHtml(getString(R.string.game_quest_choice_confirmation, questStep.name, choice.description))
-//                                ) { selectQuestStep(questStepView, choice.id) }
-//                            } else {
-//                                selectQuestStep(questStepView, choice.id)
-//                            }
-//                        }
-//
-//                        choicesContainer.addView(choiceView)
-//                    }
-//                }
+                if (info.account!!.isOwn) {
+                    val choicesContainer = questStepView.findViewById<View>(R.id.quest_choices_container) as ViewGroup
+                    val choiceProgress = questStepView.findViewById<View>(R.id.quest_choice_progress)
+                    val choiceError = questStepView.findViewById<View>(R.id.quest_choice_error) as TextView
+                    val choices = questStep.choiceAlternatives
+                    if (choices != null) {
+                        for (choice in choices) {
+                            val choiceView = layoutInflater!!.inflate(R.layout.item_quest_choice, choicesContainer, false)
+
+                            val choiceDescription = SpannableString(choice[1])
+                            choiceDescription.setSpan(ForegroundColorSpan(resources.getColor(R.color.common_link)),
+                                    0, choice[1].length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            val choiceTextView = choiceView.findViewById<View>(R.id.quest_choice) as TextView
+                            choiceTextView.text = TextUtils.concat(getString(R.string.quest_choice_part), choiceDescription)
+                            choiceTextView.setOnClickListener {
+                                selectQuestStep(questStepView, choice[0])
+                            }
+
+                            choicesContainer.addView(choiceView)
+                        }
+                    }
+                }
 
                 container!!.addView(questStepView)
             }
