@@ -1,6 +1,7 @@
 package org.thetale.api.models
 
 import com.google.gson.annotations.SerializedName
+import org.thetale.api.enumerations.Profession
 
 data class GameInfo(
         val mode: String, // pvp, pve
@@ -114,8 +115,9 @@ data class Quest(
         val choiceAlternatives: List<List<String>>,
         val experience: Int,
         val power: Int,
-        val actors: List<List<Any>> // f* up
+        val actors: QuestActors // f* up
 )
+
 
 data class HeroAction(
         val percents: Double,

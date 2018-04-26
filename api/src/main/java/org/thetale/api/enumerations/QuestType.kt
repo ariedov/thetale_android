@@ -16,6 +16,10 @@ enum class QuestType constructor(val code: String, val drawableResId: Int) {
     SMITH("search_smith", R.drawable.quest_smith),
     NO_QUEST("no-quest", R.drawable.quest_no_quest),
     SPENDING("next-spending", R.drawable.quest_next_spending),
-    PILGRIMAGE("pilgrimage", R.drawable.quest_pilgrimage)
+    PILGRIMAGE("pilgrimage", R.drawable.quest_pilgrimage);
 
+    companion object {
+
+        fun getQuestType(code: String) = QuestType.values().first { it.code == code }
+    }
 }

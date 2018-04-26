@@ -1,6 +1,8 @@
 package org.thetale.api.di
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
@@ -13,6 +15,8 @@ import org.thetale.api.ClientBuilder
 import org.thetale.api.TheTaleService
 import org.thetale.api.URL
 import org.thetale.api.cookie.PersistentCookieStore
+import org.thetale.api.deserializers.QuestActorDeserializer
+import org.thetale.api.models.QuestActors
 import java.net.*
 import javax.inject.Singleton
 
@@ -85,8 +89,12 @@ class ApiModule(val context: Context) {
     @Provides
     @Singleton
     fun theTaleApi(client: OkHttpClient): TheTaleService {
-        val builder = ClientBuilder()
-        return builder.build(client)
+        val gson = GsonBuilder()
+                .registerTypeAdapter(QuestActors::class.java, QuestActorDeserializer())
+                .create()
+
+        val builder = ClientBuilder(client, gson)
+        return builder.build()
     }
 
     companion object {

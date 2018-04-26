@@ -1,18 +1,23 @@
 package com.dleibovych.epictale.game.quests
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.api.ApiResponseCallback
+import com.dleibovych.epictale.api.model.QuestActorPlaceInfo
+import com.dleibovych.epictale.api.model.QuestActorSpendingInfo
 import com.dleibovych.epictale.api.request.QuestChoiceRequest
 import com.dleibovych.epictale.api.response.CommonResponse
 import com.dleibovych.epictale.game.di.GameComponentProvider
@@ -27,12 +32,16 @@ import javax.inject.Inject
 import okhttp3.OkHttpClient
 import org.thetale.api.enumerations.QuestType
 import org.thetale.api.models.GameInfo
+import org.thetale.api.models.QuestActorPersonInfo
 
 class QuestsFragment : Fragment(), QuestsView {
 
-    @Inject lateinit var client: OkHttpClient
-    @Inject lateinit var manager: CookieManager
-    @Inject lateinit var presenter: QuestsPresenter
+    @Inject
+    lateinit var client: OkHttpClient
+    @Inject
+    lateinit var manager: CookieManager
+    @Inject
+    lateinit var presenter: QuestsPresenter
 
     private var rootView: View? = null
 
@@ -45,12 +54,19 @@ class QuestsFragment : Fragment(), QuestsView {
                 .provideGameComponent()
                 ?.inject(this)
 
+        presenter.view = this
 
         rootView = layoutInflater!!.inflate(R.layout.fragment_quests, container, false)
 
         this.container = rootView!!.findViewById(R.id.quests_container)
 
         return rootView
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.view = null
     }
 
     override fun onStart() {
@@ -72,17 +88,18 @@ class QuestsFragment : Fragment(), QuestsView {
 
                 val questNameView = questStepView.findViewById<View>(R.id.quest_name) as TextView
                 val rewards: String?
-                if (questStep.experience > 0 && questStep.power == 0) {
-                    rewards = String.format(" (%s)", getString(R.string.quest_reward_experience, questStep.experience))
+                rewards = if (questStep.experience > 0 && questStep.power == 0) {
+                    String.format(" (%s)", getString(R.string.quest_reward_experience, questStep.experience))
                 } else if (questStep.experience == 0 && questStep.power > 0) {
-                    rewards = String.format(" (%s)", getString(R.string.quest_reward_power, questStep.power))
+                    String.format(" (%s)", getString(R.string.quest_reward_power, questStep.power))
                 } else if (questStep.experience > 0 && questStep.power > 0) {
-                    rewards = String.format(" (%s, %s)",
+                    String.format(" (%s, %s)",
                             getString(R.string.quest_reward_experience, questStep.experience),
                             getString(R.string.quest_reward_power, questStep.power))
                 } else {
-                    rewards = null
+                    null
                 }
+
                 if (TextUtils.isEmpty(rewards)) {
                     questNameView.text = questStep.name
                 } else {
@@ -92,43 +109,41 @@ class QuestsFragment : Fragment(), QuestsView {
                     questNameView.text = TextUtils.concat(questStep.name, rewardsString)
                 }
 
-//                (questStepView.findViewById<View>(R.id.quest_icon) as ImageView).setImageResource(questStep.type.drawableResId)
+                (questStepView.findViewById<View>(R.id.quest_icon) as ImageView)
+                        .setImageResource(QuestType.getQuestType(questStep.type).drawableResId)
 //
-//                val actorsContainer = questStepView.findViewById<View>(R.id.quest_actors_container) as ViewGroup
-//                loop@ for (actor in questStep.actors) {
-//                    val actorView = layoutInflater!!.inflate(R.layout.item_text, actorsContainer, false)
-//
-//                    val actorTextView = actorView.findViewById<View>(R.id.item_text_content) as TextView
-//                    val actorText: CharSequence
-//                    val actorName = SpannableString(actor.name)
-//                    actorName.setSpan(StyleSpan(Typeface.BOLD), 0, actorName.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//
-//                    if (actor.type == null) continue
-//                    when (actor.type) {
-//                        QuestActorType.PERSON -> {
-//                            if (actor.personInfo == null) continue@loop
-//                            actorText = TextUtils.concat(actorName, ": ", actor.personInfo.name)
-//                            actorNames[actorTextView] = actor.personInfo.placeId
-//                        }
-//
-//                        QuestActorType.PLACE -> {
-//                            if (actor.placeInfo == null) continue@loop
-//                            actorText = TextUtils.concat(actorName, ": ", actor.placeInfo.name)
-//                        }
-//
-//                        QuestActorType.SPENDING -> {
-//                            if (actor.spendingInfo == null) continue@loop
-//                            actorText = TextUtils.concat(actorName, ": ", actor.spendingInfo.goal)
-//                        }
-//
-//                        else -> actorText = actorName
-//                    }
-//                    actorTextView.text = actorText
+                val actorsContainer = questStepView.findViewById<View>(R.id.quest_actors_container) as ViewGroup
+                for (actorInfo in questStep.actors) {
+                    val actorView = layoutInflater!!.inflate(R.layout.item_text, actorsContainer, false)
+
+                    val actorTextView = actorView.findViewById<View>(R.id.item_text_content) as TextView
+                    val actorText: CharSequence
+                    val actorName = SpannableString(actorInfo.name)
+                    actorName.setSpan(StyleSpan(Typeface.BOLD), 0, actorName.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                    val actor = actorInfo.actor
+                    when (actor) {
+                        is QuestActorPersonInfo -> {
+                            actorText = TextUtils.concat(actorName, ": ", actor.name)
+                            actorNames[actorTextView] = actor.place
+                        }
+
+                        is QuestActorPlaceInfo -> {
+                            actorText = TextUtils.concat(actorName, ": ", actor.name)
+                        }
+
+                        is QuestActorSpendingInfo -> {
+                            actorText = TextUtils.concat(actorName, ": ", actor.goal)
+                        }
+
+                        else -> actorText = actorName
+                    }
+                    actorTextView.text = actorText
 //                    actorTextView.setOnClickListener { DialogUtils.showQuestActorDialog(fragmentManager, actor) }
-//
-//                    actorsContainer.addView(actorView)
-//                }
-//
+
+                    actorsContainer.addView(actorView)
+                }
+
                 if (questStep.type !== QuestType.SPENDING.code && j == questStepsCount - 1) {
                     UiUtils.setText(questStepView.findViewById(R.id.quest_action), questStep.action)
                     UiUtils.setText(questStepView.findViewById(R.id.quest_current_choice), questStep.choice)

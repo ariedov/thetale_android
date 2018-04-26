@@ -2,7 +2,6 @@ package org.thetale.api
 
 import kotlinx.coroutines.experimental.Deferred
 import org.thetale.api.models.*
-import retrofit2.Call
 import retrofit2.http.*
 
 interface TheTaleService {
