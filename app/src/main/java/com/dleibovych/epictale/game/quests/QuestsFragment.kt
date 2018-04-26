@@ -15,31 +15,20 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.dleibovych.epictale.R
-import com.dleibovych.epictale.api.ApiResponseCallback
 import com.dleibovych.epictale.api.model.QuestActorPlaceInfo
 import com.dleibovych.epictale.api.model.QuestActorSpendingInfo
-import com.dleibovych.epictale.api.request.QuestChoiceRequest
-import com.dleibovych.epictale.api.response.CommonResponse
 import com.dleibovych.epictale.game.di.GameComponentProvider
-import com.dleibovych.epictale.util.RequestUtils
 import com.dleibovych.epictale.util.UiUtils
 
-import java.net.CookieManager
 import java.util.HashMap
 
-import javax.inject.Inject
-
-import okhttp3.OkHttpClient
 import org.thetale.api.enumerations.QuestType
 import org.thetale.api.models.GameInfo
 import org.thetale.api.models.QuestActorPersonInfo
+import javax.inject.Inject
 
 class QuestsFragment : Fragment(), QuestsView {
 
-    @Inject
-    lateinit var client: OkHttpClient
-    @Inject
-    lateinit var manager: CookieManager
     @Inject
     lateinit var presenter: QuestsPresenter
 
@@ -164,7 +153,7 @@ class QuestsFragment : Fragment(), QuestsView {
                             val choiceTextView = choiceView.findViewById<View>(R.id.quest_choice) as TextView
                             choiceTextView.text = TextUtils.concat(getString(R.string.quest_choice_part), choiceDescription)
                             choiceTextView.setOnClickListener {
-                                selectQuestStep(questStepView, choice[0])
+                                presenter.chooseQuestOption(choice[0].toInt())
                             }
 
                             choicesContainer.addView(choiceView)
@@ -205,26 +194,6 @@ class QuestsFragment : Fragment(), QuestsView {
 
     override fun showError() {
 
-    }
-
-    private fun selectQuestStep(questStepView: View, choiceId: String) {
-        val choicesContainer = questStepView.findViewById<View>(R.id.quest_choices_container)
-        val choiceProgress = questStepView.findViewById<View>(R.id.quest_choice_progress)
-
-        choicesContainer.visibility = View.GONE
-        choiceProgress.visibility = View.VISIBLE
-
-        QuestChoiceRequest(client, manager).execute(choiceId, RequestUtils.wrapCallback(object : ApiResponseCallback<CommonResponse> {
-            override fun processResponse(response: CommonResponse) {
-//                refresh(false)
-            }
-
-            override fun processError(response: CommonResponse) {
-                choicesContainer.visibility = View.GONE
-                choiceProgress.visibility = View.GONE
-                UiUtils.setText(questStepView.findViewById(R.id.quest_choice_error), response.errorMessage)
-            }
-        }, this@QuestsFragment))
     }
 
     companion object {
