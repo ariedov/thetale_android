@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ProgressBar
 import android.widget.TextView
 
 import com.dleibovych.epictale.R
 import org.thetale.api.enumerations.Action
 import org.thetale.api.enumerations.ArtifactEffect
 import org.thetale.api.enumerations.HeroAction
-import com.dleibovych.epictale.fragment.dialog.TabbedDialog
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.GameInfoUtils
 import com.dleibovych.epictale.util.PreferencesManager
@@ -34,15 +32,6 @@ class GameInfoFragment : Fragment(), GameInfoView {
     @Inject
     lateinit var presenter: GameInfoPresenter
 
-    private var rootView: View? = null
-
-    private var progressAction: ProgressBar? = null
-    private var progressActionInfo: TextView? = null
-    private var textAction: TextView? = null
-    private var actionHelp: RequestActionView? = null
-
-    private var journalContainer: ViewGroup? = null
-
     private var lastJournalTimestamp: Double = 0.toDouble()
     private var lastFightProgress: Double = 0.toDouble()
     private var lastKnownHealth: Int = 0
@@ -52,16 +41,7 @@ class GameInfoFragment : Fragment(), GameInfoView {
 
         presenter.view = this
 
-        rootView = inflater.inflate(R.layout.fragment_game_info, container, false)
-
-        progressAction = rootView!!.findViewById(R.id.game_info_action_progress)
-        progressActionInfo = rootView!!.findViewById(R.id.game_info_action_progress_info)
-        textAction = rootView!!.findViewById(R.id.game_info_action_text)
-        actionHelp = rootView!!.findViewById(R.id.game_help)
-
-        journalContainer = rootView!!.findViewById(R.id.journal_container)
-
-        return rootView
+        return inflater.inflate(R.layout.fragment_game_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,7 +72,7 @@ class GameInfoFragment : Fragment(), GameInfoView {
     override fun onResume() {
         super.onResume()
 
-        actionHelp!!.setActionClickListener { presenter.useAbility(Action.HELP) }
+        gameHelp.setActionClickListener { presenter.useAbility(Action.HELP) }
     }
 
     override fun onDestroy() {
@@ -125,9 +105,9 @@ class GameInfoFragment : Fragment(), GameInfoView {
         bindCompanion(account.hero.companion)
 
         val action = account.hero.action
-        progressAction!!.max = 1000
-        progressAction!!.progress = (1000 * action.percents).toInt()
-        textAction!!.text = GameInfoUtils.getActionString(activity, action)
+        gameInfoActionProgress.max = 1000
+        gameInfoActionProgress.progress = (1000 * action.percents).toInt()
+        gameInfoActionText.text = GameInfoUtils.getActionString(activity, action)
 
         val journal = account.hero.messages
         val journalSize = journal.size
@@ -157,11 +137,7 @@ class GameInfoFragment : Fragment(), GameInfoView {
             }
 
             lastJournalTimestamp = journal[journalSize - 1][0] as Double
-            if (action.type == HeroAction.BATTLE.code) {
-                lastFightProgress = action.percents
-            } else {
-                lastFightProgress = 0.0
-            }
+            lastFightProgress = if (action.type == HeroAction.BATTLE.code) action.percents else 0.0
         } else {
             lastJournalTimestamp = 0.toDouble()
             lastFightProgress = 0.0
@@ -198,14 +174,12 @@ class GameInfoFragment : Fragment(), GameInfoView {
         }
 
         if (account.isOwn) {
-            actionHelp!!.visibility = View.VISIBLE
-            actionHelp!!.isEnabled = account.energy != null && account.energy!! > 0
-            actionHelp!!.setMode(RequestActionView.Mode.ACTION)
+            gameHelp.visibility = View.VISIBLE
+            gameHelp.isEnabled = account.energy != null && account.energy!! > 0
+            gameHelp.setMode(RequestActionView.Mode.ACTION)
         } else {
-            actionHelp!!.visibility = View.GONE
+            gameHelp.visibility = View.GONE
         }
-
-//        setMode(DataViewMode.DATA)
     }
 
     private fun bindCompanion(companion: CompanionInfo?) {
@@ -228,29 +202,29 @@ class GameInfoFragment : Fragment(), GameInfoView {
     }
 
     override fun showAbilityProgress() {
-        actionHelp!!.setMode(RequestActionView.Mode.LOADING)
+        gameHelp.setMode(RequestActionView.Mode.LOADING)
     }
 
     override fun showAbilityError() {
-        actionHelp!!.setErrorText(getString(R.string.common_error))
+        gameHelp.setErrorText(getString(R.string.common_error))
     }
 
     private fun setProgressActionInfo(info: CharSequence?) {
         if (TextUtils.isEmpty(info)) {
-            progressActionInfo!!.visibility = View.GONE
-            UiUtils.setHeight(progressAction, resources.getDimension(R.dimen.game_info_bar_height).toInt())
+            gameInfoActionProgressInfo.visibility = View.GONE
+            UiUtils.setHeight(gameInfoActionProgressInfo, resources.getDimension(R.dimen.game_info_bar_height).toInt())
         } else {
-            progressActionInfo!!.text = info
-            progressActionInfo!!.visibility = View.VISIBLE
-            progressActionInfo!!.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            gameInfoActionProgressInfo.text = info
+            gameInfoActionProgressInfo.visibility = View.VISIBLE
+            gameInfoActionProgressInfo.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    val height = progressActionInfo!!.height
+                    val height = gameInfoActionProgressInfo.height
                     if (height > 0) {
                         if (isAdded) {
-                            UiUtils.setHeight(progressAction,
+                            UiUtils.setHeight(gameInfoActionProgressInfo,
                                     height + 2 * resources.getDimension(R.dimen.game_info_bar_padding).toInt())
                         }
-                        UiUtils.removeGlobalLayoutListener(progressActionInfo!!, this)
+                        UiUtils.removeGlobalLayoutListener(gameInfoActionProgressInfo, this)
                     }
                 }
             })
@@ -281,38 +255,6 @@ class GameInfoFragment : Fragment(), GameInfoView {
         } else {
             getString(R.string.game_action_time_approximate_short, seconds)
         }
-    }
-
-    private inner class CompanionTabsAdapter internal constructor(private val companion: CompanionInfo, private val coherence: Int) : TabbedDialog.TabbedDialogTabsAdapter() {
-
-        override fun getCount(): Int {
-            return 3
-        }
-
-        override fun getItem(i: Int): Fragment? {
-            when (i) {
-//                0 -> return CompanionParamsFragment.newInstance(companion)
-//
-//                1 -> return CompanionFeaturesFragment.newInstance(companion, coherence)
-
-//                2 -> return CompanionDescriptionFragment.newInstance(companion)
-
-                else -> return null
-            }
-        }
-
-        override fun getPageTitle(position: Int): CharSequence? {
-            when (position) {
-                0 -> return getString(R.string.game_companion_tab_params)
-
-                1 -> return getString(R.string.game_companion_tab_features)
-
-                2 -> return getString(R.string.game_companion_tab_description)
-
-                else -> return null
-            }
-        }
-
     }
 
     companion object {

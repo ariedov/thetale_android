@@ -73,7 +73,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/game_info_action_text"
+                    android:id="@+id/gameInfoActionText"
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -85,14 +85,14 @@
                     android:layout_marginTop="8dp">
 
                     <ProgressBar
-                        android:id="@+id/game_info_action_progress"
+                        android:id="@+id/gameInfoActionProgress"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/game_info_bar_height"
                         android:progressDrawable="@drawable/game_info_action" />
 
                     <TextView
-                        android:id="@+id/game_info_action_progress_info"
+                        android:id="@+id/gameInfoActionProgressInfo"
                         style="?android:attr/textAppearanceSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                 </RelativeLayout>
 
                 <com.dleibovych.epictale.widget.RequestActionView
-                    android:id="@+id/game_help"
+                    android:id="@+id/gameHelp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -116,7 +116,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/journal_container"
+                android:id="@+id/journalContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
