@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 
 import com.dleibovych.epictale.R
 import org.thetale.api.enumerations.Action
@@ -204,7 +205,8 @@ class GameInfoFragment : Fragment(), GameInfoView {
     }
 
     override fun showAbilityError() {
-        gameHelp.setErrorText(getString(R.string.common_error))
+        gameHelp.setMode(RequestActionView.Mode.ACTION)
+        Toast.makeText(activity!!, R.string.common_error, Toast.LENGTH_SHORT).show()
     }
 
     private fun setProgressActionInfo(info: CharSequence?) {

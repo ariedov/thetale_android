@@ -87,6 +87,7 @@ class QuestItemView @JvmOverloads constructor(
     }
 
     private fun bindChoices(choices: List<List<String>>?) {
+        questChoicesContainer.removeAllViews()
         choices?.forEach { choice ->
             val choiceView = inflater.inflate(R.layout.item_quest_choice, questChoicesContainer, false)
 
@@ -96,9 +97,25 @@ class QuestItemView @JvmOverloads constructor(
                     0, choice[1].length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             val choiceTextView = choiceView.findViewById<View>(R.id.quest_choice) as TextView
             choiceTextView.text = TextUtils.concat(resources.getString(R.string.quest_choice_part), choiceDescription)
-            choiceTextView.setOnClickListener { choiceListener?.invoke(choice[0].toInt()) }
+            choiceTextView.setOnClickListener {
+                try {
+                    choiceListener?.invoke(choice[0].toInt())
+                } catch (e: NumberFormatException) {
+                    // ignore
+                }
+            }
 
             questChoicesContainer.addView(choiceView)
         }
+    }
+
+    fun showQuestProgress() {
+        questChoiceProgress.visibility = View.VISIBLE
+        questChoicesContainer.visibility = View.GONE
+    }
+
+    fun hideQuestProgress() {
+        questChoiceProgress.visibility = View.GONE
+        questChoicesContainer.visibility = View.VISIBLE
     }
 }
