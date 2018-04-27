@@ -37,15 +37,13 @@ class QuestItemView @JvmOverloads constructor(
     }
 
     fun bind(quest: Quest) {
-        val rewards: String? = readRewards(quest)
+        questName.text = quest.name
 
-        if (TextUtils.isEmpty(rewards)) {
-            questName.text = quest.name
-        } else {
-            val rewardsString = SpannableString(rewards)
-            val foregroundColor = ContextCompat.getColor(context, R.color.game_additional_info)
-            rewardsString.setSpan(ForegroundColorSpan(foregroundColor), 0, rewardsString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            questName.text = TextUtils.concat(quest.name, rewardsString)
+        val rewards: String? = readRewards(quest)
+        questRewards.visibility = View.GONE
+        if (!TextUtils.isEmpty(rewards)) {
+            questRewards.text = rewards
+            questRewards.visibility = View.VISIBLE
         }
 
         questIcon.setImageResource(QuestType.getQuestType(quest.type).drawableResId)
@@ -55,11 +53,11 @@ class QuestItemView @JvmOverloads constructor(
     }
 
     private fun readRewards(quest: Quest): String? = if (quest.experience > 0 && quest.power == 0) {
-        String.format(" (%s)", resources.getString(R.string.quest_reward_experience, quest.experience))
+        resources.getString(R.string.quest_reward_experience, quest.experience)
     } else if (quest.experience == 0 && quest.power > 0) {
-        String.format(" (%s)", resources.getString(R.string.quest_reward_power, quest.power))
+        resources.getString(R.string.quest_reward_power, quest.power)
     } else if (quest.experience > 0 && quest.power > 0) {
-        String.format(" (%s, %s)",
+        String.format("%s, %s",
                 resources.getString(R.string.quest_reward_experience, quest.experience),
                 resources.getString(R.string.quest_reward_power, quest.power))
     } else {

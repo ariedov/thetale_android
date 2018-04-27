@@ -15,6 +15,14 @@
         style="?android:attr/textAppearanceMedium"
         android:textColor="@color/common_text"
         tools:text="Help to save the queen"/>
+
+    <TextView
+        android:id="@+id/questRewards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/textAppearanceSmall"
+        android:textColor="@color/game_additional_info"
+        tools:text="412 stuff"/>
     
     <LinearLayout
         android:layout_width="match_parent"
