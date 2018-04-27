@@ -15,7 +15,7 @@
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
     <ScrollView
         android:id="@+id/content"
@@ -36,13 +36,13 @@
                 <com.dleibovych.epictale.game.gameinfo.views.HeroInfoView
                     android:id="@+id/heroInfo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <com.dleibovych.epictale.game.gameinfo.views.StatsView
                     android:id="@+id/stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" />
+                    android:layout_marginTop="16dp"/>
 
                 <TextView
                     android:id="@+id/companionAbsent"
@@ -51,13 +51,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/game_companion_absent"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
                 <com.dleibovych.epictale.game.gameinfo.views.CompanionInfoView
                     android:id="@+id/companionInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" />
+                    android:layout_marginTop="16dp"/>
 
             </LinearLayout>
 
@@ -77,7 +77,7 @@
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/common_text" />
+                    android:textColor="@color/common_text"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -88,18 +88,18 @@
                         android:id="@+id/gameInfoActionProgress"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/game_info_bar_height"
-                        android:progressDrawable="@drawable/game_info_action" />
+                        android:layout_height="18dp"
+                        android:progressDrawable="@drawable/game_info_action"/>
 
                     <TextView
                         android:id="@+id/gameInfoActionProgressInfo"
-                        style="?android:attr/textAppearanceSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_marginBottom="@dimen/game_info_bar_padding"
                         android:layout_marginTop="@dimen/game_info_bar_padding"
                         android:textColor="@color/common_text"
+                        android:textSize="12sp"
                         android:visibility="gone" />
 
                 </RelativeLayout>
@@ -111,7 +111,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
                     custom:action_text="@string/game_help"
-                    custom:mode="action" />
+                    custom:mode="action"/>
 
             </LinearLayout>
 
@@ -125,7 +125,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/block_background"
                 android:orientation="vertical"
-                android:padding="8dp" />
+                android:padding="8dp"/>
 
         </LinearLayout>
     </ScrollView>

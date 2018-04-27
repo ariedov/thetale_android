@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 
 import com.dleibovych.epictale.R
@@ -16,7 +15,6 @@ import org.thetale.api.enumerations.HeroAction
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.GameInfoUtils
 import com.dleibovych.epictale.util.PreferencesManager
-import com.dleibovych.epictale.util.UiUtils
 import com.dleibovych.epictale.widget.RequestActionView
 import kotlinx.android.synthetic.main.fragment_game_info.*
 
@@ -212,22 +210,9 @@ class GameInfoFragment : Fragment(), GameInfoView {
     private fun setProgressActionInfo(info: CharSequence?) {
         if (TextUtils.isEmpty(info)) {
             gameInfoActionProgressInfo.visibility = View.GONE
-            UiUtils.setHeight(gameInfoActionProgressInfo, resources.getDimension(R.dimen.game_info_bar_height).toInt())
         } else {
             gameInfoActionProgressInfo.text = info
             gameInfoActionProgressInfo.visibility = View.VISIBLE
-            gameInfoActionProgressInfo.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val height = gameInfoActionProgressInfo.height
-                    if (height > 0) {
-                        if (isAdded) {
-                            UiUtils.setHeight(gameInfoActionProgressInfo,
-                                    height + 2 * resources.getDimension(R.dimen.game_info_bar_padding).toInt())
-                        }
-                        UiUtils.removeGlobalLayoutListener(gameInfoActionProgressInfo, this)
-                    }
-                }
-            })
         }
     }
 
