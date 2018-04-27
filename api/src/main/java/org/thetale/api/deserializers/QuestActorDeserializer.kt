@@ -18,14 +18,14 @@ class QuestActorDeserializer : JsonDeserializer<QuestActors> {
                 val name = actorArray[0].asString
                 val actorType = actorArray[1].asInt
 
-                questActors.add(QuestActor(name, actorType,
+                questActors.add(QuestActorInfo(name, actorType,
                         readActorInfo(actorType, actorArray[2], context)))
             }
         }
         return questActors
     }
 
-    private fun readActorInfo(actorType: Int, actorInfo: JsonElement, context: JsonDeserializationContext?): Any? {
+    private fun readActorInfo(actorType: Int, actorInfo: JsonElement, context: JsonDeserializationContext?): QuestActor? {
         return when (actorType) {
             QuestActorType.PERSON.code -> {
                 context!!.deserialize<QuestActorPersonInfo>(actorInfo, QuestActorPersonInfo::class.java)

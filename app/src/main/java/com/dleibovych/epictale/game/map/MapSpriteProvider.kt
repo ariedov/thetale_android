@@ -2,6 +2,7 @@ package com.dleibovych.epictale.game.map
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import okhttp3.*
@@ -10,7 +11,7 @@ import org.thetale.api.enumerations.MapStyle
 import java.io.IOException
 import kotlin.coroutines.experimental.suspendCoroutine
 
-private const val MAP_SPRITE_URL = "http:%s%s"
+private const val MAP_SPRITE_URL = "https://the-tale.org/%s%s"
 
 class MapSpriteProvider(private val client: OkHttpClient,
                         private val service: TheTaleService) {

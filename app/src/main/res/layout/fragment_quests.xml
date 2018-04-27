@@ -15,16 +15,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/questsContainer"
+            <com.dleibovych.epictale.game.quests.view.QuestItemView
+                android:id="@+id/currentQuest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/block_background"
-                android:orientation="vertical"
-                android:padding="8dp"/>
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"/>
 
             <View style="@style/Padder"/>
 
