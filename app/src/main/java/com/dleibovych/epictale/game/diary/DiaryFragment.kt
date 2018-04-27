@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.game.di.GameComponentProvider
 import com.dleibovych.epictale.util.UiUtils
+import kotlinx.android.synthetic.main.fragment_diary.*
 
 import javax.inject.Inject
 
@@ -19,10 +20,6 @@ class DiaryFragment : Fragment(), DiaryView {
     @Inject
     lateinit var presenter: DiaryPresenter
 
-    private var rootView: View? = null
-
-    private var diaryContainer: ViewGroup? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         (activity!!.application as GameComponentProvider)
                 .provideGameComponent()
@@ -30,11 +27,15 @@ class DiaryFragment : Fragment(), DiaryView {
 
         presenter.view = this
 
-        rootView = inflater.inflate(R.layout.fragment_diary, container, false)
+        return inflater.inflate(R.layout.fragment_diary, container, false)
+    }
 
-        diaryContainer = rootView!!.findViewById(R.id.diary_container)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        return rootView
+        error.onRetryClick(View.OnClickListener {
+            presenter.loadDiary()
+        })
     }
 
     override fun onDestroyView() {
@@ -55,7 +56,25 @@ class DiaryFragment : Fragment(), DiaryView {
         presenter.stop()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (activity!!.isFinishing) {
+            presenter.dispose()
+        }
+    }
+
+    override fun showProgress() {
+        progress.visibility = View.VISIBLE
+        diaryContainer.visibility = View.GONE
+        error.visibility = View.GONE
+    }
+
     override fun showDiary(info: DiaryInfo) {
+        diaryContainer.visibility = View.VISIBLE
+        progress.visibility = View.GONE
+        error.visibility = View.GONE
+
         diaryContainer!!.removeAllViews()
         for (message in info.messages) {
             val diaryEntryView = layoutInflater!!.inflate(R.layout.item_diary, diaryContainer, false)
@@ -73,6 +92,10 @@ class DiaryFragment : Fragment(), DiaryView {
     }
 
     override fun showError() {
+        diaryContainer.visibility = View.GONE
+        progress.visibility = View.GONE
+        error.visibility = View.VISIBLE
 
+        error.setErrorText(getString(R.string.common_error))
     }
 }

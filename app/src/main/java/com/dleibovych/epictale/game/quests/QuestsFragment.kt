@@ -18,6 +18,7 @@ import com.dleibovych.epictale.R
 import com.dleibovych.epictale.api.model.QuestActorPlaceInfo
 import com.dleibovych.epictale.api.model.QuestActorSpendingInfo
 import com.dleibovych.epictale.game.di.GameComponentProvider
+import kotlinx.android.synthetic.main.fragment_quests.*
 
 import java.util.HashMap
 
@@ -31,10 +32,6 @@ class QuestsFragment : Fragment(), QuestsView {
     @Inject
     lateinit var presenter: QuestsPresenter
 
-    private var rootView: View? = null
-
-    private var container: ViewGroup? = null
-
     private val actorNames = HashMap<TextView, Int>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,11 +41,15 @@ class QuestsFragment : Fragment(), QuestsView {
 
         presenter.view = this
 
-        rootView = layoutInflater!!.inflate(R.layout.fragment_quests, container, false)
+        return layoutInflater.inflate(R.layout.fragment_quests, container, false)
+    }
 
-        this.container = rootView!!.findViewById(R.id.quests_container)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        return rootView
+        error.onRetryClick(View.OnClickListener {
+            presenter.loadQuests()
+        })
     }
 
     override fun onDestroyView() {
@@ -64,16 +65,22 @@ class QuestsFragment : Fragment(), QuestsView {
     }
 
     override fun showProgress() {
-
+        progress.visibility = View.VISIBLE
+        error.visibility = View.GONE
+        content.visibility = View.GONE
     }
 
     override fun showQuests(info: GameInfo) {
-        container!!.removeAllViews()
+        content.visibility = View.VISIBLE
+        error.visibility = View.GONE
+        progress.visibility = View.GONE
+
+        questsContainer.removeAllViews()
         actorNames.clear()
 
         val questLine = info.account!!.hero.quests.quests.last()
         val questStep = questLine.line.last()
-        val questStepView = layoutInflater!!.inflate(R.layout.item_quest, container, false)
+        val questStepView = layoutInflater!!.inflate(R.layout.item_quest, questsContainer, false)
 
         val questNameView = questStepView.findViewById<View>(R.id.quest_name) as TextView
         val rewards: String?
@@ -153,11 +160,15 @@ class QuestsFragment : Fragment(), QuestsView {
             }
         }
 
-        container!!.addView(questStepView)
+        questsContainer.addView(questStepView)
     }
 
     override fun showError() {
+        error.visibility = View.VISIBLE
+        progress.visibility = View.GONE
+        content.visibility = View.GONE
 
+        error.setErrorText(getString(R.string.common_error))
     }
 
     override fun showQuestActionProgress() {
@@ -166,6 +177,14 @@ class QuestsFragment : Fragment(), QuestsView {
 
     override fun showQuestActionError() {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (activity!!.isFinishing) {
+            presenter.dispose()
+        }
     }
 
     companion object {

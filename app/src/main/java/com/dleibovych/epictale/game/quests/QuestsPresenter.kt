@@ -8,34 +8,41 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.models.GameInfo
+import org.thetale.core.PresenterState
 
 class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
                       val gameInfoScheduler: GameInfoScheduler,
                       val service: TheTaleService) {
 
+    private val state = PresenterState { loadQuests() }
     private var gameInfoJob: Job? = null
     private var questChoiceJob: Job? = null
 
-    private val listener: GameInfoListener = object: GameInfoListener {
+    private val listener: GameInfoListener = object : GameInfoListener {
 
         override fun onGameInfoChanged(info: GameInfo) {
-            view?.showQuests(info)
+            state.apply { view?.showQuests(info) }
         }
     }
 
     var view: QuestsView? = null
 
     fun start() {
-        gameInfoJob = launch(UI) {
-            try {
-                val info = gameInfoProvider.loadInfo().await()
-                view?.showQuests(info)
-            } catch (e: Exception) {
-                view?.showError()
-            }
-        }
+        state.start()
 
         gameInfoScheduler.addListener(listener)
+    }
+
+    fun loadQuests() {
+        gameInfoJob = launch(UI) {
+            try {
+                state.apply { view?.showProgress() }
+                val info = gameInfoProvider.loadInfo().await()
+                state.apply { view?.showQuests(info) }
+            } catch (e: Exception) {
+                state.apply { view?.showError() }
+            }
+        }
     }
 
     fun chooseQuestOption(option: Int) {
@@ -46,6 +53,8 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
     }
 
     fun stop() {
+        state.stop()
+
         gameInfoScheduler.removeListener(listener)
     }
 
