@@ -28,6 +28,11 @@ class MainActivity : AppCompatActivity(), GameNavigation {
 
     private lateinit var componentProvider: GameComponentProvider
 
+    private val gameInfo by lazy { GameInfoFragment.create() }
+    private val map by lazy { MapFragment() }
+    private val quests by lazy { QuestsFragment.create() }
+    private val profile by lazy { ProfileFragment() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         componentProvider = (application as GameComponentProvider)
@@ -47,24 +52,12 @@ class MainActivity : AppCompatActivity(), GameNavigation {
 
         bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.game -> {
-                    showFragment(GameInfoFragment.create())
-                    true
-                }
-                R.id.map -> {
-                    showFragment(MapFragment())
-                    true
-                }
-                R.id.quests -> {
-                    showFragment(QuestsFragment.create())
-                    true
-                }
-                R.id.profile -> {
-                    showFragment(ProfileFragment())
-                    true
-                }
-                else -> false
+                R.id.game -> { showFragment(gameInfo) }
+                R.id.map -> { showFragment(map) }
+                R.id.quests -> { showFragment(quests) }
+                R.id.profile -> { showFragment(profile) }
             }
+            true
         }
     }
 
