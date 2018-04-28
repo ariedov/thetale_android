@@ -12,8 +12,8 @@ android {
         applicationId "com.dleibovych.epictale"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 11
-        versionName "0.1.1_beta"
+        versionCode 12
+        versionName "0.1.2_beta"
         resValue "string", "tray__authority", "${applicationId}.tray"
         vectorDrawables.useSupportLibrary = true
     }
