@@ -8,7 +8,6 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.models.GameInfo
-import org.thetale.core.PresenterState
 
 class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
                       val gameInfoScheduler: GameInfoScheduler,
@@ -44,10 +43,15 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
         }
     }
 
-    fun chooseQuestOption(option: Int) {
+    fun chooseQuestOption(option: String) {
         questChoiceJob = launch(UI) {
-            service.chooseQuestAction(option).join()
-            gameInfoScheduler.scheduleImmediate()
+            try {
+                view?.showQuestActionProgress()
+                service.chooseQuestAction(option).join()
+                gameInfoScheduler.scheduleImmediate()
+            } catch (e: Exception) {
+                view?.showQuestActionError()
+            }
         }
     }
 

@@ -24,7 +24,7 @@ class QuestItemView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val inflater: LayoutInflater
-    private var choiceListener: ((Int) -> Unit)? = null
+    private var choiceListener: ((String) -> Unit)? = null
 
     init {
         orientation = VERTICAL
@@ -32,7 +32,7 @@ class QuestItemView @JvmOverloads constructor(
         inflater.inflate(R.layout.item_quest, this)
     }
 
-    fun setChoiceListener(choiceListener: (Int) -> Unit) {
+    fun setChoiceListener(choiceListener: (String) -> Unit) {
         this.choiceListener = choiceListener
     }
 
@@ -89,6 +89,7 @@ class QuestItemView @JvmOverloads constructor(
     }
 
     private fun bindChoices(choices: List<List<String>>?) {
+        hideQuestProgress()
         questChoicesContainer.removeAllViews()
         choices?.forEach { choice ->
             val choiceView = inflater.inflate(R.layout.item_quest_choice, questChoicesContainer, false)
@@ -100,11 +101,7 @@ class QuestItemView @JvmOverloads constructor(
             val choiceTextView = choiceView.findViewById<View>(R.id.quest_choice) as TextView
             choiceTextView.text = TextUtils.concat(resources.getString(R.string.quest_choice_part), choiceDescription)
             choiceTextView.setOnClickListener {
-                try {
-                    choiceListener?.invoke(choice[0].toInt())
-                } catch (e: NumberFormatException) {
-                    // ignore
-                }
+                choiceListener?.invoke(choice[0])
             }
 
             questChoicesContainer.addView(choiceView)
