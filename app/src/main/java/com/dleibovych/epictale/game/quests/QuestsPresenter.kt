@@ -14,21 +14,20 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
                       val gameInfoScheduler: GameInfoScheduler,
                       val service: TheTaleService) {
 
-    private val state = PresenterState { loadQuests() }
     private var gameInfoJob: Job? = null
     private var questChoiceJob: Job? = null
 
     private val listener: GameInfoListener = object : GameInfoListener {
 
         override fun onGameInfoChanged(info: GameInfo) {
-            state.apply { view?.showQuests(info) }
+            view?.showQuests(info)
         }
     }
 
     var view: QuestsView? = null
 
     fun start() {
-        state.start()
+        loadQuests()
 
         gameInfoScheduler.addListener(listener)
     }
@@ -36,11 +35,11 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
     fun loadQuests() {
         gameInfoJob = launch(UI) {
             try {
-                state.apply { view?.showProgress() }
+                view?.showProgress()
                 val info = gameInfoProvider.loadInfo().await()
-                state.apply { view?.showQuests(info) }
+                view?.showQuests(info)
             } catch (e: Exception) {
-                state.apply { view?.showError() }
+                view?.showError()
             }
         }
     }
@@ -53,8 +52,6 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
     }
 
     fun stop() {
-        state.stop()
-
         gameInfoScheduler.removeListener(listener)
     }
 

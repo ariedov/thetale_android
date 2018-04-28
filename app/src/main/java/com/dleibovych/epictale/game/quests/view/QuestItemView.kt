@@ -50,6 +50,8 @@ class QuestItemView @JvmOverloads constructor(
 
         bindActors(quest.actors)
         bindChoices(quest.choiceAlternatives)
+
+        questCurrentChoice.text = quest.action
     }
 
     private fun readRewards(quest: Quest): String? = if (quest.experience > 0 && quest.power == 0) {

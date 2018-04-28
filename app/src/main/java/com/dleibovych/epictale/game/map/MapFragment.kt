@@ -48,8 +48,6 @@ class MapFragment : Fragment(), MapView {
     private var mapZoom: Float = 0.toFloat()
     private var mapShiftX: Float = 0.toFloat()
     private var mapShiftY: Float = 0.toFloat()
-    private var isMapInitialPosition = true
-    private var shouldMoveToHero = false
     private var shouldShowMenuOptions = true
 
     private var places: MutableList<Place>? = null
@@ -88,7 +86,6 @@ class MapFragment : Fragment(), MapView {
             mapZoom = 1.0f
             mapShiftX = 0.0f
             mapShiftY = 0.0f
-            shouldMoveToHero = true
         }
 
         return rootView
@@ -141,12 +138,12 @@ class MapFragment : Fragment(), MapView {
         mapView!!.visibility = View.GONE
     }
 
-    override fun drawMap(map: Bitmap, region: Region, heroPosition: HeroPosition) {
+    override fun drawMap(bitmap: Bitmap, region: Region, hero: HeroPosition) {
         mapView!!.visibility = View.VISIBLE
         error.visibility = View.GONE
         progress.visibility = View.GONE
 
-        setMap(map, region, heroPosition)
+        setMap(bitmap, region, hero)
     }
 
     override fun showError(t: Throwable) {
@@ -299,10 +296,6 @@ class MapFragment : Fragment(), MapView {
     private fun setMap(map: Bitmap, region: Region, heroPosition: HeroPosition) {
         mapView!!.setImageBitmap(map)
         mapView!!.attacher.update()
-        if (!isMapInitialPosition) {
-            mapView!!.scale = mapZoom
-            mapView!!.attacher.onDrag(mapShiftX, mapShiftY)
-        }
 
         val width = mapView!!.drawable.intrinsicWidth
         val height = mapView!!.drawable.intrinsicHeight
@@ -313,32 +306,22 @@ class MapFragment : Fragment(), MapView {
                 val viewHeight = mapView!!.height
                 if (viewWidth != 0 && viewHeight != 0) {
                     val currentSizeDenominator = MapDrawer.currentSizeDenominator
-                    val minimumScale: Float
-                    if (viewWidth < viewHeight) {
-                        minimumScale = viewWidth.toFloat() / width
+                    val minimumScale: Float = if (viewWidth < viewHeight) {
+                        viewWidth.toFloat() / width
                     } else {
-                        minimumScale = viewHeight.toFloat() / height
+                        viewHeight.toFloat() / height
                     }
 
-                    if (isMapInitialPosition) {
-                        isMapInitialPosition = false
-                        mapView!!.maximumScale = ZOOM_MAX * currentSizeDenominator
-                        mapView!!.mediumScale = (ZOOM_MAX * currentSizeDenominator + minimumScale) / 2.0f
-                        mapView!!.minimumScale = minimumScale
-                        val placeInfo = region.places[PreferencesManager.getMapCenterPlaceId()]
-                        if (placeInfo == null) {
-                            if (shouldMoveToHero) {
-                                shouldMoveToHero = false
-                                moveToTile(Math.round(heroPosition.x).toInt(), Math.round(heroPosition.y).toInt(),
-                                        mapView!!.mediumScale)
-                            } else {
-                                mapView!!.scale = mapView!!.mediumScale
-                                mapView!!.attacher.onDrag(mapShiftX, mapShiftY)
-                            }
-                        } else {
-                            PreferencesManager.setMapCenterPlaceId(-1)
-                            moveToTile(placeInfo.pos.x, placeInfo.pos.y, mapView!!.maximumScale)
-                        }
+                    mapView!!.maximumScale = ZOOM_MAX * currentSizeDenominator
+                    mapView!!.mediumScale = (ZOOM_MAX * currentSizeDenominator + minimumScale) / 2.0f
+                    mapView!!.minimumScale = minimumScale
+                    val placeInfo = region.places[PreferencesManager.getMapCenterPlaceId()]
+                    if (placeInfo == null) {
+                        moveToTile(Math.round(heroPosition.x).toInt(), Math.round(heroPosition.y).toInt(),
+                                mapView!!.mediumScale)
+                    } else {
+                        PreferencesManager.setMapCenterPlaceId(-1)
+                        moveToTile(placeInfo.pos.x, placeInfo.pos.y, mapView!!.maximumScale)
                     }
 
                     UiUtils.removeGlobalLayoutListener(mapView!!, this)
@@ -347,7 +330,7 @@ class MapFragment : Fragment(), MapView {
         })
 
         mapView!!.setOnPhotoTapListener { view, x, y ->
-//            val tileX = Math.floor((x * width.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
+            //            val tileX = Math.floor((x * width.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
 //            val tileY = Math.floor((y * height.toFloat() * MapDrawer.currentSizeDenominator.toFloat() / MapDrawer.MAP_TILE_SIZE).toDouble()).toInt()
 
 //            DialogUtils.showTabbedDialog(childFragmentManager, getString(R.string.drawer_title_map), null)
