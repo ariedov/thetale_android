@@ -53,7 +53,7 @@ interface TheTaleService {
     fun getAccount(@Path("account") account: Int,
                    @Query("api_version") apiVersion: String = "1.0"): Deferred<Response<AccountInfo>>
 
-    @POST("/game/quests/api/choose/")
+    @POST("/game/quests/api/choose")
     fun chooseQuestAction(@Query("option_uid") option: String,
                           @Query("api_version") apiVersion: String = "1.0"): Deferred<Response<Empty>>
 

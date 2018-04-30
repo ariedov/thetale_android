@@ -51,6 +51,12 @@ class QuestsFragment : Fragment(), QuestsView {
         presenter.start()
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        presenter.stop()
+    }
+
     override fun showProgress() {
         progress.visibility = View.VISIBLE
         error.visibility = View.GONE
