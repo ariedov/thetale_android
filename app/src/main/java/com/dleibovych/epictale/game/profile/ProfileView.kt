@@ -6,6 +6,8 @@ interface ProfileView {
 
     fun showProgress()
 
+    fun hideProgress()
+
     fun showAccountInfo(info: AccountInfo)
 
     fun showError()

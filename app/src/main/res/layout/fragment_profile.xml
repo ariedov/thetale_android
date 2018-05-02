@@ -34,24 +34,42 @@
                 android:paddingBottom="@dimen/game_info_lines_margin"
                 android:paddingTop="@dimen/game_info_lines_margin">
 
-                <TextView
-                    android:id="@+id/profile_name"
-                    style="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:textColor="@color/common_text" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/profile_affect_game"
-                    style="?android:attr/textAppearanceMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/game_info_lines_margin"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:textColor="@color/common_disabled" />
+                    <TextView
+                        android:id="@+id/profileName"
+                        style="?android:attr/textAppearanceLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/common_text" />
+
+                    <TextView
+                        android:id="@+id/profileAffectGame"
+                        style="?android:attr/textAppearanceMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/profileName"
+                        android:layout_marginBottom="@dimen/game_info_lines_margin"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/common_disabled" />
+
+                    <TextView
+                        android:id="@+id/logout"
+                        style="?android:attr/textAppearanceMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="end"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:text="@string/drawer_title_logout"
+                        android:textColor="@color/common_link" />
+                </RelativeLayout>
 
                 <View style="@style/Delimiter" />
 
@@ -73,7 +91,7 @@
                             android:textColor="@color/common_text" />
 
                         <TextView
-                            android:id="@+id/profile_might"
+                            android:id="@+id/profileMight"
                             style="?android:attr/textAppearanceLarge"
                             android:textColor="@color/common_text" />
 
@@ -89,7 +107,7 @@
                             android:textColor="@color/common_text" />
 
                         <TextView
-                            android:id="@+id/profile_achievement_points"
+                            android:id="@+id/profileAchievementPoints"
                             style="?android:attr/textAppearanceLarge"
                             android:textColor="@color/common_text" />
 
@@ -105,7 +123,7 @@
                             android:textColor="@color/common_text" />
 
                         <TextView
-                            android:id="@+id/profile_collection_items_count"
+                            android:id="@+id/profileCollectionItemsCount"
                             style="?android:attr/textAppearanceLarge"
                             android:textColor="@color/common_text" />
 
@@ -121,7 +139,7 @@
                             android:textColor="@color/common_text" />
 
                         <TextView
-                            android:id="@+id/profile_referrals_count"
+                            android:id="@+id/profileReferralsCount"
                             style="?android:attr/textAppearanceLarge"
                             android:textColor="@color/common_text" />
 
@@ -154,7 +172,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/profile_ratings_description"
+                    android:id="@+id/profileContainerRatingsDescription"
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,7 +181,7 @@
                     android:textColor="@color/common_text" />
 
                 <TableLayout
-                    android:id="@+id/profile_container_ratings"
+                    android:id="@+id/profileContainerRatings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:shrinkColumns="*"
@@ -202,7 +220,7 @@
                     android:textColor="@color/common_text" />
 
                 <TableLayout
-                    android:id="@+id/profile_container_places_history"
+                    android:id="@+id/profileContainerPlacesHistory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:shrinkColumns="1,2"
@@ -211,12 +229,12 @@
                 <include layout="@layout/item_profile_table_delimiter" />
 
                 <TextView
-                    android:id="@+id/profile_container_places_history_switcher"
+                    android:id="@+id/profileContainerPlacesHistorySwitcher"
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/common_clickable_background"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:textColor="@color/common_link" />
 
             </LinearLayout>

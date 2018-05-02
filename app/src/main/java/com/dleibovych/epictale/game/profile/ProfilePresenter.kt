@@ -1,5 +1,7 @@
 package com.dleibovych.epictale.game.profile
 
+import com.dleibovych.epictale.game.GameNavigation
+import com.dleibovych.epictale.game.GameNavigationProvider
 import com.dleibovych.epictale.game.data.GameInfoProvider
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -7,12 +9,16 @@ import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.readDataOrThrow
 import org.thetale.core.PresenterState
+import java.net.CookieStore
 
 class ProfilePresenter(private val service: TheTaleService,
-                       private val gameInfoProvider: GameInfoProvider) {
+                       private val cookieStore: CookieStore,
+                       private val gameInfoProvider: GameInfoProvider,
+                       private val navigationProvider: GameNavigationProvider) {
 
     private val state = PresenterState { loadProfileInfo() }
     private var profileJob: Job? = null
+    private var logoutJob: Job? = null
 
     var view: ProfileView? = null
 
@@ -37,11 +43,26 @@ class ProfilePresenter(private val service: TheTaleService,
         }
     }
 
+    fun logout() {
+        logoutJob = launch(UI) {
+            try {
+                view?.showProgress()
+                service.logout().join()
+                cookieStore.removeAll()
+                view?.hideProgress()
+                navigationProvider.navigation?.showLogin()
+            } catch (e: Exception) {
+                loadProfileInfo()
+            }
+        }
+    }
+
     fun retry() {
         state.apply { loadProfileInfo() }
     }
 
     fun dispose() {
         profileJob?.cancel()
+        logoutJob?.cancel()
     }
 }
