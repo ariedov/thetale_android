@@ -43,50 +43,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name="com.dleibovych.epictale.service.widget.AppWidgetProviderSmall"
-            android:label="@string/app_widget_small">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_small"/>
-        </receiver>
-
-        <receiver
-            android:name="com.dleibovych.epictale.service.widget.AppWidgetProviderMedium"
-            android:label="@string/app_widget_medium">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_medium"/>
-        </receiver>
-
-        <receiver
-            android:name="com.dleibovych.epictale.service.widget.AppWidgetProviderLarge"
-            android:label="@string/app_widget_large">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_large"/>
-        </receiver>
-
-        <receiver
-            android:name="com.dleibovych.epictale.service.widget.AppWidgetProviderHuge"
-            android:label="@string/app_widget_huge">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_huge"/>
-        </receiver>
-
         <service
             android:name="com.dleibovych.epictale.service.WatcherService"
             android:exported="false"/>

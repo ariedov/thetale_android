@@ -11,7 +11,7 @@ import org.thetale.api.enumerations.MapStyle
 import java.io.IOException
 import kotlin.coroutines.experimental.suspendCoroutine
 
-private const val MAP_SPRITE_URL = "https://the-tale.org/%s%s"
+private const val MAP_SPRITE_URL = "https://%s%s"
 
 class MapSpriteProvider(private val client: OkHttpClient,
                         private val service: TheTaleService) {
