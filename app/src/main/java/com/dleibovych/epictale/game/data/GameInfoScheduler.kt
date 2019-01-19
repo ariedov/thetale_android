@@ -1,12 +1,10 @@
 package com.dleibovych.epictale.game.data
 
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 import org.thetale.api.models.GameInfo
 
-private const val REFRESH_DELAY = 10_000
+private const val REFRESH_DELAY = 10_000L
 
 class GameInfoScheduler(private val gameInfoProvider: GameInfoProvider) {
 
@@ -14,7 +12,7 @@ class GameInfoScheduler(private val gameInfoProvider: GameInfoProvider) {
     private var scheduleJob: Job? = null
 
     fun scheduleImmediate() {
-        launch(UI) {
+        GlobalScope.launch(Main) {
             scheduleJob?.cancel()
             loadInfo()
             scheduleJob = startScheduling()
@@ -38,7 +36,7 @@ class GameInfoScheduler(private val gameInfoProvider: GameInfoProvider) {
         }
     }
 
-    private fun startScheduling() = launch(UI) {
+    private fun startScheduling() = GlobalScope.launch(Main) {
         while (this.isActive) {
             delay(REFRESH_DELAY)
             loadInfo()

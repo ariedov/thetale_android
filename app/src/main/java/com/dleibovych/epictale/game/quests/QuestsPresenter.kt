@@ -3,9 +3,11 @@ package com.dleibovych.epictale.game.quests
 import com.dleibovych.epictale.game.data.GameInfoListener
 import com.dleibovych.epictale.game.data.GameInfoProvider
 import com.dleibovych.epictale.game.data.GameInfoScheduler
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+
 import org.thetale.api.TheTaleService
 import org.thetale.api.models.GameInfo
 
@@ -32,7 +34,7 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
     }
 
     fun loadQuests() {
-        gameInfoJob = launch(UI) {
+        gameInfoJob = GlobalScope.launch(Main) {
             try {
                 view?.showProgress()
                 val info = gameInfoProvider.loadInfo().await()
@@ -44,7 +46,7 @@ class QuestsPresenter(val gameInfoProvider: GameInfoProvider,
     }
 
     fun chooseQuestOption(option: String) {
-        questChoiceJob = launch(UI) {
+        questChoiceJob = GlobalScope.launch(Main) {
             try {
                 view?.showQuestActionProgress()
                 service.chooseQuestAction(option).join()

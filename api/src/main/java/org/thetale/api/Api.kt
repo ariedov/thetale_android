@@ -1,6 +1,6 @@
 package org.thetale.api
 
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import org.thetale.api.error.ResponseException
 import org.thetale.api.models.Response
 

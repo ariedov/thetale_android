@@ -3,9 +3,10 @@ package com.dleibovych.epictale.game.map
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.dleibovych.epictale.game.data.GameInfoProvider
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.thetale.api.enumerations.MapStyle
 import org.thetale.api.models.Hero
 import org.thetale.api.models.Region
@@ -36,7 +37,7 @@ class MapPresenter(private val gameInfoProvider: GameInfoProvider,
     }
 
     private fun loadMap() {
-        mapJob = launch(UI) {
+        mapJob = GlobalScope.launch(Main) {
             try {
                 state.apply { view?.showLoading() }
                 val gameInfo = gameInfoProvider.getInfo().await()

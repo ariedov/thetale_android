@@ -1,9 +1,10 @@
 package org.thetale.auth.steps.thirdparty
 
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.thetale.auth.LoginNavigationProvider
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.URL
 import org.thetale.api.models.isAcceptedAuth
@@ -25,7 +26,7 @@ class LoginThirdPartyPresenter(private val service: TheTaleService,
     private var thirdPartyStatusJob: Job? = null
 
     private fun loginThirdParty(appName: String, appInfo: String, appDescription: String) {
-        thirdPartyLinkJob = launch(UI) {
+        thirdPartyLinkJob = GlobalScope.launch(Main) {
             state.apply { view.showProgress() }
 
             val thirdPartLink = service.login(appName, appInfo, appDescription).readDataOrThrow()!!
@@ -48,7 +49,7 @@ class LoginThirdPartyPresenter(private val service: TheTaleService,
     }
 
     fun checkAuthorisation() {
-        thirdPartyStatusJob = launch(UI) {
+        thirdPartyStatusJob = GlobalScope.launch(Main) {
             state.apply { view.showProgress() }
             val state = service.authorizationState().readDataOrThrow()!!
             if (state.isAcceptedAuth()) {

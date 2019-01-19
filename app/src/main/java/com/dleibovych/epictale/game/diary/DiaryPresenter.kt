@@ -2,9 +2,10 @@ package com.dleibovych.epictale.game.diary
 
 import com.dleibovych.epictale.game.data.GameInfoListener
 import com.dleibovych.epictale.game.data.GameInfoScheduler
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.models.GameInfo
 import org.thetale.api.readDataOrThrow
@@ -36,7 +37,7 @@ class DiaryPresenter(private val gameInfoScheduler: GameInfoScheduler,
     }
 
     fun loadDiary() {
-        diaryJob = launch(UI) {
+        diaryJob = GlobalScope.launch(Main) {
             try {
                 state.apply { view?.showProgress() }
                 val diary = service.diary().readDataOrThrow()!!

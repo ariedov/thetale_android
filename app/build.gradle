@@ -5,13 +5,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.dleibovych.epictale"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 16
         versionName "0.1.6_beta"
         resValue "string", "tray__authority", "${applicationId}.tray"
@@ -50,12 +49,6 @@ android {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 dependencies {
     // latest versions of libraries as of 11.02.2018
     implementation 'com.android.support:appcompat-v7:27.1.1'
@@ -73,28 +66,20 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.21"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0"
 
     implementation project(':core')
     implementation project(':api')
     implementation project(':auth')
 
-    implementation 'com.google.dagger:dagger-android:2.15'
-    implementation 'com.google.dagger:dagger-android-support:2.15'
-    kapt 'com.google.dagger:dagger-android-processor:2.15'
-    kapt "com.google.dagger:dagger-compiler:2.15"
+    implementation 'com.google.dagger:dagger-android:2.19'
+    implementation 'com.google.dagger:dagger-android-support:2.19'
+    kapt 'com.google.dagger:dagger-android-processor:2.19'
+    kapt "com.google.dagger:dagger-compiler:2.19"
 
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
     kapt 'com.github.bumptech.glide:compiler:4.7.1'
-}
-
-android.applicationVariants.all { variant ->
-    variant.getOutputs().all { output ->
-        if (outputFileName != null && output.outputFileName.endsWith('.apk')) {
-            outputFileName = "${variant.name}.apk"
-        }
-    }
 }
 
 apply plugin: 'com.google.gms.google-services'

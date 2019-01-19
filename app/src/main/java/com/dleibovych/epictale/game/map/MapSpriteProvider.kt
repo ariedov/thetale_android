@@ -2,21 +2,23 @@ package com.dleibovych.epictale.game.map
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import okhttp3.*
 import org.thetale.api.TheTaleService
 import org.thetale.api.enumerations.MapStyle
 import java.io.IOException
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 private const val MAP_SPRITE_URL = "https://%s%s"
 
 class MapSpriteProvider(private val client: OkHttpClient,
                         private val service: TheTaleService) {
 
-    fun getMapSprite(mapStyle: MapStyle) = async(UI) {
+    fun getMapSprite(mapStyle: MapStyle) = GlobalScope.async(Main) {
         val info = service.info().await()
         return@async loadSprite(mapStyle, info.data!!.staticContent)
     }

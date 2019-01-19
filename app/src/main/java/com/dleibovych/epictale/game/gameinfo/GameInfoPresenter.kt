@@ -3,9 +3,10 @@ package com.dleibovych.epictale.game.gameinfo
 import com.dleibovych.epictale.game.data.GameInfoListener
 import com.dleibovych.epictale.game.data.GameInfoProvider
 import com.dleibovych.epictale.game.data.GameInfoScheduler
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.enumerations.Action
 import org.thetale.api.models.GameInfo
@@ -37,7 +38,7 @@ class GameInfoPresenter(
     }
 
     fun useAbility(action: Action) {
-        abilityJob = launch(UI) {
+        abilityJob = GlobalScope.launch(Main) {
             try {
                 view?.showAbilityProgress()
                 service.useAbility(action.code).join()
@@ -53,7 +54,7 @@ class GameInfoPresenter(
     }
 
     private fun loadGameInfo() {
-        infoJob = launch(UI) {
+        infoJob = GlobalScope.launch(Main) {
             try {
                 view?.showProgress()
                 val info = provider.loadInfo().await()

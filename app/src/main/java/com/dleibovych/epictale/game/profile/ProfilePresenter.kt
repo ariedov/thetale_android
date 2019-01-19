@@ -3,9 +3,10 @@ package com.dleibovych.epictale.game.profile
 import com.dleibovych.epictale.game.GameNavigation
 import com.dleibovych.epictale.game.GameNavigationProvider
 import com.dleibovych.epictale.game.data.GameInfoProvider
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.thetale.api.TheTaleService
 import org.thetale.api.readDataOrThrow
 import org.thetale.core.PresenterState
@@ -31,7 +32,7 @@ class ProfilePresenter(private val service: TheTaleService,
     }
 
     private fun loadProfileInfo() {
-        profileJob = launch(UI) {
+        profileJob = GlobalScope.launch(Main) {
             try {
                 state.apply { view?.showProgress() }
                 val gameInfo = gameInfoProvider.getInfo().await()
@@ -44,7 +45,7 @@ class ProfilePresenter(private val service: TheTaleService,
     }
 
     fun logout() {
-        logoutJob = launch(UI) {
+        logoutJob = GlobalScope.launch(Main) {
             try {
                 view?.showProgress()
                 service.logout().join()

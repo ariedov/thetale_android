@@ -1,9 +1,10 @@
 package org.thetale.auth.steps.credentials
 
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.thetale.auth.LoginNavigationProvider
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import org.thetale.core.PresenterState
 import org.thetale.api.TheTaleService
 import org.thetale.api.readDataOrThrow
@@ -26,7 +27,7 @@ class LoginCredentialsPresenter(private val service: TheTaleService,
     }
 
     fun loginWithCredentials(email: String, password: String) {
-        loginJob = launch(UI) {
+        loginJob = GlobalScope.launch(Main) {
             try {
                 state.apply { view?.showProgress() }
                 service.login(email, password).readDataOrThrow()

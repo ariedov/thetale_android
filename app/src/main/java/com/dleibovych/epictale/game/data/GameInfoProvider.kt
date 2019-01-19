@@ -1,6 +1,7 @@
 package com.dleibovych.epictale.game.data
 
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.thetale.api.TheTaleService
 import org.thetale.api.readDataOrThrow
 import org.thetale.api.models.GameInfo
@@ -11,7 +12,7 @@ class GameInfoProvider(private val service: TheTaleService,
 
     private var info: GameInfo? = null
 
-    fun loadInfo() = async {
+    fun loadInfo() = GlobalScope.async {
         val newInfo = service.gameInfo(/*turnsCache.concatIds()*/).readDataOrThrow()!!
         info = if (info != null) mergeInfo(info!!, newInfo) else newInfo
 
@@ -19,7 +20,7 @@ class GameInfoProvider(private val service: TheTaleService,
         return@async info!!
     }
 
-    fun getInfo() = async {
+    fun getInfo() = GlobalScope.async {
         if (info == null) {
             info = loadInfo().await()
         }
