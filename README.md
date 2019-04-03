@@ -2,7 +2,7 @@
 
 Android-клиент для многопользовательской zero-player RPG [Сказка](http://the-tale.org).
 
-[![Build Status](https://travis-ci.org/ariedov/TheTaleClient.svg?branch=master)](https://travis-ci.org/ariedov/TheTaleClient)
+[![Build Status](https://app.bitrise.io/app/4b8aae7200359362/status.svg?token=isk2JvYN7Hy2skx4oUWGbQ)](https://app.bitrise.io/app/4b8aae7200359362)
 
 Поддерживаемые версии Android: 5.0 и выше.
 
