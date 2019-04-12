@@ -11,8 +11,8 @@ android {
         applicationId "com.dleibovych.epictale"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 17
-        versionName "0.1.7_beta"
+        versionCode 18
+        versionName "0.1.8_beta"
         resValue "string", "tray__authority", "${applicationId}.tray"
         vectorDrawables.useSupportLibrary = true
     }
@@ -52,10 +52,9 @@ android {
 dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
-    implementation 'com.google.firebase:firebase-core:16.0.0'
-    implementation 'com.google.firebase:firebase-messaging:17.0.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.9.1'
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
