@@ -31,8 +31,8 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/block_background"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/game_info_lines_margin"
-                android:paddingTop="@dimen/game_info_lines_margin">
+                android:paddingTop="@dimen/game_info_lines_margin"
+                android:paddingBottom="@dimen/game_info_lines_margin">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -43,8 +43,8 @@
                         style="?android:attr/textAppearanceLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
                         android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
                         android:textColor="@color/common_text" />
 
                     <TextView
@@ -53,9 +53,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/profileName"
-                        android:layout_marginBottom="@dimen/game_info_lines_margin"
-                        android:layout_marginEnd="16dp"
                         android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="@dimen/game_info_lines_margin"
                         android:textColor="@color/common_disabled" />
 
                     <TextView
@@ -65,8 +65,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:gravity="end"
-                        android:paddingEnd="16dp"
                         android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:text="@string/drawer_title_logout"
                         android:textColor="@color/common_link" />
                 </RelativeLayout>
@@ -152,16 +152,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/block_background"
                 android:orientation="vertical"
-                android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
+                android:paddingTop="8dp"
                 android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                android:paddingBottom="8dp">
 
                 <TextView
                     style="?android:attr/textAppearanceLarge"
@@ -192,16 +192,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/block_background"
                 android:orientation="vertical"
-                android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
+                android:paddingTop="8dp"
                 android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                android:paddingBottom="8dp">
 
                 <TextView
                     style="?android:attr/textAppearanceLarge"
@@ -239,6 +239,27 @@
 
             </LinearLayout>
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+            <TextView
+                android:id="@+id/privacyPolicy"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/common_clickable_background"
+                android:gravity="start"
+                android:text="@string/privacy_policy_url"
+                android:textColor="@color/common_link" />
         </LinearLayout>
 
     </ScrollView>

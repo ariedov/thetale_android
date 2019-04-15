@@ -22,6 +22,9 @@ import java.util.Comparator
 import javax.inject.Inject
 
 import org.thetale.api.models.AccountInfo
+import android.content.Intent
+import android.net.Uri
+
 
 class ProfileFragment : Fragment(), ProfileView {
 
@@ -45,6 +48,12 @@ class ProfileFragment : Fragment(), ProfileView {
 
         error.onRetryClick(View.OnClickListener { presenter.retry() })
         logout.setOnClickListener { presenter.logout() }
+
+        privacyPolicy.setOnClickListener {
+            val url = getString(R.string.privacy_policy_url)
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
+        }
     }
 
     override fun onDestroyView() {
