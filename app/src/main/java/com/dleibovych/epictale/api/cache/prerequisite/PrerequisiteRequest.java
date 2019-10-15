@@ -1,6 +1,6 @@
 package com.dleibovych.epictale.api.cache.prerequisite;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.dleibovych.epictale.api.AbstractApiResponse;
 import com.dleibovych.epictale.api.ApiResponseCallback;

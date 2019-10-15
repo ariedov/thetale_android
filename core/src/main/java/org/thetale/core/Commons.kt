@@ -2,7 +2,7 @@ package org.thetale.core
 
 import android.content.Context
 import android.net.Uri
-import android.support.customtabs.CustomTabsIntent
+import androidx.browser.customtabs.CustomTabsIntent
 
 fun openUrl(context: Context, url: String) {
     val builder = CustomTabsIntent.Builder()

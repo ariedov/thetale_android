@@ -3,7 +3,7 @@ package com.dleibovych.epictale.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.Preference;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;

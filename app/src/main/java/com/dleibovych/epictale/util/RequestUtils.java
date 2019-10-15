@@ -2,8 +2,7 @@ package com.dleibovych.epictale.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
+import androidx.fragment.app.Fragment;
 
 import com.dleibovych.epictale.api.AbstractApiResponse;
 import com.dleibovych.epictale.api.ApiResponseCallback;
@@ -12,11 +11,6 @@ import com.dleibovych.epictale.api.CommonResponseCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.HttpCookie;
-import java.net.URI;
 
 /**
  * @author Hamster

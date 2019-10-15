@@ -2,7 +2,7 @@ package com.dleibovych.epictale.game.gameinfo.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.support.v4.widget.TextViewCompat
+import androidx.core.widget.TextViewCompat
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.dleibovych.epictale.R
