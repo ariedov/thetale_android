@@ -2,7 +2,7 @@ package com.dleibovych.epictale
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat.startActivity
+import androidx.core.content.ContextCompat.startActivity
 import com.dleibovych.epictale.game.MainActivity
 import org.thetale.core.AppNavigation
 

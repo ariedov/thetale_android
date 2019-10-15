@@ -2,8 +2,8 @@ package com.dleibovych.epictale.game
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 
 import com.dleibovych.epictale.R
 import com.dleibovych.epictale.TheTaleApplication
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), GameNavigation {
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, fragment)

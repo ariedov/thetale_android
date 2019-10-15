@@ -9,7 +9,7 @@ import android.view.MotionEvent;
  * @since 13.10.2014
  * todo hack for PhotoViewAttacher : https://github.com/chrisbanes/PhotoView/issues/72 , wait for PhotoView 1.2.4
  */
-public class DrawerLayout extends android.support.v4.widget.DrawerLayout {
+public class DrawerLayout extends androidx.drawerlayout.widget.DrawerLayout {
 
     private static final String LOG_TAG = DrawerLayout.class.getSimpleName();
 

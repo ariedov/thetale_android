@@ -3,7 +3,7 @@ package com.dleibovych.epictale.game.map
 import android.graphics.Bitmap
 import android.graphics.PointF
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -154,7 +154,7 @@ class MapFragment : Fragment(), MapView {
         error.setErrorText(getString(R.string.map_error))
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
 
         menuOptions = UiUtils.getMenuItem(activity, R.id.action_map_actions)
@@ -168,8 +168,8 @@ class MapFragment : Fragment(), MapView {
         updateMenuItemTitle(R.id.action_map_modification, getString(R.string.map_modification, mapModification!!.name))
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_map_style -> {
                 DialogUtils.showChoiceDialog(fragmentManager, getString(R.string.map_style_caption),
                         ObjectUtils.getNamesForEnum(MapStyle::class.java)) { position ->
@@ -385,7 +385,7 @@ class MapFragment : Fragment(), MapView {
             return getString(getTileTab(position).title)
         }
 
-        override fun getItem(i: Int): Fragment {
+        override fun getItem(i: Int): androidx.fragment.app.Fragment {
             return getTileTab(i).getFragment(cellInfo)
         }
 
@@ -402,27 +402,27 @@ class MapFragment : Fragment(), MapView {
     private enum class TileTab private constructor(val title: Int, private val cellTypes: Array<MapCellType>) {
 
         PARAMETERS(R.string.map_tile_tab_params, arrayOf<MapCellType>(MapCellType.PLACE, MapCellType.BUILDING)) {
-            override fun getFragment(cellInfo: MapCellResponse): Fragment {
+            override fun getFragment(cellInfo: MapCellResponse): androidx.fragment.app.Fragment {
                 return MapTileParamsFragment.newInstance(cellInfo)
             }
         },
         COUNCIL(R.string.map_tile_tab_council, arrayOf<MapCellType>(MapCellType.PLACE)) {
-            override fun getFragment(cellInfo: MapCellResponse): Fragment {
+            override fun getFragment(cellInfo: MapCellResponse): androidx.fragment.app.Fragment {
                 return MapTileCouncilFragment.newInstance(cellInfo)
             }
         },
         DESCRIPTION(R.string.map_tile_tab_description, arrayOf<MapCellType>(MapCellType.PLACE)) {
-            override fun getFragment(cellInfo: MapCellResponse): Fragment {
+            override fun getFragment(cellInfo: MapCellResponse): androidx.fragment.app.Fragment {
                 return MapTileDescriptionFragment.newInstance(cellInfo)
             }
         },
         TERRAIN(R.string.map_tile_tab_terrain, arrayOf<MapCellType>(MapCellType.PLACE, MapCellType.BUILDING, MapCellType.TERRAIN)) {
-            override fun getFragment(cellInfo: MapCellResponse): Fragment {
+            override fun getFragment(cellInfo: MapCellResponse): androidx.fragment.app.Fragment {
                 return MapTileTerrainFragment.newInstance(cellInfo)
             }
         };
 
-        abstract fun getFragment(cellInfo: MapCellResponse): Fragment
+        abstract fun getFragment(cellInfo: MapCellResponse): androidx.fragment.app.Fragment
 
         companion object {
 

@@ -1,10 +1,10 @@
 package com.dleibovych.epictale.game
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -41,7 +41,7 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
     @Inject
     lateinit var manager: CookieManager
 
-    private var viewPager: ViewPager? = null
+    private var viewPager: androidx.viewpager.widget.ViewPager? = null
     private var findPlayerContainer: View? = null
 
     private var currentPageIndex: Int = 0
@@ -82,13 +82,13 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
         outState.putInt(KEY_PAGE_INDEX, viewPager!!.currentItem)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         updateMenu()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_read_aloud -> if (PreferencesManager.isReadAloudConfirmed()) {
                 val wasReadAloudEnabled: Boolean
                 when (GamePage.values()[currentPageIndex]) {
@@ -176,7 +176,7 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
         }
     }
 
-    private fun getPageFragment(position: Int): Fragment? {
+    private fun getPageFragment(position: Int): androidx.fragment.app.Fragment? {
         if (viewPager == null) {
             return null
         }
@@ -210,48 +210,48 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
     enum class GamePage private constructor(val titleResId: Int) {
 
         GAME_INFO(R.string.game_title_info) {
-            override val fragment: Fragment
+            override val fragment: androidx.fragment.app.Fragment
                 get() = GameInfoFragment()
         },
         QUESTS(R.string.game_title_quests) {
-            override val fragment: Fragment
+            override val fragment: androidx.fragment.app.Fragment
                 get() = QuestsFragment()
         },
         EQUIPMENT(R.string.game_title_equipment) {
-            override val fragment: Fragment
+            override val fragment: androidx.fragment.app.Fragment
                 get() = EquipmentFragment()
         },
         CARDS(R.string.game_title_cards) {
-            override val fragment: Fragment
+            override val fragment: androidx.fragment.app.Fragment
                 get() = CardsFragment()
         },
         DIARY(R.string.game_title_diary) {
-            override val fragment: Fragment
+            override val fragment: androidx.fragment.app.Fragment
                 get() = DiaryFragment()
         },
         PROFILE(R.string.game_title_profile) {
-            override val fragment: Fragment
+            override val fragment: androidx.fragment.app.Fragment
                 get() = ProfileFragment()
         };
 
-        abstract val fragment: Fragment
+        abstract val fragment: androidx.fragment.app.Fragment
 
     }
 
-    private inner class GamePagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+    private inner class GamePagerAdapter(fragmentManager: androidx.fragment.app.FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
 
-        private val fragments = HashMap<Int, Fragment>()
+        private val fragments = HashMap<Int, androidx.fragment.app.Fragment>()
 
         override fun getPageTitle(position: Int): CharSequence? {
             return getString(GamePage.values()[position].titleResId)
         }
 
-        override fun getItem(i: Int): Fragment {
+        override fun getItem(i: Int): androidx.fragment.app.Fragment {
             return GamePage.values()[i].fragment
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as Fragment
+            val fragment = super.instantiateItem(container, position) as androidx.fragment.app.Fragment
             fragments[position] = fragment
             if (shouldCallOnscreen) {
                 UiUtils.callOnscreenStateChange(fragment, true)
@@ -269,7 +269,7 @@ class GameFragment : Fragment(), Refreshable, OnscreenStateListener {
             return GamePage.values().size
         }
 
-        fun getFragment(position: Int): Fragment {
+        fun getFragment(position: Int): androidx.fragment.app.Fragment {
             return fragments[position]!!
         }
 
